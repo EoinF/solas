@@ -1,4 +1,4 @@
-#include "Scenarios.h";
+#include "Scenarios.h"
 
 void loadScenario(int scenarioNumber, SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize)
 {

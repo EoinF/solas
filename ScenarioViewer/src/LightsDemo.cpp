@@ -34,7 +34,6 @@ int main()
 }
 
 void init() {
-    game.debug();
     string path = boost::filesystem::initial_path().string();
     font.loadFromFile(path.append("/assets/Arial.ttf"));
 
@@ -87,16 +86,6 @@ void update() {
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
             game.nextScenario();
-            updateUI();
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            game.previousMode();
-            updateUI();
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            game.nextMode();
             updateUI();
         }
     }

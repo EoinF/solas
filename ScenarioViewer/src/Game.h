@@ -1,7 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
-#include "LightmapManager/LightmapManager.h"
+#include <SolasLib/core.hpp>
 #include "Scenarios/Scenarios.h"
 
 using namespace std;
@@ -41,28 +41,23 @@ public:
 class Game
 {
 protected:
-    LightmapManager<GameObject>* lightmapManager;
+    LightmapManager* lightmapManager;
     vector<GameObject> gameObjects;
-    GameObject** floorGrid;
+    IGameObject** floorGrid;
     int numTilesX, numTilesY;
     float currentTime;
     void startScenario(int index);
-    void startMode(int index);
     int tileSize;
-    void resetLighting(float brightness);
 
 public:
-    map<GameObject*, sf::Shape*> sprites;
+    map<IGameObject*, sf::Shape*> sprites;
     vector<sf::Shape*> debugSprites;
     sf::VertexArray floorGridVertices;
     int scenarioIndex;
     void nextScenario();
     void previousScenario();
     int modeIndex;
-    void nextMode();
-    void previousMode();
 
     Game(int tileSize = 8, int numTilesX = 50, int numTilesY = 50);
-    void debug();
     void update(sf::Vector2i mousePosition, float timeDelta);
 };
