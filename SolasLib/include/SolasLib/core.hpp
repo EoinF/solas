@@ -1,2 +1,2 @@
-#include <SolasLib/core/IGameObject.hpp>
+#include <SolasLib/core/TileLightState.hpp>
 #include <SolasLib/SimpleRayCast/SimpleRayCast.hpp>

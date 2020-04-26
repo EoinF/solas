@@ -65,7 +65,7 @@ void LightmapManager::removeLight(int lightId, Light* light)
 			int y = j + (int)(light->y / tileSizeF) - light->lightMapHeight / 2;
 
 			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
-				floorGrid[y * floorGridWidth + x]->subtractLighting(brightness, brightness, brightness);
+				tileArray[y * floorGridWidth + x].subtractLighting(brightness, brightness, brightness);
 			}
 			light->lightMap[i + j * light->lightMapWidth] = 0.0f;
 		}
@@ -125,7 +125,7 @@ void LightmapManager::update()
 					int y = -light->lightMapHeight / 2 + j + (int)(light->y / tileSizeF);
 
 					if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
-						floorGrid[y * floorGridWidth + x]->subtractLighting(brightness, brightness, brightness);
+						tileArray[y * floorGridWidth + x].subtractLighting(brightness, brightness, brightness);
 					}
 					light->lightMap[i + j * light->lightMapWidth] = 0.0f;
 				}
@@ -138,12 +138,12 @@ void LightmapManager::update()
 				spanDifference = getSpanDifference(light, i, startY, tileSize);
 				if (spanDifference > 0)
 				{
-					rayCast(srcTileX, srcTileY, i, startY, light->range, spanDifference, light, tileSize, floorGrid, floorGridWidth);
+					rayCast(srcTileX, srcTileY, i, startY, light->range, spanDifference, light, tileSize, tileArray, floorGridWidth);
 				}
 				spanDifference = getSpanDifference(light, i, endY, tileSize);
 				if (spanDifference > 0)
 				{
-					rayCast(srcTileX, srcTileY, i, endY, light->range, spanDifference, light, tileSize, floorGrid, floorGridWidth);
+					rayCast(srcTileX, srcTileY, i, endY, light->range, spanDifference, light, tileSize, tileArray, floorGridWidth);
 				}
 			}
 
@@ -152,12 +152,12 @@ void LightmapManager::update()
 				spanDifference = getSpanDifference(light, startX, j, tileSize);
 				if (spanDifference > 0)
 				{
-					rayCast(srcTileX, srcTileY, startX, j, light->range, spanDifference, light, tileSize, floorGrid, floorGridWidth);
+					rayCast(srcTileX, srcTileY, startX, j, light->range, spanDifference, light, tileSize, tileArray, floorGridWidth);
 				}
 				spanDifference = getSpanDifference(light, endX, j, tileSize);
 				if (spanDifference > 0)
 				{
-					rayCast(srcTileX, srcTileY, endX, j, light->range, spanDifference, light, tileSize, floorGrid, floorGridWidth);
+					rayCast(srcTileX, srcTileY, endX, j, light->range, spanDifference, light, tileSize, tileArray, floorGridWidth);
 				}
 			}
 			light->shouldUpdate = false;

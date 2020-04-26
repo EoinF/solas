@@ -4,7 +4,7 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, IGameObject** floorGrid, int floorGridWidth)
+bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, TileLightState* floorGrid, int floorGridWidth)
 {
 	//glm::vec2 currentRayDirection = glm::vec2(destX - srcX, destY - srcY);
 	//
@@ -68,10 +68,10 @@ bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDi
 			{
 				light->lightMap[x + y * light->lightMapWidth] = newLighting;
 				float lightingDelta = newLighting - existingLighting;
-				floorGrid[j * floorGridWidth + i]->addLighting(lightingDelta, lightingDelta, lightingDelta);
+				floorGrid[j * floorGridWidth + i].addLighting(lightingDelta, lightingDelta, lightingDelta);
 			}
 		}
-		if (floorGrid[j * floorGridWidth + i]->isWall) {
+		if (floorGrid[j * floorGridWidth + i].isWall) {
 			return false;
 		}
 

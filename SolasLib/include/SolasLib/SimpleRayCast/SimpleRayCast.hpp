@@ -25,7 +25,7 @@ struct Colour
 class LightmapManager
 {
 protected:
-	IGameObject** floorGrid;
+	TileLightState* tileArray;
 	int tileSize;
 	map<int, Light*> lightsMap;
 	int nextLightId;
@@ -33,14 +33,18 @@ protected:
 	int floorGridHeight;
 	bool isPaused;
 public:
-	LightmapManager(IGameObject** floorGrid, int width, int height, int tileSize)
+	LightmapManager(int width, int height, int tileSize)
 	{
 		this->isPaused = false;
 		this->nextLightId = 0;
 		this->tileSize = tileSize;
-		this->floorGrid = floorGrid;
+		this->tileArray = new TileLightState[width * height];
 		this->floorGridWidth = width;
 		this->floorGridHeight = height;
+	}
+
+	TileLightState* getTileState(int x, int y) {
+		return &this->tileArray[y * floorGridWidth + x];
 	}
 
 	void setTileSize(int tileSize) {
@@ -60,9 +64,8 @@ public:
 	map<int, Light*> getLightsMap()
 	{
 		return this->lightsMap;
-	}
+	}	
 
-	void setStaticObjects(vector<IGameObject> staticObjects);
 	int addLight(float x, float y, glm::vec2 direction, float span, float range, int tileSize);
 	void updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range);
 	void clearLights();

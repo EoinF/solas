@@ -6,35 +6,30 @@
 
 using namespace std;
 
-class GameObject : public IGameObject
+class GameObject
 {
 private:
     sf::Color colour;
 public:
-    float baseR;
-    float baseG;
-    float baseB;
+    float x;
+    float y;
 
-    GameObject(float x = 0, float y = 0)
+    GameObject(float x = 0, float y = 0, uint8_t r = 0, uint8_t g = 100, uint8_t b = 170)
     {
         this->x = x;
         this->y = y;
-        this->baseR = 255;
-        this->baseG = 100;
-        this->baseB = 170;
-        this->setLighting(0.0f, 0.0f, 0.0f);
+        this->colour.r = r;
+        this->colour.g = g;
+        this->colour.b = b;
     }
 
     sf::Color getColour() {
-        colour.r = (uint8_t)(min(r, 1.0f) * baseR);
-        colour.g = (uint8_t)(min(g, 1.0f) * baseG);
-        colour.b = (uint8_t)(min(b, 1.0f) * baseB);
         return this->colour;
     }
-    void setColour(float r, float g, float b) {
-        this->baseR = r;
-        this->baseG = g;
-        this->baseB = b;
+    void setColour(uint8_t r, uint8_t g, uint8_t b) {
+        this->colour.r = r;
+        this->colour.g = g;
+        this->colour.b = b;
     }
 };
 
@@ -43,19 +38,19 @@ class Game
 protected:
     LightmapManager* lightmapManager;
     vector<GameObject> gameObjects;
-    IGameObject** floorGrid;
     int numTilesX, numTilesY;
     float currentTime;
     void startScenario(int index);
     int tileSize;
 
 public:
-    map<IGameObject*, sf::Shape*> sprites;
+    map<int, sf::Shape*> sprites;
     vector<sf::Shape*> debugSprites;
-    sf::VertexArray floorGridVertices;
     int scenarioIndex;
     void nextScenario();
     void previousScenario();
+
+    void addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b);
     int modeIndex;
 
     Game(int tileSize = 8, int numTilesX = 50, int numTilesY = 50);

@@ -16,7 +16,7 @@ void loadScenario(int scenarioNumber, SetGridTypeFunction setGridType, AddLightF
 void scenario1(SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize)
 {
     for (int j = numTilesY / 3; j < 2 * numTilesY / 3; j++) {
-        setGridType(numTilesX / 3, j, true, 255.0f, 255.0f, 255.0f);
+        setGridType(numTilesX / 3, j, true, 125, 125, 0);
     }
 
     int skip = 0;
@@ -26,7 +26,7 @@ void scenario1(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
             skip = 0;
             continue;
         }
-        setGridType(3 * numTilesX / 4, j, true, 255.0f, 255.0f, 255.0f);
+        setGridType(3 * numTilesX / 4, j, true, 0, 255, 0);
     }
 
 
@@ -50,16 +50,16 @@ void scenario2(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
 
     for (int i = startX; i < endX; i++) 
     {
-        setGridType(i, startY, true, 255.0f, 255.0f, 255.0f);
-        setGridType(i, endY, true, 255.0f, 255.0f, 255.0f);
+        setGridType(i, startY, true, 255, 255, 255);
+        setGridType(i, endY, true, 255, 255, 255);
     }
     for (int j = startY; j <= endY; j++) {
-        setGridType(startX, j, true, 255.0f, 255.0f, 255.0f);
-        setGridType(endX, j, true, 255.0f, 255.0f, 255.0f);
+        setGridType(startX, j, true, 255, 255, 255);
+        setGridType(endX, j, true, 255, 255, 255);
     }
 
-    setGridType((startX + endX) / 2, endY, false, 255.0f, 0.0f, 0.0f);
-    setGridType(1 + (startX + endX) / 2, endY, false, 255.0f, 0.0f, 0.0f);
+    setGridType((startX + endX) / 2, endY, false, 255, 0, 0);
+    setGridType(1 + (startX + endX) / 2, endY, false, 255, 0, 0);
 
     addLight(tileSize * (endX + startX) / 2, tileSize * (endY + startY) / 2, glm::normalize(glm::vec2(0.4f, -1.0f)), 0.8f, 300.0f);
 }

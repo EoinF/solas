@@ -1,6 +1,6 @@
 #pragma once
 
-class IGameObject
+class TileLightState
 {
 public:
 	float x = 0;

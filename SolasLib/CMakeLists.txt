@@ -7,7 +7,7 @@ find_package(glm REQUIRED)
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
 set(HEADER_LIST 
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/IGameObject.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/TileLightState.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/Light.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/SimpleRayCast/RayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/SimpleRayCast/SimpleRayCast.hpp
@@ -22,7 +22,7 @@ set(SOURCES
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Make a .dll or .lib
-add_library (SolasLib SHARED ${SOURCES} ${HEADER_LIST})
+add_library (SolasLib ${SOURCES} ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")
