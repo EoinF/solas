@@ -21,8 +21,13 @@ set(SOURCES
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-# Make a .dll or .lib
-add_library (SolasLib ${SOURCES} ${HEADER_LIST})
+if (BUILD_SCENARIO_VIEWER)
+    # Make a .lib and .dll for release
+    add_library (SolasLib ${SOURCES} ${HEADER_LIST})
+else(BUILD_SCENARIO_VIEWER)
+    # Make just a .lib for debugging
+    add_library (SolasLib SHARED ${SOURCES} ${HEADER_LIST})
+endif (BUILD_SCENARIO_VIEWER)
 
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")

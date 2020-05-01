@@ -17,6 +17,11 @@
                     "name": "glm_DIR",
                     "value": "C:/Users/Eoin/vcpkg/installed/x86-windows/share/glm",
                     "type": "PATH"
+                },
+                {
+                    "name": "BUILD_SCENARIO_VIEWER",
+                    "value": "true",
+                    "type": "BOOL"
                 }
             ],
             "inheritEnvironments": []
@@ -33,6 +38,16 @@
                     "name": "CMAKE_TOOLCHAIN_FILE",
                     "value": "C:\\Users\\Eoin\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
                     "type": "STRING"
+                },
+                {
+                    "name": "glm_DIR",
+                    "value": "C:/Users/Eoin/vcpkg/installed/x86-windows/share/glm",
+                    "type": "PATH"
+                },
+                {
+                    "name": "BUILD_SCENARIO_VIEWER",
+                    "value": "false",
+                    "type": "BOOL"
                 }
             ],
             "inheritEnvironments": []

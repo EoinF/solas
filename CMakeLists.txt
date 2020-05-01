@@ -9,11 +9,12 @@ option(BUILD_SCENARIO_VIEWER "Build the scenario viewer as well" ON)
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	# add tests here maybe?
 endif()
 
 add_subdirectory(SolasLib)
-add_subdirectory(ScenarioViewer)
+if (BUILD_SCENARIO_VIEWER)
+	add_subdirectory(ScenarioViewer)
+endif(BUILD_SCENARIO_VIEWER)
