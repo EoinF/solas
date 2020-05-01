@@ -1,4 +1,4 @@
-#include <SolasLib/SimpleRayCast/SimpleRayCast.hpp>
+#include <SolasLib/core/LightmapManager.hpp>
 #include <SolasLib/SimpleRayCast/RayCast.hpp>
 #include "stdio.h"
 #include <iostream>
@@ -88,10 +88,6 @@ void LightmapManager::resetLighting()
 
 void LightmapManager::update()
 {
-	if (isPaused)
-	{
-		return;
-	}
 	float tileSizeF = (float)tileSize;
 	float spanDifference;
 	for (auto idLightPair : this->lightsMap)

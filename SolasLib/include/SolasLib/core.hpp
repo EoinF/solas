@@ -1,2 +1,2 @@
 #include <SolasLib/core/TileLightState.hpp>
-#include <SolasLib/SimpleRayCast/SimpleRayCast.hpp>
+#include <SolasLib/core/LightmapManager.hpp>

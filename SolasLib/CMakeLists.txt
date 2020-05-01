@@ -9,8 +9,8 @@ set(HEADER_LIST
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/TileLightState.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/Light.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/LightmapManager.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/SimpleRayCast/RayCast.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/SimpleRayCast/SimpleRayCast.hpp
 )
 
 set(SOURCES

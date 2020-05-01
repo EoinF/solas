@@ -94,7 +94,7 @@ void update() {
     }
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-    //game.update(mousePosition, timeDelta);
+    game.update(mousePosition, timeDelta);
 
     window.clear(sf::Color::Blue);
     for (auto element: game.sprites) {

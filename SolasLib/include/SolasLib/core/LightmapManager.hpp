@@ -10,18 +10,6 @@
 
 using namespace std;
 
-struct Colour
-{
-	float r;
-	float g;
-	float b;
-	Colour() {
-		r = 0.0;
-		g = 0.0;
-		b = 0.0;
-	}
-};
-
 class LightmapManager
 {
 protected:
@@ -51,20 +39,10 @@ public:
 		this->tileSize = tileSize;
 	}
 
-	void unpause()
-	{
-		this->isPaused = false;
-	}
-
-	void pause()
-	{
-		this->isPaused = true;
-	}
-
 	map<int, Light*> getLightsMap()
 	{
 		return this->lightsMap;
-	}	
+	}
 
 	int addLight(float x, float y, glm::vec2 direction, float span, float range, int tileSize);
 	void updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range);
