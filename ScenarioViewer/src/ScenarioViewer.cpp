@@ -1,4 +1,4 @@
-﻿#include "LightsDemo.h"
+﻿#include "ScenarioViewer.h"
 
 using namespace std;
 
