@@ -9,14 +9,16 @@ float calculateFrameRate(float timeDelta);
 
 int WINDOW_WIDTH = 1080;
 int WINDOW_HEIGHT = 720;
-int TILE_SIZE = 6;
+int TILE_SIZE = 8;
 
 Game game(TILE_SIZE, WINDOW_WIDTH / TILE_SIZE, WINDOW_HEIGHT / TILE_SIZE);
-sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test");
+
+sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test", 7U, sf::ContextSettings(0U, 0U, 8));
 sf::Clock gameClock;
 sf::Font font;
 sf::Text fpsLabel;
 sf::Text scenarioLabel;
+sf::Sprite lightmapOverlaySprite;
 float totalElapsed = 0;
 int framesThisSecond = 0;
 int totalSeconds = 0;
@@ -47,6 +49,8 @@ void init() {
     fpsLabel.setString("...");
     fpsLabel.setPosition(10, 40);
 
+    lightmapOverlaySprite.setScale((float)TILE_SIZE, (float)TILE_SIZE);
+    lightmapOverlaySprite.setTexture(game.lightmapOverlay);
     //window.setFramerateLimit(60);
 }
 
@@ -103,6 +107,7 @@ void update() {
     for (auto& spritePtr : game.debugSprites) {
         window.draw(*spritePtr);
     }
+    window.draw(lightmapOverlaySprite);
     window.draw(scenarioLabel);
     window.draw(fpsLabel);
     window.display();

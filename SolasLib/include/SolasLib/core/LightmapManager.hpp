@@ -13,7 +13,7 @@ using namespace std;
 class LightmapManager
 {
 protected:
-	TileLightState* tileArray;
+	vector<TileLightState> tileArray;
 	int tileSize;
 	map<int, Light*> lightsMap;
 	int nextLightId;
@@ -26,9 +26,19 @@ public:
 		this->isPaused = false;
 		this->nextLightId = 0;
 		this->tileSize = tileSize;
-		this->tileArray = new TileLightState[width * height];
+
+		//tileArray.resize(width * height);
+		cout << "creating tile array" << endl;
+		for (int i = 0; i < width * height; i++) {
+			tileArray.push_back(TileLightState());
+		}
+
 		this->floorGridWidth = width;
 		this->floorGridHeight = height;
+	}
+
+	vector<TileLightState>& getTileArray() {
+		return this->tileArray;
 	}
 
 	TileLightState* getTileState(int x, int y) {

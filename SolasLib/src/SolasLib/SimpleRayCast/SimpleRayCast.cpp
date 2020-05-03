@@ -59,15 +59,15 @@ void LightmapManager::removeLight(int lightId, Light* light)
 	{
 		for (int j = 0; j < light->lightMapHeight; j++)
 		{
-			float brightness = light->lightMap[i + j * light->lightMapWidth];
+			int brightness = light->lightMap[i + j * light->lightMapWidth];
 
 			int x = i + (int)(light->x / tileSizeF) - light->lightMapWidth / 2;
 			int y = j + (int)(light->y / tileSizeF) - light->lightMapHeight / 2;
 
 			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
-				tileArray[y * floorGridWidth + x].subtractLighting(brightness, brightness, brightness);
+				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
 			}
-			light->lightMap[i + j * light->lightMapWidth] = 0.0f;
+			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
 	}
 }
@@ -80,7 +80,7 @@ void LightmapManager::resetLighting()
 		{
 			for (int j = 0; j < lightIdPair.second->lightMapHeight; j++)
 			{
-				lightIdPair.second->lightMap[i + j * lightIdPair.second->lightMapHeight] = 0.0f;
+				lightIdPair.second->lightMap[i + j * lightIdPair.second->lightMapHeight] = 0;
 			}
 		}
 	}
@@ -115,15 +115,15 @@ void LightmapManager::update()
 			{
 				for (int j = 0; j < light->lightMapHeight; j++)
 				{
-					float brightness = light->lightMap[i + j * light->lightMapWidth];
+					int brightness = light->lightMap[i + j * light->lightMapWidth];
 
 					int x = -light->lightMapWidth / 2 + i + (int)(light->x / tileSizeF);
 					int y = -light->lightMapHeight / 2 + j + (int)(light->y / tileSizeF);
 
 					if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
-						tileArray[y * floorGridWidth + x].subtractLighting(brightness, brightness, brightness);
+						tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
 					}
-					light->lightMap[i + j * light->lightMapWidth] = 0.0f;
+					light->lightMap[i + j * light->lightMapWidth] = 0;
 				}
 			}
 			//

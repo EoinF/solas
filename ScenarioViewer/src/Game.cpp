@@ -10,14 +10,48 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->numTilesX = numTilesX;
     this->numTilesY = numTilesY;
     this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize);
+    lightmapOverlay.create(numTilesX, numTilesY);
+    lightmapOverlay.setSmooth(true);
 
-    this->scenarioIndex = 0;
+    this->scenarioIndex = 1;
     this->startScenario(this->scenarioIndex);
 };
 
 void Game::update(sf::Vector2i mousePosition, float timeDelta)
 {
+    currentTime += timeDelta * 2.0f;
+    for (auto idLightPair : this->lightmapManager->getLightsMap())
+    {
+        int id = idLightPair.first;
+        Light* light = idLightPair.second;
 
+        glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
+        //glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
+
+        this->lightmapManager->updateLight(
+            id,
+            light->x, light->y,
+            direction,
+            light->span,
+            light->range
+        );
+    }
+
+    lightmapManager->update();
+
+    auto tiles = lightmapManager->getTileArray();
+    const auto pixels = new sf::Uint8[numTilesX * numTilesY * 4];
+    int index = 0;
+    for (auto &tile: tiles) {
+        pixels[index] = tile.r();
+        pixels[index+1] = tile.g();
+        pixels[index+2] = tile.b();
+        pixels[index+3] = tile.a();
+        index += 4;
+    }
+    lightmapOverlayImage.create(numTilesX, numTilesY, pixels);
+    lightmapOverlay.update(lightmapOverlayImage);
+    delete pixels;
 }
 
 void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b) {
@@ -42,7 +76,7 @@ void Game::previousScenario() {
 }
 
 void Game::startScenario(int index) {
-    //this->lightmapManager->clearLights();
+    this->lightmapManager->clearLights();
     loadScenario(
         index + 1,
         [=](int tileX, int tileY, bool isWall, uint8_t r, uint8_t g, uint8_t b)

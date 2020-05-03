@@ -42,10 +42,13 @@ protected:
     float currentTime;
     void startScenario(int index);
     int tileSize;
+    sf::Image lightmapOverlayImage;
 
 public:
+    bool halt = false;
     map<int, sf::Shape*> sprites;
     vector<sf::Shape*> debugSprites;
+    sf::Texture lightmapOverlay;
     int scenarioIndex;
     void nextScenario();
     void previousScenario();

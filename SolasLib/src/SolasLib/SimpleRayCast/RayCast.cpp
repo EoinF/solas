@@ -1,10 +1,9 @@
 #include <SolasLib/SimpleRayCast/RayCast.hpp>
-#include <stdio.h>
 #include <iostream>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, TileLightState* floorGrid, int floorGridWidth)
+bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, vector<TileLightState>& tileArray, int floorGridWidth)
 {
 	//glm::vec2 currentRayDirection = glm::vec2(destX - srcX, destY - srcY);
 	//
@@ -60,18 +59,22 @@ bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDi
 		{
 			int x = light->lightMapWidth / 2 + i - (int)(light->x / tileSize);
 			int y = light->lightMapHeight / 2 + j - (int)(light->y / tileSize);
-			float newLighting = glm::min(1.0f, 0.2f + spanDifference)
-				* (1.0f - (distanceFromSrc / range));
+			int newLighting = (int)(255.0f * 
+				(
+					glm::min(1.0f, 0.0f + spanDifference) * (1.0f - (distanceFromSrc / range))
+				)
+			);
 
-			float existingLighting = light->lightMap[x + y * light->lightMapWidth];
+			int existingLighting = light->lightMap[x + y * light->lightMapWidth];
 			if (newLighting > existingLighting)
 			{
 				light->lightMap[x + y * light->lightMapWidth] = newLighting;
-				float lightingDelta = newLighting - existingLighting;
-				floorGrid[j * floorGridWidth + i].addLighting(lightingDelta, lightingDelta, lightingDelta);
+				int lightingDelta = newLighting - existingLighting;
+
+				tileArray[j * floorGridWidth + i].addLighting(255, 255, 255, lightingDelta);
 			}
 		}
-		if (floorGrid[j * floorGridWidth + i].isWall) {
+		if (tileArray[j * floorGridWidth + i].isWall) {
 			return false;
 		}
 
@@ -91,7 +94,7 @@ float getSpanDifference(Light* light, int tileX, int tileY, int tileSize)
 	//Get the offset from the tile to the centre of the raycaster
 	//Note: The y coordinate is negated because the formula on the next line works with a coordinate system
 	//in which the y axis points down, whereas with XNA, the y axis points up
-	glm::vec2 voffset = glm::vec2((tileX * tileSize) - light->x, light->y - (tileY * tileSize));
+	glm::vec2 voffset = glm::vec2((tileX * tileSize) - light->x, (tileY * tileSize) - light->y);
 
 	//Calculate the angle between the direction and this offset
 	float angle = glm::acos(
