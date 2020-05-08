@@ -8,14 +8,12 @@
 #include <glm/glm.hpp>
 #include <SolasLib/SimpleRayCast/RayCast.hpp>
 
-using namespace std;
-
 class LightmapManager
 {
 protected:
-	vector<TileLightState> tileArray;
+	std::vector<TileLightState> tileArray;
 	int tileSize;
-	map<int, Light*> lightsMap;
+	std::map<int, Light*> lightsMap;
 	int nextLightId;
 	int floorGridWidth;
 	int floorGridHeight;
@@ -28,7 +26,7 @@ public:
 		this->tileSize = tileSize;
 
 		//tileArray.resize(width * height);
-		cout << "creating tile array" << endl;
+		std::cout << "creating tile array" << std::endl;
 		for (int i = 0; i < width * height; i++) {
 			tileArray.push_back(TileLightState());
 		}
@@ -37,7 +35,7 @@ public:
 		this->floorGridHeight = height;
 	}
 
-	vector<TileLightState>& getTileArray() {
+	std::vector<TileLightState>& getTileArray() {
 		return this->tileArray;
 	}
 
@@ -49,7 +47,7 @@ public:
 		this->tileSize = tileSize;
 	}
 
-	map<int, Light*> getLightsMap()
+	std::map<int, Light*> getLightsMap()
 	{
 		return this->lightsMap;
 	}

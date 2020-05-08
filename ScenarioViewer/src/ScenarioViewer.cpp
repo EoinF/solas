@@ -1,8 +1,6 @@
 ﻿#include "ScenarioViewer.h"
 
-using namespace std;
-
-void init(string path);
+void init(std::string path);
 void update();
 void updateUI();
 float calculateFrameRate(float timeDelta);
@@ -27,7 +25,7 @@ float inputTimeout = 0;
 
 // Hacky solution to get the current path
 // but it's fine because this app isn't meant to be distributed anyway
-string get_current_path(string executablePath)
+std::string get_current_path(std::string executablePath)
 {
     while (executablePath[executablePath.length() - 1] != '/' && executablePath[executablePath.length() - 1] != '\\')
     {
@@ -46,11 +44,10 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void init(string path)
+void init(std::string path)
 {
-    window.setTitle(path);
+    font.loadFromFile(path.append("/assets/Arial.ttf"));
 
-    font.loadFromFile(path.append("assets/Arial.ttf"));
     scenarioLabel.setFont(font);
     scenarioLabel.setFillColor(sf::Color::White);
     scenarioLabel.setString("Scenario: 1");
@@ -63,6 +60,7 @@ void init(string path)
 
     lightmapOverlaySprite.setScale((float)TILE_SIZE, (float)TILE_SIZE);
     lightmapOverlaySprite.setTexture(game.lightmapOverlay);
+    glEnable(GL_TEXTURE_2D);
     //window.setFramerateLimit(60);
 }
 
@@ -75,7 +73,7 @@ float calculateFrameRate(float timeDelta)
     {
         totalSeconds++;
         totalFrames += framesThisSecond;
-        fpsLabel.setString("current: " + to_string(framesThisSecond) + " average: " + to_string(totalFrames / totalSeconds));
+        fpsLabel.setString("current: " + std::to_string(framesThisSecond) + " average: " + std::to_string(totalFrames / totalSeconds));
         framesThisSecond = 0;
         totalElapsed -= 1.0f;
     }
@@ -113,6 +111,11 @@ void update()
     }
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+    // clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    window.pushGLStates();
+
     game.update(mousePosition, timeDelta);
 
     window.clear(sf::Color::Blue);
@@ -127,6 +130,7 @@ void update()
     window.draw(lightmapOverlaySprite);
     window.draw(scenarioLabel);
     window.draw(fpsLabel);
+    window.popGLStates();
     window.display();
 }
 
@@ -137,5 +141,5 @@ void updateUI()
     totalSeconds = 0;
     framesThisSecond = 0;
     inputTimeout = 0.3f;
-    scenarioLabel.setString("Scenario: " + to_string(game.scenarioIndex + 1));
+    scenarioLabel.setString("Scenario: " + std::to_string(game.scenarioIndex + 1));
 }

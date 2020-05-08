@@ -5,8 +5,6 @@
 //#include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-using namespace std;
-
 class TileLightState
 {
 private:

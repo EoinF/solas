@@ -4,8 +4,6 @@
 #include <SolasLib/core.hpp>
 #include "Scenarios/Scenarios.h"
 
-using namespace std;
-
 class GameObject
 {
 private:
@@ -37,7 +35,7 @@ class Game
 {
 protected:
     LightmapManager* lightmapManager;
-    vector<GameObject> gameObjects;
+    std::vector<GameObject> gameObjects;
     int numTilesX, numTilesY;
     float currentTime;
     void startScenario(int index);
@@ -46,8 +44,8 @@ protected:
 
 public:
     bool halt = false;
-    map<int, sf::Shape*> sprites;
-    vector<sf::Shape*> debugSprites;
+    std::map<int, sf::Shape*> sprites;
+    std::vector<sf::Shape*> debugSprites;
     sf::Texture lightmapOverlay;
     int scenarioIndex;
     void nextScenario();

@@ -3,7 +3,7 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, vector<TileLightState>& tileArray, int floorGridWidth)
+bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, std::vector<TileLightState>& tileArray, int floorGridWidth)
 {
 	//glm::vec2 currentRayDirection = glm::vec2(destX - srcX, destY - srcY);
 	//

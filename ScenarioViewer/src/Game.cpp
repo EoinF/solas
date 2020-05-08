@@ -1,7 +1,5 @@
 #include "Game.h"
 
-using namespace std;
-
 int NUM_MODES = 2;
 
 Game::Game(int tileSize, int numTilesX, int numTilesY)
@@ -17,7 +15,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
 
     glm::vec2 test_vec;
 
-    cout << "" << test_vec.x << endl;
+    std::cout << "" << test_vec.x << std::endl;
 
     this->startScenario(this->scenarioIndex);
 };
@@ -68,7 +66,7 @@ void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b)
     sf::Shape *newSprite = new sf::RectangleShape(sf::Vector2f((float)tileSize, (float)tileSize));
     newSprite->setFillColor(gameObject.getColour());
     newSprite->setPosition(x, y);
-    this->sprites.insert(pair<int, sf::Shape *>(tileY * numTilesX + tileX, newSprite));
+    this->sprites.insert(std::pair<int, sf::Shape *>(tileY * numTilesX + tileX, newSprite));
 }
 
 void Game::nextScenario()
