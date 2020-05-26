@@ -7,15 +7,12 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->tileSize = tileSize;
     this->numTilesX = numTilesX;
     this->numTilesY = numTilesY;
+    this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
     this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize);
     lightmapOverlay.create(numTilesX, numTilesY);
     lightmapOverlay.setSmooth(true);
 
-    this->scenarioIndex = 1;
-
-    glm::vec2 test_vec;
-
-    std::cout << "" << test_vec.x << std::endl;
+    this->scenarioIndex = 0;
 
     this->startScenario(this->scenarioIndex);
 };
@@ -42,7 +39,6 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     lightmapManager->update();
 
     auto tiles = lightmapManager->getTileArray();
-    const auto pixels = new sf::Uint8[numTilesX * numTilesY * 4];
     int index = 0;
     for (auto &tile : tiles)
     {
@@ -54,7 +50,6 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     }
     lightmapOverlayImage.create(numTilesX, numTilesY, pixels);
     lightmapOverlay.update(lightmapOverlayImage);
-    delete pixels;
 }
 
 void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b)

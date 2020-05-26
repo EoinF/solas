@@ -61,7 +61,7 @@ void init(std::string path)
     lightmapOverlaySprite.setScale((float)TILE_SIZE, (float)TILE_SIZE);
     lightmapOverlaySprite.setTexture(game.lightmapOverlay);
     glEnable(GL_TEXTURE_2D);
-    //window.setFramerateLimit(60);
+    // window.setFramerateLimit(60);
 }
 
 float calculateFrameRate(float timeDelta)

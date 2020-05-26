@@ -8,6 +8,7 @@ class GameObject
 {
 private:
     sf::Color colour;
+
 public:
     float x;
     float y;
@@ -21,10 +22,12 @@ public:
         this->colour.b = b;
     }
 
-    sf::Color getColour() {
+    sf::Color getColour()
+    {
         return this->colour;
     }
-    void setColour(uint8_t r, uint8_t g, uint8_t b) {
+    void setColour(uint8_t r, uint8_t g, uint8_t b)
+    {
         this->colour.r = r;
         this->colour.g = g;
         this->colour.b = b;
@@ -34,18 +37,19 @@ public:
 class Game
 {
 protected:
-    LightmapManager* lightmapManager;
+    LightmapManager *lightmapManager;
     std::vector<GameObject> gameObjects;
     int numTilesX, numTilesY;
     float currentTime;
     void startScenario(int index);
     int tileSize;
     sf::Image lightmapOverlayImage;
+    sf::Uint8 *pixels;
 
 public:
     bool halt = false;
-    std::map<int, sf::Shape*> sprites;
-    std::vector<sf::Shape*> debugSprites;
+    std::map<int, sf::Shape *> sprites;
+    std::vector<sf::Shape *> debugSprites;
     sf::Texture lightmapOverlay;
     int scenarioIndex;
     void nextScenario();
