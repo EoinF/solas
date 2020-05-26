@@ -32,17 +32,21 @@ endif (BUILD_SCENARIO_VIEWER)
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")
 
-set_target_properties(SolasLib PROPERTIES LINKER_LANGUAGE cxx_std_17)
+if (APPLE)
+    set(CMAKE_CXX_STANDARD 17)
+else (APPLE)
+    set_target_properties(SolasLib PROPERTIES LINKER_LANGUAGE cxx_std_17)
+endif(APPLE)
 
 target_compile_features(SolasLib
-                        PRIVATE
-                        cxx_std_17)
+                    PRIVATE
+                    cxx_std_17)
 
 target_compile_options(SolasLib
                        PRIVATE
                        $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive- /TP>
                        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>)
-                       
+
 target_link_libraries(SolasLib
                       PRIVATE
                       glm)

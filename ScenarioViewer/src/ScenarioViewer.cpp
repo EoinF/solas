@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void init();
+void init(string path);
 void update();
 void updateUI();
 float calculateFrameRate(float timeDelta);
@@ -25,9 +25,20 @@ int totalSeconds = 0;
 int totalFrames = 0;
 float inputTimeout = 0;
 
-int main()
+// Hacky solution to get the current path
+// but it's fine because this app isn't meant to be distributed anyway
+string get_current_path(string executablePath)
 {
-    init();
+    while (executablePath[executablePath.length() - 1] != '/' && executablePath[executablePath.length() - 1] != '\\')
+    {
+        executablePath = executablePath.substr(0, executablePath.length() - 2);
+    }
+    return executablePath;
+}
+
+int main(int argc, char **argv)
+{
+    init(get_current_path(argv[0]));
     while (window.isOpen())
     {
         update();
@@ -35,10 +46,11 @@ int main()
     return 0;
 }
 
-void init() {
-    string path = boost::filesystem::initial_path().string();
-    font.loadFromFile(path.append("/assets/Arial.ttf"));
+void init(string path)
+{
+    window.setTitle(path);
 
+    font.loadFromFile(path.append("assets/Arial.ttf"));
     scenarioLabel.setFont(font);
     scenarioLabel.setFillColor(sf::Color::White);
     scenarioLabel.setString("Scenario: 1");
@@ -54,7 +66,8 @@ void init() {
     //window.setFramerateLimit(60);
 }
 
-float calculateFrameRate(float timeDelta) {
+float calculateFrameRate(float timeDelta)
+{
     totalElapsed += timeDelta;
     framesThisSecond++;
 
@@ -69,7 +82,8 @@ float calculateFrameRate(float timeDelta) {
     return timeDelta;
 }
 
-void update() {
+void update()
+{
     sf::Event event;
     while (window.pollEvent(event))
     {
@@ -93,18 +107,21 @@ void update() {
             updateUI();
         }
     }
-    else {
-        inputTimeout-= timeDelta;
+    else
+    {
+        inputTimeout -= timeDelta;
     }
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
     game.update(mousePosition, timeDelta);
 
     window.clear(sf::Color::Blue);
-    for (auto element: game.sprites) {
+    for (auto element : game.sprites)
+    {
         window.draw(*(element.second));
     }
-    for (auto& spritePtr : game.debugSprites) {
+    for (auto &spritePtr : game.debugSprites)
+    {
         window.draw(*spritePtr);
     }
     window.draw(lightmapOverlaySprite);

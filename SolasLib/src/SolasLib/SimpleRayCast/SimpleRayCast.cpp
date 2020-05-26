@@ -10,7 +10,9 @@ using namespace std;
 int LightmapManager::addLight(float x, float y, glm::vec2 direction, float span, float range, int tileSize)
 {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(pair<int, Light*>(lightId, new Light(x, y, direction, span, range, tileSize)));
+
+	this->lightsMap.insert(pair<int, Light *>(lightId, new Light(x, y, direction, span, range, tileSize)));
+
 	this->lightsMap[lightId]->shouldUpdate = true;
 	return lightId;
 }
@@ -35,8 +37,7 @@ void LightmapManager::clearLights()
 	this->lightsMap.clear();
 }
 
-
-void LightmapManager::removeLight(int lightId, Light* light)
+void LightmapManager::removeLight(int lightId, Light *light)
 {
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
@@ -64,7 +65,8 @@ void LightmapManager::removeLight(int lightId, Light* light)
 			int x = i + (int)(light->x / tileSizeF) - light->lightMapWidth / 2;
 			int y = j + (int)(light->y / tileSizeF) - light->lightMapHeight / 2;
 
-			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
+			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
+			{
 				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
 			}
 			light->lightMap[i + j * light->lightMapWidth] = 0;
@@ -74,7 +76,7 @@ void LightmapManager::removeLight(int lightId, Light* light)
 
 void LightmapManager::resetLighting()
 {
-	for (auto& lightIdPair : this->lightsMap)
+	for (auto &lightIdPair : this->lightsMap)
 	{
 		for (int i = 0; i < lightIdPair.second->lightMapWidth; i++)
 		{
@@ -93,8 +95,9 @@ void LightmapManager::update()
 	for (auto idLightPair : this->lightsMap)
 	{
 		int lightId = idLightPair.first;
-		Light* light = idLightPair.second;
-		if (light->shouldUpdate) {
+		Light *light = idLightPair.second;
+		if (light->shouldUpdate)
+		{
 			int srcTileX = (int)(light->x / tileSizeF);
 			int srcTileY = (int)(light->y / tileSizeF);
 
@@ -120,7 +123,8 @@ void LightmapManager::update()
 					int x = -light->lightMapWidth / 2 + i + (int)(light->x / tileSizeF);
 					int y = -light->lightMapHeight / 2 + j + (int)(light->y / tileSizeF);
 
-					if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight) {
+					if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
+					{
 						tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
 					}
 					light->lightMap[i + j * light->lightMapWidth] = 0;

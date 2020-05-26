@@ -13,7 +13,7 @@ public:
 	glm::vec2 direction;
 	float span;
 	bool shouldUpdate;
-	int* lightMap;
+	int *lightMap;
 	int lightMapWidth;
 	int lightMapHeight;
 	Light(float x, float y, glm::vec2 direction, float span, float range, int tileSize)

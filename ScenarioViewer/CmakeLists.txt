@@ -1,7 +1,6 @@
 find_package(SFML 2.5 COMPONENTS system window graphics REQUIRED)
 # Need to manually install glm and set glm_DIR to the correct location
 find_package(glm REQUIRED)
-find_package(Boost REQUIRED COMPONENTS filesystem)
 
 set(SOURCES
     ${SOURCES}
@@ -14,11 +13,17 @@ set(SOURCES
 )
 
 # Add source to this project's executable.
-add_executable (ScenarioViewer ${SOURCES})
+if (APPLE)
+    add_executable (ScenarioViewer MACOSX_BUNDLE ${SOURCES})
+    set(CMAKE_CXX_STANDARD 17)
+else (APPLE)
+    add_executable (ScenarioViewer ${SOURCES})
+    set_target_properties(ScenarioViewer PROPERTIES LINKER_LANGUAGE cxx_std_17)
+endif(APPLE)
 
 target_compile_features(ScenarioViewer
-                        PRIVATE
-                        cxx_std_17)
+                    PRIVATE
+                    cxx_std_17)
 
 target_compile_options(ScenarioViewer
                        PRIVATE
@@ -32,8 +37,6 @@ target_link_libraries(ScenarioViewer
 target_link_libraries(ScenarioViewer
                       PRIVATE
                       glm)
-
-target_link_libraries(ScenarioViewer PRIVATE Boost::filesystem)
 
 target_link_libraries(ScenarioViewer
                       PRIVATE

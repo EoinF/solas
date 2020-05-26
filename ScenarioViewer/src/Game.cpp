@@ -14,6 +14,11 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     lightmapOverlay.setSmooth(true);
 
     this->scenarioIndex = 1;
+
+    glm::vec2 test_vec;
+
+    cout << "" << test_vec.x << endl;
+
     this->startScenario(this->scenarioIndex);
 };
 
@@ -23,7 +28,7 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     for (auto idLightPair : this->lightmapManager->getLightsMap())
     {
         int id = idLightPair.first;
-        Light* light = idLightPair.second;
+        Light *light = idLightPair.second;
 
         glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
         //glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
@@ -33,8 +38,7 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
             light->x, light->y,
             direction,
             light->span,
-            light->range
-        );
+            light->range);
     }
 
     lightmapManager->update();
@@ -42,11 +46,12 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     auto tiles = lightmapManager->getTileArray();
     const auto pixels = new sf::Uint8[numTilesX * numTilesY * 4];
     int index = 0;
-    for (auto &tile: tiles) {
+    for (auto &tile : tiles)
+    {
         pixels[index] = tile.r();
-        pixels[index+1] = tile.g();
-        pixels[index+2] = tile.b();
-        pixels[index+3] = tile.a();
+        pixels[index + 1] = tile.g();
+        pixels[index + 2] = tile.b();
+        pixels[index + 3] = tile.a();
         index += 4;
     }
     lightmapOverlayImage.create(numTilesX, numTilesY, pixels);
@@ -54,37 +59,41 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     delete pixels;
 }
 
-void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b) {
+void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b)
+{
     float x = (float)(tileX * tileSize);
     float y = (float)(tileY * tileSize);
     GameObject gameObject = GameObject(x, y, r, g, b);
     this->gameObjects.push_back(gameObject);
-    sf::Shape* newSprite = new sf::RectangleShape(sf::Vector2f((float)tileSize, (float)tileSize));
+    sf::Shape *newSprite = new sf::RectangleShape(sf::Vector2f((float)tileSize, (float)tileSize));
     newSprite->setFillColor(gameObject.getColour());
     newSprite->setPosition(x, y);
-    this->sprites.insert(pair<int, sf::Shape*>(tileY * numTilesX + tileX, newSprite));
+    this->sprites.insert(pair<int, sf::Shape *>(tileY * numTilesX + tileX, newSprite));
 }
 
-void Game::nextScenario() {
+void Game::nextScenario()
+{
     this->scenarioIndex = (this->scenarioIndex + 1) % NUM_SCENARIOS;
     this->startScenario(this->scenarioIndex);
 }
 
-void Game::previousScenario() {
+void Game::previousScenario()
+{
     this->scenarioIndex = (this->scenarioIndex + NUM_SCENARIOS - 1) % NUM_SCENARIOS;
     this->startScenario(this->scenarioIndex);
 }
 
-void Game::startScenario(int index) {
+void Game::startScenario(int index)
+{
     this->lightmapManager->clearLights();
     loadScenario(
         index + 1,
-        [=](int tileX, int tileY, bool isWall, uint8_t r, uint8_t g, uint8_t b)
-        {
+        [=](int tileX, int tileY, bool isWall, uint8_t r, uint8_t g, uint8_t b) {
             this->lightmapManager->getTileState(tileX, tileY)->isWall = isWall;
             this->addWall(tileX, tileY, r, g, b);
-        }, [=](float x, float y, glm::vec2 direction, float span, float range)
-        {
+        },
+        [=](float x, float y, glm::vec2 direction, float span, float range) {
             this->lightmapManager->addLight(x, y, direction, span, range, tileSize);
-        }, numTilesX, numTilesY, tileSize);
+        },
+        numTilesX, numTilesY, tileSize);
 }
