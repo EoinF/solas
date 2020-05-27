@@ -23,6 +23,8 @@ int totalSeconds = 0;
 int totalFrames = 0;
 float inputTimeout = 0;
 
+bool showOverlay = true;
+
 // Hacky solution to get the current path
 // but it's fine because this app isn't meant to be distributed anyway
 std::string get_current_path(std::string executablePath)
@@ -98,11 +100,19 @@ void update()
         {
             game.previousScenario();
             updateUI();
+            inputTimeout = 0.3f;
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
             game.nextScenario();
             updateUI();
+            inputTimeout = 0.3f;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+        {
+            showOverlay = !showOverlay;
+            inputTimeout = 0.3f;
         }
     }
     else
@@ -127,7 +137,10 @@ void update()
     {
         window.draw(*spritePtr);
     }
-    window.draw(lightmapOverlaySprite);
+    if (showOverlay)
+    {
+        window.draw(lightmapOverlaySprite);
+    }
     window.draw(scenarioLabel);
     window.draw(fpsLabel);
     window.popGLStates();
@@ -140,6 +153,5 @@ void updateUI()
     totalElapsed = 0;
     totalSeconds = 0;
     framesThisSecond = 0;
-    inputTimeout = 0.3f;
     scenarioLabel.setString("Scenario: " + std::to_string(game.scenarioIndex + 1));
 }

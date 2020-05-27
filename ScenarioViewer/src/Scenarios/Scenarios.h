@@ -7,8 +7,9 @@
 using SetGridTypeFunction = std::function<void(int tileX, int tileY, bool isWall, float r, float g, float b)>;
 using AddLightFunction = std::function<void(float x, float y, glm::vec2 direction, float span, float range)>;
 
-const int NUM_SCENARIOS = 2;
+const int NUM_SCENARIOS = 3;
 
 void loadScenario(int scenarioNumber, SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize);
 void scenario1(SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize);
 void scenario2(SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize);
+void scenario3(SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize);

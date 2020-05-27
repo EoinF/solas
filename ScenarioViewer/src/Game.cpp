@@ -10,7 +10,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
     this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize);
     lightmapOverlay.create(numTilesX, numTilesY);
-    lightmapOverlay.setSmooth(true);
+    lightmapOverlay.setSmooth(false);
 
     this->scenarioIndex = 0;
 
@@ -75,10 +75,12 @@ void Game::previousScenario()
     this->scenarioIndex = (this->scenarioIndex + NUM_SCENARIOS - 1) % NUM_SCENARIOS;
     this->startScenario(this->scenarioIndex);
 }
-
 void Game::startScenario(int index)
 {
     this->lightmapManager->clearLights();
+    this->lightmapManager->clearTileState();
+    this->gameObjects.clear();
+    this->sprites.clear();
     loadScenario(
         index + 1,
         [=](int tileX, int tileY, bool isWall, uint8_t r, uint8_t g, uint8_t b) {

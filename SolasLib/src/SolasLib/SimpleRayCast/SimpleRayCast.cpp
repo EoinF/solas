@@ -23,6 +23,14 @@ void LightmapManager::updateLight(int lightId, float x, float y, glm::vec2 direc
 	this->lightsMap[lightId]->shouldUpdate = true;
 }
 
+void LightmapManager::clearTileState()
+{
+	for (int i = 0; i < this->floorGridWidth * this->floorGridHeight; i++)
+	{
+		this->tileArray[i].isWall = false;
+	}
+}
+
 void LightmapManager::clearLights()
 {
 	for (auto idLightPair : this->lightsMap)

@@ -13,11 +13,12 @@ class LightmapManager
 protected:
 	std::vector<TileLightState> tileArray;
 	int tileSize;
-	std::map<int, Light*> lightsMap;
+	std::map<int, Light *> lightsMap;
 	int nextLightId;
 	int floorGridWidth;
 	int floorGridHeight;
 	bool isPaused;
+
 public:
 	LightmapManager(int width, int height, int tileSize)
 	{
@@ -27,7 +28,8 @@ public:
 
 		//tileArray.resize(width * height);
 		std::cout << "creating tile array" << std::endl;
-		for (int i = 0; i < width * height; i++) {
+		for (int i = 0; i < width * height; i++)
+		{
 			tileArray.push_back(TileLightState());
 		}
 
@@ -35,19 +37,22 @@ public:
 		this->floorGridHeight = height;
 	}
 
-	std::vector<TileLightState>& getTileArray() {
+	std::vector<TileLightState> &getTileArray()
+	{
 		return this->tileArray;
 	}
 
-	TileLightState* getTileState(int x, int y) {
+	TileLightState *getTileState(int x, int y)
+	{
 		return &this->tileArray[y * floorGridWidth + x];
 	}
 
-	void setTileSize(int tileSize) {
+	void setTileSize(int tileSize)
+	{
 		this->tileSize = tileSize;
 	}
 
-	std::map<int, Light*> getLightsMap()
+	std::map<int, Light *> getLightsMap()
 	{
 		return this->lightsMap;
 	}
@@ -55,7 +60,8 @@ public:
 	int addLight(float x, float y, glm::vec2 direction, float span, float range, int tileSize);
 	void updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range);
 	void clearLights();
-	void removeLight(int lightId, Light* light);
+	void clearTileState();
+	void removeLight(int lightId, Light *light);
 	void resetLighting();
 	void update();
 };

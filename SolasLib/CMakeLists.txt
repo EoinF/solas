@@ -22,7 +22,8 @@ set(SOURCES
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 if (BUILD_SCENARIO_VIEWER)
-    # Make a .lib and .dll for release
+    # Make a .lib and .dll (Windows)
+    # Make .dylib (MacOS)
     add_library (SolasLib ${SOURCES} ${HEADER_LIST})
 else(BUILD_SCENARIO_VIEWER)
     # Make just a .lib for debugging
