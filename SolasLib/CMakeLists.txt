@@ -1,6 +1,3 @@
-# Note that headers are optional, and do not affect add_library, but they will not
-# show up in IDEs unless they are listed in add_library.
-
 find_package(glm REQUIRED)
 
 # Optionally glob, but only for CMake 3.12 or later:

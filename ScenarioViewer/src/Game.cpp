@@ -75,6 +75,7 @@ void Game::previousScenario()
     this->scenarioIndex = (this->scenarioIndex + NUM_SCENARIOS - 1) % NUM_SCENARIOS;
     this->startScenario(this->scenarioIndex);
 }
+
 void Game::startScenario(int index)
 {
     this->lightmapManager->clearLights();
