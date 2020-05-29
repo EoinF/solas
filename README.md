@@ -31,6 +31,8 @@ First install two plugins
 
 Next add the following to settings.json
 
+    "cmake.configureOnOpen": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureArgs": [
         "-DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake"
     ],
@@ -39,7 +41,8 @@ Next add the following to settings.json
         "./SolasLib/include",
         "./extern/googletest/googletest/include",
         "./extern/googletest/googlemock/include"
-    ]
+    ],
+    "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
 
 ## Example Usage
 

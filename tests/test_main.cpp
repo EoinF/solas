@@ -1,9 +1,48 @@
 #include "gtest/gtest.h"
 #include <SolasLib/core.hpp>
+#include <glm/glm.hpp>
 
-TEST(add_light, simple)
+const auto TILE_SIZE = 5;
+
+TEST(add_light, basic_lighting_test)
 {
-    auto lightmapManager = new LightmapManager();
+    auto lightmapManager = new LightmapManager(50, 50, TILE_SIZE);
 
-    EXPECT_EQ(1, 1);
+    lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, glm::vec2(1, 0), 2, 10);
+    lightmapManager->update();
+
+    EXPECT_GE(lightmapManager->getTileState(22, 10)->r(), 1);
+}
+
+TEST(add_light, wall_blocks_light_horizontally)
+{
+    auto lightmapManager = new LightmapManager(50, 50, TILE_SIZE);
+
+    lightmapManager->getTileState(25, 10)->isWall = true;
+    lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, glm::vec2(1, 0), 2, 10);
+    lightmapManager->update();
+
+    EXPECT_EQ(lightmapManager->getTileState(26, 10)->r(), 0);
+}
+
+TEST(add_light, wall_blocks_light_vertically1)
+{
+    auto lightmapManager = new LightmapManager(50, 50, TILE_SIZE);
+
+    lightmapManager->getTileState(25, 10)->isWall = true;
+    lightmapManager->addLight(25 * TILE_SIZE, 8 * TILE_SIZE, glm::vec2(0, 1), 2, 10);
+    lightmapManager->update();
+
+    EXPECT_EQ(lightmapManager->getTileState(25, 11)->r(), 0);
+}
+
+TEST(add_light, wall_blocks_light_vertically2)
+{
+    auto lightmapManager = new LightmapManager(50, 50, TILE_SIZE);
+
+    lightmapManager->getTileState(25, 10)->isWall = true;
+    lightmapManager->addLight(25 * TILE_SIZE, 12 * TILE_SIZE, glm::vec2(0, -1), 2, 10);
+    lightmapManager->update();
+
+    EXPECT_EQ(lightmapManager->getTileState(25, 9)->r(), 0);
 }

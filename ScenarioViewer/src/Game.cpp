@@ -89,7 +89,7 @@ void Game::startScenario(int index)
             this->addWall(tileX, tileY, r, g, b);
         },
         [=](float x, float y, glm::vec2 direction, float span, float range) {
-            this->lightmapManager->addLight(x, y, direction, span, range, tileSize);
+            this->lightmapManager->addLight(x, y, direction, span, range);
         },
         numTilesX, numTilesY, tileSize);
 }

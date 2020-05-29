@@ -5,7 +5,7 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-int LightmapManager::addLight(float x, float y, glm::vec2 direction, float span, float range, int tileSize)
+int LightmapManager::addLight(float x, float y, glm::vec2 direction, float span, float range)
 {
 	int lightId = nextLightId++;
 	this->lightsMap.insert(std::pair<int, Light *>(lightId, new Light(x, y, direction, span, range, tileSize)));

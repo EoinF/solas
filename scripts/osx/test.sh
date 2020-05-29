@@ -1,7 +1,7 @@
 set -x
-rm -rf build/*
-pushd build
-    cmake .. "-DBUILD_SCENARIO_VIEWER=OFF" "-DBUILD_TESTING=ON" "-DCMAKE_BUILD_TYPE=Release" "-DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake"
+mkdir -p build/test
+pushd build/test
+    cmake ../.. "-DBUILD_SCENARIO_VIEWER=OFF" "-DBUILD_TESTING=ON" "-DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake"
     cmake --build .
     make test
 popd
