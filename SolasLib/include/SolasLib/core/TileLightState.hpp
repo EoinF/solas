@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <stdio.h>
-//#include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
 class TileLightState
@@ -12,6 +11,7 @@ private:
 	int _g = 0;
 	int _b = 0;
 	int _brightness = 0;
+
 public:
 	uint8_t r()
 	{
@@ -32,19 +32,22 @@ public:
 	{
 		return (uint8_t)(255 - glm::min(_brightness, 255));
 	}
-	void addLighting(int _r, int _g, int _b, int _brightness) {
+	void addLighting(int _r, int _g, int _b, int _brightness)
+	{
 		this->_r += _r;
 		this->_g += _g;
 		this->_b += _b;
 		this->_brightness += _brightness;
 	}
-	void subtractLighting(int _r, int _g, int _b, int _brightness) {
+	void subtractLighting(int _r, int _g, int _b, int _brightness)
+	{
 		this->_r -= _r;
 		this->_g -= _g;
 		this->_b -= _b;
 		this->_brightness -= _brightness;
 	}
-	void setLighting(int _r, int _g, int _b, int _brightness) {
+	void setLighting(int _r, int _g, int _b, int _brightness)
+	{
 		this->_r = _r;
 		this->_g = _g;
 		this->_b = _b;
