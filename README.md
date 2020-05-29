@@ -48,8 +48,6 @@ Next add the following to settings.json
 
 The ScenarioViewer sub project is an example project that directly uses the Solas API
 
-TODO: Add example function calls
-
 ## Scenario Viewer
 
 This is a demo app that uses the solas API
