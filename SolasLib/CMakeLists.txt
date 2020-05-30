@@ -2,7 +2,7 @@ find_package(glm REQUIRED)
 
 # Optionally glob, but only for CMake 3.12 or later:
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
-set(HEADER_LIST 
+set(HEADER_LIST
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/TileLightState.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/Light.hpp
@@ -18,14 +18,17 @@ set(SOURCES
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if (BUILD_SCENARIO_VIEWER)
+if (BUILD_SCENARIO_VIEWER OR (CMAKE_BUILD_TYPE STREQUAL "DEBUG") OR (CMAKE_CONFIGURATION_TYPES STREQUAL "Debug"))
     # Make a .lib and .dll (Windows)
-    # Make .dylib (MacOS)
+    # Make .lib (MacOS)
+    message (STATUS "build without shared")
     add_library (SolasLib ${SOURCES} ${HEADER_LIST})
-else(BUILD_SCENARIO_VIEWER)
-    # Make just a .lib for debugging
+else()
+    # Make just a .dll to release (Windows)
+    # Make .dylib (MacOS)
     add_library (SolasLib SHARED ${SOURCES} ${HEADER_LIST})
-endif (BUILD_SCENARIO_VIEWER)
+    message (STATUS "build shared ${CMAKE_BUILD_TYPE} - ${CMAKE_CONFIGURATION_TYPES} =")
+endif()
 
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")

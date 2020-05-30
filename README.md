@@ -2,9 +2,34 @@
 
 A cross platform library for dynamic 2d lighting.
 
-1. [OSX Setup](#osx-setup-steps)
-2. [Example Usage](#example-usage)
-3. [Scenario Viewer](#scenario-viewer)
+1.1 [Windows Setup](#windows-setup-steps)
+1.2 [OSX Setup](#osx-setup-steps)
+2. [Scenario Viewer](#scenario-viewer)
+
+## Windows setup steps
+
+Use the following to set up a dev environment on Windows 10
+
+### Initial setup
+
+Open command prompt and run `./scripts/windows/bootstrap.bat`
+
+This will install vcpkg to your HOMEPATH (usually /Users/{username})
+
+### Visual Studio
+
+Ensure that cmake support is installed as part of Visual Studio so that it can automatically build the cmake project.
+
+Open the project using either 'File > Open > Folder..' or 'Open local folder' from the Getting started screen
+
+### Running tests in Visual Studio
+
+- Install the "google test adapter" extension
+- Switch to the x64-Test config
+- Wait for build to complete (autoconfigure cmake must be enabled)
+- Select and run the all_tests.exe target
+
+A window should open with test results displayed inside
 
 ## OSX setup steps
 
@@ -43,10 +68,6 @@ Next add the following to settings.json
         "./extern/googletest/googlemock/include"
     ],
     "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
-
-## Example Usage
-
-The ScenarioViewer sub project is an example project that directly uses the Solas API
 
 ## Scenario Viewer
 

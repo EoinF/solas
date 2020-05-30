@@ -1,56 +1,72 @@
 ﻿{
-    "configurations": [
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\build\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "variables": [
         {
-            "name": "x86-Debug",
-            "generator": "Visual Studio 16 2019",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "-m -v:minimal",
-            "variables": [
-                {
-                    "name": "CMAKE_TOOLCHAIN_FILE",
-                    "value": "C:\\Users\\Eoin\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
-                    "type": "STRING"
-                },
-                {
-                    "name": "glm_DIR",
-                    "value": "C:/Users/Eoin/vcpkg/installed/x86-windows/share/glm",
-                    "type": "PATH"
-                },
-                {
-                    "name": "BUILD_SCENARIO_VIEWER",
-                    "value": "true",
-                    "type": "BOOL"
-                }
-            ],
-            "inheritEnvironments": []
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "%HOMEPATH%\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+          "type": "STRING"
         },
         {
-            "name": "x86-Release",
-            "generator": "Visual Studio 16 2019",
-            "configurationType": "Release",
-            "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "-m -v:minimal",
-            "variables": [
-                {
-                    "name": "CMAKE_TOOLCHAIN_FILE",
-                    "value": "C:\\Users\\Eoin\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
-                    "type": "STRING"
-                },
-                {
-                    "name": "glm_DIR",
-                    "value": "C:/Users/Eoin/vcpkg/installed/x86-windows/share/glm",
-                    "type": "PATH"
-                },
-                {
-                    "name": "BUILD_SCENARIO_VIEWER",
-                    "value": "false",
-                    "type": "BOOL"
-                }
-            ],
-            "inheritEnvironments": []
+          "name": "BUILD_SCENARIO_VIEWER",
+          "value": "true",
+          "type": "BOOL"
         }
-    ]
+      ],
+      "inheritEnvironments": [ "msvc_x64_x64" ]
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\build\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "%HOMEPATH%\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+          "type": "STRING"
+        },
+        {
+          "name": "BUILD_SCENARIO_VIEWER",
+          "value": "true",
+          "type": "BOOL"
+        }
+      ],
+      "inheritEnvironments": [ "msvc_x64_x64" ]
+    },
+    {
+      "name": "x64-Test",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\build\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "%HOMEPATH%\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+          "type": "STRING"
+        },
+        {
+          "name": "BUILD_SCENARIO_VIEWER",
+          "value": "false",
+          "type": "BOOL"
+        },
+        {
+          "name": "BUILD_TESTING",
+          "value": "true",
+          "type": "BOOL"
+        }
+      ]
+    }
+  ]
 }
