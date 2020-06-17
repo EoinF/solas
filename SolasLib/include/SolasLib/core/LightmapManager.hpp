@@ -27,7 +27,6 @@ public:
 		this->tileSize = tileSize;
 
 		//tileArray.resize(width * height);
-		std::cout << "creating tile array" << std::endl;
 		for (int i = 0; i < width * height; i++)
 		{
 			tileArray.push_back(TileLightState());
@@ -61,7 +60,7 @@ public:
 	void updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range);
 	void clearLights();
 	void clearTileState();
-	void removeLight(int lightId, Light *light);
+	void removeLight(int lightId);
 	void resetLighting();
 	void update();
 };

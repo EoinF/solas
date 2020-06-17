@@ -8,7 +8,7 @@
 int LightmapManager::addLight(float x, float y, glm::vec2 direction, float span, float range)
 {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(std::pair<int, Light *>(lightId, new Light(x, y, direction, span, range, tileSize)));
+	this->lightsMap.insert(std::pair<int, Light *>(lightId, new Light(x, y, glm::normalize(direction), span, range, tileSize)));
 	this->lightsMap[lightId]->shouldUpdate = true;
 	return lightId;
 }
@@ -17,7 +17,7 @@ void LightmapManager::updateLight(int lightId, float x, float y, glm::vec2 direc
 {
 	this->lightsMap[lightId]->x = x;
 	this->lightsMap[lightId]->y = y;
-	this->lightsMap[lightId]->direction = direction;
+	this->lightsMap[lightId]->direction = glm::normalize(direction);
 	this->lightsMap[lightId]->span = span;
 	this->lightsMap[lightId]->range = range;
 	this->lightsMap[lightId]->shouldUpdate = true;
@@ -35,14 +35,14 @@ void LightmapManager::clearLights()
 {
 	for (auto idLightPair : this->lightsMap)
 	{
-		this->removeLight(idLightPair.first, idLightPair.second);
-		delete idLightPair.second;
+		this->removeLight(idLightPair.first);
 	}
 	this->lightsMap.clear();
 }
 
-void LightmapManager::removeLight(int lightId, Light *light)
+void LightmapManager::removeLight(int lightId)
 {
+	Light* light = lightsMap[lightId];
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
 	int srcTileY = (int)(light->y / tileSizeF);
@@ -76,6 +76,7 @@ void LightmapManager::removeLight(int lightId, Light *light)
 			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
 	}
+	delete light;
 }
 
 void LightmapManager::resetLighting()
