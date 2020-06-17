@@ -2,9 +2,10 @@
 
 A cross platform library for dynamic 2d lighting.
 
-1.1 [Windows Setup](#windows-setup-steps)
-1.2 [OSX Setup](#osx-setup-steps)
-2. [Scenario Viewer](#scenario-viewer)
+1. Library development
+   1. [Windows Setup](#windows-setup-steps)
+   2. [OSX Setup](#osx-setup-steps)
+   3. [Scenario Viewer](#scenario-viewer)
 
 ## Windows setup steps
 
