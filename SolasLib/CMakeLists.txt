@@ -7,13 +7,17 @@ set(HEADER_LIST
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/TileLightState.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/Light.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/LightmapManager.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/SimpleRayCast/RayCast.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/LightCaster.hpp
 )
 
 set(SOURCES
     ${SOURCES}
-    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/RayCast.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/LightmapManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
 )
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -21,13 +25,11 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 if (BUILD_SCENARIO_VIEWER OR (CMAKE_BUILD_TYPE STREQUAL "DEBUG") OR (CMAKE_CONFIGURATION_TYPES STREQUAL "Debug"))
     # Make a .lib and .dll (Windows)
     # Make .lib (MacOS)
-    message (STATUS "build without shared")
     add_library (SolasLib ${SOURCES} ${HEADER_LIST})
 else()
     # Make just a .dll to release (Windows)
     # Make .dylib (MacOS)
     add_library (SolasLib SHARED ${SOURCES} ${HEADER_LIST})
-    message (STATUS "build shared ${CMAKE_BUILD_TYPE} - ${CMAKE_CONFIGURATION_TYPES} =")
 endif()
 
 # We need this directory, and users of our library will need it too

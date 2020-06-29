@@ -3,16 +3,22 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, std::vector<TileLightState>& tileArray, int floorGridWidth)
+bool rayCast(int srcTileX, int srcTileY, int destX, int destY, float range, float spanDifference, Light* light, int tileSize, std::vector<TileLightState>& tileArray, int floorGridWidth)
 {
-	//glm::vec2 currentRayDirection = glm::vec2(destX - srcX, destY - srcY);
+	float srcX = light->x;
+	float srcY = light->y;
+	//glm::vec2 currentRayDirection = glm::vec2(destX - srcTileX, destY - srcTileY);
 	//
 	//Check each square from the source tile to the destination tile until a blocking square is found; using the Bresenham line algorithm
 	//
-	bool isSteep = abs(destY - srcY) > abs(destX - srcX);
+	bool isSteep = abs(destY - srcTileY) > abs(destX - srcTileX);
 	if (isSteep)
 	{
-		int temp = srcX;
+		int temp = srcTileX;
+		srcTileX = srcTileY;
+		srcTileY = temp;
+
+		temp = srcX;
 		srcX = srcY;
 		srcY = temp;
 
@@ -20,18 +26,18 @@ bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDi
 		destX = destY;
 		destY = temp;
 	}
-	//cout << "raycasting from " << srcX << ", " << srcY << " to " << destX << ", " << destY << endl;
+	//cout << "raycasting from " << srcTileX << ", " << srcTileY << " to " << destX << ", " << destY << endl;
 
-	int deltaX = abs(destX - srcX);
-	int deltaY = abs(destY - srcY);
+	int deltaX = abs(destX - srcTileX);
+	int deltaY = abs(destY - srcTileY);
 
 	float error = deltaX * 0.5f;
-	int y = srcY;
+	int y = srcTileY;
 
-	int xstep = srcX > destX ? -1 : 1;
-	int ystep = srcY > destY ? -1 : 1;
+	int xstep = srcTileX > destX ? -1 : 1;
+	int ystep = srcTileY > destY ? -1 : 1;
 
-	for (int x = srcX; x != destX; x += xstep)
+	for (int x = srcTileX; x != destX; x += xstep)
 	{
 		int i;
 		int j;
@@ -50,10 +56,10 @@ bool rayCast(int srcX, int srcY, int destX, int destY, float range, float spanDi
 		//Return false if we want to terminate the raycast early
 		float distanceFromSrc = 0;
 		if (isSteep) {
-			distanceFromSrc = tileSize * glm::length(glm::vec2(i - srcY, j - srcX));
+			distanceFromSrc = glm::length(glm::vec2(i * tileSize - srcY, j * tileSize - srcX));
 		}
 		else {
-			distanceFromSrc = tileSize * glm::length(glm::vec2(i - srcX, j - srcY));
+			distanceFromSrc = glm::length(glm::vec2(i * tileSize - srcX, j * tileSize - srcY));
 		}
 		if (distanceFromSrc < range)
 		{

@@ -56,6 +56,7 @@ public:
     void previousScenario();
 
     void addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b);
+    void addLight(float x, float y);
     int modeIndex;
 
     Game(int tileSize = 8, int numTilesX = 50, int numTilesY = 50);

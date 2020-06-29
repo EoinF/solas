@@ -133,13 +133,13 @@ void update()
     {
         window.draw(*(element.second));
     }
-    for (auto &spritePtr : game.debugSprites)
-    {
-        window.draw(*spritePtr);
-    }
     if (showOverlay)
     {
         window.draw(lightmapOverlaySprite);
+    }
+    for (auto& spritePtr : game.debugSprites)
+    {
+        window.draw(*spritePtr);
     }
     window.draw(scenarioLabel);
     window.draw(fpsLabel);

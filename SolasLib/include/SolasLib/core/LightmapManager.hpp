@@ -7,6 +7,7 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 #include <SolasLib/SimpleRayCast/RayCast.hpp>
+#include <SolasLib/core/LightCaster.hpp>
 
 class LightmapManager
 {
@@ -18,23 +19,10 @@ protected:
 	int floorGridWidth;
 	int floorGridHeight;
 	bool isPaused;
+	LightCaster * lightCaster;
 
 public:
-	LightmapManager(int width, int height, int tileSize)
-	{
-		this->isPaused = false;
-		this->nextLightId = 0;
-		this->tileSize = tileSize;
-
-		//tileArray.resize(width * height);
-		for (int i = 0; i < width * height; i++)
-		{
-			tileArray.push_back(TileLightState());
-		}
-
-		this->floorGridWidth = width;
-		this->floorGridHeight = height;
-	}
+	LightmapManager(int width, int height, int tileSize, CastingAlgorithm type);
 
 	std::vector<TileLightState> &getTileArray()
 	{

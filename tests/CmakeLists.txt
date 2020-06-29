@@ -1,6 +1,19 @@
 find_package(glm REQUIRED)
 add_subdirectory("${PROJECT_SOURCE_DIR}/extern/googletest" "extern/googletest")
 
+set(SOURCES_SHARED testUtils.hpp)
+
+set(SOURCES_BOUND_RAY_CAST
+    BoundRayCast/addLight.cpp
+    BoundRayCast/removeLight.cpp
+    BoundRayCast/wallTile.cpp
+)
+
+set(SOURCES_SIMPLE_RAY_CAST
+    SimpleRayCast/addLight.cpp
+    SimpleRayCast/removeLight.cpp
+    SimpleRayCast/wallTile.cpp
+)
 
 mark_as_advanced(
     BUILD_GMOCK BUILD_GTEST BUILD_SHARED_LIBS
@@ -14,6 +27,7 @@ set_target_properties(gmock PROPERTIES FOLDER extern)
 set_target_properties(gmock_main PROPERTIES FOLDER extern)
 
 macro(package_add_test TESTNAME)
+    message (INFO ${ARGN})
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
 
@@ -40,4 +54,6 @@ macro(package_add_test TESTNAME)
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
-package_add_test(allTests addLight.cpp removeLight.cpp wallTile.cpp testUtils.hpp)
+package_add_test(allTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
+package_add_test(boundRayCastTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
+package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
