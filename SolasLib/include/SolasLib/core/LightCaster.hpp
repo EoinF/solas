@@ -1,4 +1,5 @@
 #pragma once
+#include <SolasLib/core/Light.hpp>
 
 enum class CastingAlgorithm 
 {
@@ -9,5 +10,5 @@ enum class CastingAlgorithm
 class LightCaster
 {
 public:
-	virtual void update(int tileSize, Light* light, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) abstract;
+	virtual void update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) abstract;
 };

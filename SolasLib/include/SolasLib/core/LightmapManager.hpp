@@ -6,8 +6,9 @@
 #include <iostream>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
-#include <SolasLib/SimpleRayCast/RayCast.hpp>
+#include <SolasLib/core/TileLightState.hpp>
 #include <SolasLib/core/LightCaster.hpp>
+#include <SolasLib/core/Light.hpp>
 
 class LightmapManager
 {

@@ -30,7 +30,6 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_right)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y));
-
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_down)

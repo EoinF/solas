@@ -1,5 +1,6 @@
 #pragma once
 #include <SolasLib/core.hpp>
+#include <gtest/gtest.h>
 
 const auto TILE_SIZE = 4;
 const float PI = glm::pi<float>();

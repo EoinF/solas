@@ -1,5 +1,4 @@
 #include <SolasLib/core/LightmapManager.hpp>
-#include <SolasLib/SimpleRayCast/RayCast.hpp>
 #include "BoundRayCast/BoundRayCast.hpp"
 #include "SimpleRayCast/SimpleRayCast.hpp"
 #include "stdio.h"
@@ -131,7 +130,7 @@ void LightmapManager::update()
 		Light* light = idLightPair.second;
 		if (light->shouldUpdate)
 		{
-			lightCaster->update(tileSize, light, floorGridWidth, floorGridHeight, tileArray);
+			lightCaster->update(tileSize, light, lightId, floorGridWidth, floorGridHeight, tileArray);
 		}
 	}
 }

@@ -32,7 +32,7 @@ public:
 	{
 		return (uint8_t)(255 - glm::min(_brightness, 255));
 	}
-	void addLighting(int _r, int _g, int _b, int _brightness)
+	const void addLighting(int _r, int _g, int _b, int _brightness)
 	{
 		this->_r += _r;
 		this->_g += _g;

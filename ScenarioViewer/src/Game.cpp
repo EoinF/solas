@@ -8,7 +8,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->numTilesX = numTilesX;
     this->numTilesY = numTilesY;
     this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
-    this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::BOUND_RAY_CAST);
+    this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::SIMPLE_RAY_CAST);
     lightmapOverlay.create(numTilesX, numTilesY);
     lightmapOverlay.setSmooth(false);
 
