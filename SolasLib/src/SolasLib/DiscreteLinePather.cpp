@@ -35,7 +35,7 @@ DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, in
 	isFinished = currentX == destX;
 }
 
-TileLocation DiscreteLinePather::nextTile() {
+glm::ivec2 DiscreteLinePather::nextTile() {
 	if (currentX == destX) {
 		throw std::runtime_error("Pathing is already finished. Check with 'isFinished'");
 	}
@@ -69,7 +69,7 @@ TileLocation DiscreteLinePather::nextTile() {
 		}
 	}
 
-	TileLocation nextTileLocation(currentX, currentY);
+	glm::ivec2 nextTileLocation(currentX, currentY);
 	if (isSteep) {
 		nextTileLocation.x = currentY;
 		nextTileLocation.y = currentX;

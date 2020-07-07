@@ -1,15 +1,5 @@
 #pragma once
-
-struct TileLocation
-{
-	TileLocation(int x, int y) {
-		this->x = x;
-		this->y = y;
-	}
-	int x;
-	int y;
-};
-
+#include <glm/glm.hpp>
 
 class DiscreteLinePather {
 private:
@@ -26,5 +16,5 @@ private:
 public:
 	bool isFinished;
 	DiscreteLinePather(int srcTileX, int srcTileY, int destX, int destY);
-	TileLocation nextTile();
+	glm::ivec2 nextTile();
 };

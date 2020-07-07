@@ -8,7 +8,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->numTilesX = numTilesX;
     this->numTilesY = numTilesY;
     this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
-    this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::SIMPLE_RAY_CAST);
+    this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::BOUND_RAY_CAST);
     lightmapOverlay.create(numTilesX, numTilesY);
     lightmapOverlay.setSmooth(false);
 
@@ -20,21 +20,21 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
 void Game::update(sf::Vector2i mousePosition, float timeDelta)
 {
     currentTime += timeDelta * 2.0f;
-    for (auto idLightPair : this->lightmapManager->getLightsMap())
-    {
-        int id = idLightPair.first;
-        Light *light = idLightPair.second;
+    //for (auto idLightPair : this->lightmapManager->getLightsMap())
+    //{
+    //    int id = idLightPair.first;
+    //    Light *light = idLightPair.second;
 
-        glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
-        //glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
+    //    glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
+    //    //glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
 
-        this->lightmapManager->updateLight(
-            id,
-            light->x, light->y,
-            direction,
-            light->span,
-            light->range);
-    }
+    //    this->lightmapManager->updateLight(
+    //        id,
+    //        light->x, light->y,
+    //        direction,
+    //        light->span,
+    //        light->range);
+    //}
     lightmapManager->update();
 
     auto tiles = lightmapManager->getTileArray();

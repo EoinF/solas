@@ -62,9 +62,10 @@ void LightmapManager::clearTileState()
 
 void LightmapManager::clearLights()
 {
-	for (auto idLightPair : this->lightsMap)
+	for (auto& lightIdPair : this->lightsMap)
 	{
-		this->removeLight(idLightPair.first);
+		this->lightCaster->removeLight(lightIdPair.first, lightIdPair.second, tileSize, floorGridWidth, floorGridHeight, tileArray);
+		delete lightIdPair.second;
 	}
 	this->lightsMap.clear();
 }
@@ -72,40 +73,9 @@ void LightmapManager::clearLights()
 void LightmapManager::removeLight(int lightId)
 {
 	Light* light = lightsMap[lightId];
-	float tileSizeF = (float)tileSize;
-	int srcTileX = (int)(light->x / tileSizeF);
-	int srcTileY = (int)(light->y / tileSizeF);
-
-	int startX = (int)(-0.5 + (light->x - light->range) / tileSizeF);
-	int startY = (int)(-0.5 + (light->y - light->range) / tileSizeF);
-	int endX = (int)(0.5 + (light->x + light->range) / tileSizeF);
-	int endY = (int)(0.5 + (light->y + light->range) / tileSizeF);
-
-	endX = glm::min(endX, floorGridWidth - 1);
-	endY = glm::min(endY, floorGridHeight - 1);
-	startX = glm::max(startX, 0);
-	startY = glm::max(startY, 0);
-
-	//
-	// Reset the lightcast mask for this light
-	//
-	for (int i = 0; i < light->lightMapWidth; i++)
-	{
-		for (int j = 0; j < light->lightMapHeight; j++)
-		{
-			int brightness = light->lightMap[i + j * light->lightMapWidth];
-
-			int x = i + (int)(light->x / tileSizeF) - light->lightMapWidth / 2;
-			int y = j + (int)(light->y / tileSizeF) - light->lightMapHeight / 2;
-
-			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
-			{
-				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
-			}
-			light->lightMap[i + j * light->lightMapWidth] = 0;
-		}
-	}
+	this->lightCaster->removeLight(lightId, light, tileSize, floorGridWidth, floorGridHeight, tileArray);
 	delete light;
+	lightsMap.erase(lightId);
 }
 
 void LightmapManager::resetLighting()
@@ -128,9 +98,11 @@ void LightmapManager::update()
 	{
 		int lightId = idLightPair.first;
 		Light* light = idLightPair.second;
+
 		if (light->shouldUpdate)
 		{
 			lightCaster->update(tileSize, light, lightId, floorGridWidth, floorGridHeight, tileArray);
+			light->shouldUpdate = false;
 		}
 	}
 }

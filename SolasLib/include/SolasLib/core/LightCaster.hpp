@@ -10,5 +10,6 @@ enum class CastingAlgorithm
 class LightCaster
 {
 public:
+	virtual void removeLight(int lightId, Light* light, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) abstract;
 	virtual void update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) abstract;
 };

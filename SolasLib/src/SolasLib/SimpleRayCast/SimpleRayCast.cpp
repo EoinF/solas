@@ -6,7 +6,7 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
 	float tileSize, Light* light,
 	int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray);
 
-void SimpleRayCast::update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState> & tileArray)
+void SimpleRayCast::update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
 {
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
@@ -59,8 +59,45 @@ void SimpleRayCast::update(int tileSize, Light* light, int lightId, int floorGri
 	light->shouldUpdate = false;
 }
 
+void SimpleRayCast::removeLight(int lightId, Light * light, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState> & tileArray)
+{
+	float tileSizeF = (float)tileSize;
+	int srcTileX = (int)(light->x / tileSizeF);
+	int srcTileY = (int)(light->y / tileSizeF);
+
+	int startX = (int)(-0.5 + (light->x - light->range) / tileSizeF);
+	int startY = (int)(-0.5 + (light->y - light->range) / tileSizeF);
+	int endX = (int)(0.5 + (light->x + light->range) / tileSizeF);
+	int endY = (int)(0.5 + (light->y + light->range) / tileSizeF);
+
+	endX = glm::min(endX, floorGridWidth - 1);
+	endY = glm::min(endY, floorGridHeight - 1);
+	startX = glm::max(startX, 0);
+	startY = glm::max(startY, 0);
+
+	//
+	// Reset the lightcast mask for this light
+	//
+	for (int i = 0; i < light->lightMapWidth; i++)
+	{
+		for (int j = 0; j < light->lightMapHeight; j++)
+		{
+			int brightness = light->lightMap[i + j * light->lightMapWidth];
+
+			int x = i + (int)(light->x / tileSizeF) - light->lightMapWidth / 2;
+			int y = j + (int)(light->y / tileSizeF) - light->lightMapHeight / 2;
+
+			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
+			{
+				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
+			}
+			light->lightMap[i + j * light->lightMapWidth] = 0;
+		}
+	}
+}
+
 void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
-	float tileSize, Light* light, 
+	float tileSize, Light* light,
 	int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
 {
 	float spanDifference = getSpanDifference(light, toTileX, toTileY, tileSize);
@@ -80,8 +117,8 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
 				int newLighting = (int)(255.0f *
 					(
 						glm::min(1.0f, 0.0f + spanDifference) * (1.0f - (distanceFromSrc / light->range))
-						)
-					);
+					)
+				);
 
 				int existingLighting = light->lightMap[x + y * light->lightMapWidth];
 				if (newLighting > existingLighting)
@@ -92,7 +129,8 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
 					tileArray[nextTile.y * floorGridWidth + nextTile.x].addLighting(255, 255, 255, lightingDelta);
 				}
 			}
-			if (tileArray[nextTile.y * floorGridWidth + nextTile.x].isWall) {
+			if (tileArray[nextTile.y * floorGridWidth + nextTile.x].isWall)
+			{
 				return;
 			}
 		}
