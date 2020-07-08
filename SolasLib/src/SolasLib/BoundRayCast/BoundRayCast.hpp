@@ -4,12 +4,14 @@
 #include <glm/glm.hpp>
 
 struct BoundRayCastNode {
-	BoundRayCastNode(int x = 0, int y = 0) {
+	BoundRayCastNode(int x = 0, int y = 0, int brightness = 0) {
 		this->location.x = x;
 		this->location.y = y;
+		this->brightness = brightness;
 	}
 	glm::ivec2 location;
 	std::map<int, BoundRayCastNode*> children; // Maps each tile index to the next dependent tile
+	int brightness;
 
 	~BoundRayCastNode() {
 		for (auto child : children) {
@@ -28,6 +30,7 @@ struct BoundLight {
 
 		this->dependencyTreeRoot.location.x = 0;
 		this->dependencyTreeRoot.location.y = 0;
+		this->dependencyTreeRoot.brightness = 255;
 
 		this->lightMap = new int[castingMapWidth * castingMapWidth]();
 	}

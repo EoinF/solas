@@ -1,4 +1,4 @@
 #pragma once
 #include <SolasLib/core/Light.hpp>
 
-float getSpanDifference(Light* light, int tileX, int tileY, int tileSize);
+float getSpanDifference(Light* light, int tileX, int tileY, float tileSize);

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-float getSpanDifference(Light* light, int tileX, int tileY, int tileSize)
+float getSpanDifference(Light* light, int tileX, int tileY, float tileSize)
 {
 	//Get the offset from the tile to the centre of the raycaster
 	//Note: The y coordinate is negated because the formula on the next line works with a coordinate system

@@ -49,10 +49,10 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
         }
         else */
         {
-            pixels[index] = tile.r();
-            pixels[index + 1] = tile.g();
-            pixels[index + 2] = tile.b();
-            pixels[index + 3] = tile.a();
+            pixels[index] = tile.brightness();
+            pixels[index + 1] = tile.brightness();
+            pixels[index + 2] = tile.brightness();
+            pixels[index + 3] = 255 - tile.brightness();
         }
         index += 4;
     }

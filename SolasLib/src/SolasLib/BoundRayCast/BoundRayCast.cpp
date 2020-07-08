@@ -93,6 +93,12 @@ void boundRayCast(BoundLight * boundLight, int i, int j, int floorGridWidth, int
 		{
 			currentNode = currentNode->children[tileIndex];
 		}
+
+		int brightness = (int)(255.0f * ((float)boundLight->halfCastingMapWidth - distance) / (float)boundLight->halfCastingMapWidth);
+		if (currentNode->brightness < brightness)
+		{
+			currentNode->brightness = brightness;
+		}
 	}
 }
 
@@ -101,7 +107,7 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 	int tileArrayIndex = ((boundLight->srcX + currentNode->location.x) + (boundLight->srcY + currentNode->location.y) * floorGridWidth);
 	int lightMapArrayIndex = ((boundLight->halfCastingMapWidth + currentNode->location.x) + (boundLight->halfCastingMapWidth + currentNode->location.y) * boundLight->castingMapWidth);
 	//std::cout << "location of node is " << currentNode->location.x << "," << currentNode->location.y << std::endl;
-	int newLighting = 150;
+	int newLighting = currentNode->brightness;
 
 	int existingLighting = boundLight->lightMap[lightMapArrayIndex];
 	if (newLighting > existingLighting)
@@ -109,19 +115,15 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 		boundLight->lightMap[lightMapArrayIndex] = newLighting;
 		int lightingDelta = newLighting - existingLighting;
 
-		tileArray[tileArrayIndex].addLighting(255, 255, 255, lightingDelta);
+		tileArray[tileArrayIndex].addLighting(lightingDelta);
 	}
 
 	if (tileArray[tileArrayIndex].isWall)
 	{
-		//std::cout << "return at " << srcX + currentNode->location.x << "," << srcY + currentNode->location.y << std::endl;
 		return;
 	}
 
-	int amount = 0;
 	for (auto node : currentNode->children) {
-		amount++;
-		//std::cout << "child " << amount << ". going from" << srcX + currentNode->location.x << "," << srcY + currentNode->location.y << std::endl;
 		applyLightDependencyPath(boundLight, node.second, tileArray, floorGridWidth, floorGridHeight);
 	}
 }

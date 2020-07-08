@@ -36,7 +36,7 @@ void SimpleRayCast::update(int tileSize, Light* light, int lightId, int floorGri
 
 			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
 			{
-				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
+				tileArray[y * floorGridWidth + x].subtractLighting(brightness);
 			}
 			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
@@ -89,7 +89,7 @@ void SimpleRayCast::removeLight(int lightId, Light * light, int tileSize, int fl
 
 			if (x >= 0 && y >= 0 && x < floorGridWidth && y < floorGridHeight)
 			{
-				tileArray[y * floorGridWidth + x].subtractLighting(255, 255, 255, brightness);
+				tileArray[y * floorGridWidth + x].subtractLighting(brightness);
 			}
 			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
@@ -126,7 +126,7 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
 					light->lightMap[x + y * light->lightMapWidth] = newLighting;
 					int lightingDelta = newLighting - existingLighting;
 
-					tileArray[nextTile.y * floorGridWidth + nextTile.x].addLighting(255, 255, 255, lightingDelta);
+					tileArray[nextTile.y * floorGridWidth + nextTile.x].addLighting(lightingDelta);
 				}
 			}
 			if (tileArray[nextTile.y * floorGridWidth + nextTile.x].isWall)
