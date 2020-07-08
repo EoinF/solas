@@ -22,7 +22,7 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 	}
 	else
 	{
-		boundLight = new BoundLight(srcTileX, srcTileY, (int)(light->range / tileSizeF));
+		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF));
 		int startX = boundLight->srcX - boundLight->halfCastingMapWidth;
 		int startY = boundLight->srcY - boundLight->halfCastingMapWidth;
 		BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
