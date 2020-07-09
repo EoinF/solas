@@ -53,6 +53,24 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 
 void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
 {
+	BoundLight* boundLight = boundLightMap[lightId];
+
+	int startX = glm::max(boundLight->halfCastingMapWidth - boundLight->srcX, 0);
+	int startY = glm::max(boundLight->halfCastingMapWidth - boundLight->srcY, 0);
+
+	int endX = glm::min(boundLight->halfCastingMapWidth + floorGridWidth - boundLight->srcX, boundLight->castingMapWidth);
+	int endY = glm::min(boundLight->halfCastingMapWidth + floorGridHeight - boundLight->srcY, boundLight->castingMapWidth);
+
+	for (int x = startX; x < endX; x++)
+	{
+		for (int y = startY; y < endY; y++)
+		{
+			int tileX = boundLight->srcX + x - boundLight->halfCastingMapWidth;
+			int tileY = boundLight->srcY + y - boundLight->halfCastingMapWidth;
+			
+			tileArray[tileX + tileY * floorGridWidth].subtractLighting(boundLight->lightMap[x + y * boundLight->castingMapWidth]);
+		}
+	}
 	delete boundLightMap[lightId];
 	boundLightMap.erase(lightId);
 }
@@ -64,7 +82,6 @@ void boundRayCast(BoundLight * boundLight, int i, int j, int floorGridWidth, int
 
 	while (!pather.isFinished) {
 		auto nextTile = pather.nextTile();
-		//std::cout << "location of node is " << nextTile.x << "," << nextTile.y << std::endl;
 		float distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
 
 		int tileX = boundLight->srcX + nextTile.x;
@@ -106,7 +123,6 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 {
 	int tileArrayIndex = ((boundLight->srcX + currentNode->location.x) + (boundLight->srcY + currentNode->location.y) * floorGridWidth);
 	int lightMapArrayIndex = ((boundLight->halfCastingMapWidth + currentNode->location.x) + (boundLight->halfCastingMapWidth + currentNode->location.y) * boundLight->castingMapWidth);
-	//std::cout << "location of node is " << currentNode->location.x << "," << currentNode->location.y << std::endl;
 	int newLighting = currentNode->brightness;
 
 	int existingLighting = boundLight->lightMap[lightMapArrayIndex];

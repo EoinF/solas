@@ -5,6 +5,9 @@
 #include "../testUtils.hpp"
 
 class SimpleRayCast_AddLightTest : public BaseLightingTest {
+    LightmapManager* createTestSubject() {
+        return new LightmapManager(100, 100, TILE_SIZE, getType());
+    }
     CastingAlgorithm getType() override
     {
         return CastingAlgorithm::SIMPLE_RAY_CAST;
@@ -24,8 +27,7 @@ TEST_F(SimpleRayCast_AddLightTest, lighting_range_test)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    const auto MARGIN_OF_ERROR = 0;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, glm::vec2(1, 0), PI * 2, RANGE_IN_TILES * TILE_SIZE + MARGIN_OF_ERROR);
+    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, glm::vec2(1, 0), PI * 2, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     for (int i = 1; i <= RANGE_IN_TILES; i++)

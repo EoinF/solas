@@ -22,12 +22,13 @@ class BaseLightingTest : public ::testing::Test {
 protected:
     void SetUp() override
     {
-        lightmapManager = new LightmapManager(500, 500, TILE_SIZE, getType());
+        lightmapManager = createTestSubject();
     }
 
     // void TearDown() override {}
 
 public:
+    virtual LightmapManager* createTestSubject() = 0;
     virtual CastingAlgorithm getType() = 0;
     LightmapManager * lightmapManager;
 

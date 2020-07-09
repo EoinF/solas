@@ -4,17 +4,46 @@
 #include "../testUtils.hpp"
 
 class BoundRayCast_RemoveLightTest : public BaseLightingTest {
+    LightmapManager* createTestSubject() {
+        return new LightmapManager(100, 100, TILE_SIZE, getType());
+    }
     CastingAlgorithm getType() {
         return CastingAlgorithm::BOUND_RAY_CAST;
     }
 };
 
-TEST_F(BoundRayCast_RemoveLightTest, basic_lighting_test)
+TEST_F(BoundRayCast_RemoveLightTest, all_lighting_cleared_after_removing)
 {
-        auto id = lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, glm::vec2(1, 0), PI, 10);
-        lightmapManager->removeLight(id);
-        lightmapManager->update();
+    const auto RANGE_IN_TILES = 10;
+    const auto LIGHT_X = 40;
+    const auto LIGHT_Y = 65;
 
-        EXPECT_TRUE(isTileUnlit(22, 10));
-    
+    auto id = lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, glm::vec2(1, 0), PI, RANGE_IN_TILES);
+    lightmapManager->update();
+    lightmapManager->removeLight(id);
+    lightmapManager->update();
+
+    auto lightDataList = getOrderedLightData(LIGHT_X, LIGHT_Y, RANGE_IN_TILES);
+    for (auto data : lightDataList)
+    {
+        ASSERT_TRUE(isTileUnlit(data.x, data.y));
+    }
+}
+
+TEST_F(BoundRayCast_RemoveLightTest, all_lighting_cleared_after_removing_at_edge)
+{
+    const auto RANGE_IN_TILES = 10;
+    const auto LIGHT_X = 95;
+    const auto LIGHT_Y = 65;
+
+    auto id = lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, glm::vec2(1, 0), PI, RANGE_IN_TILES);
+    lightmapManager->update();
+    lightmapManager->removeLight(id);
+    lightmapManager->update();
+
+    auto lightDataList = getOrderedLightData(LIGHT_X, LIGHT_Y, RANGE_IN_TILES);
+    for (auto data : lightDataList)
+    {
+        ASSERT_TRUE(isTileUnlit(data.x, data.y));
+    }
 }

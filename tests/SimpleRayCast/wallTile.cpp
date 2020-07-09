@@ -7,6 +7,9 @@ const auto WALL_X = 25;
 const auto WALL_Y = 10;
 
 class SimpleRayCast_WallTileTest : public BaseLightingTest {
+	LightmapManager* createTestSubject() {
+		return new LightmapManager(100, 100, TILE_SIZE, getType());
+	}
 	CastingAlgorithm getType() {
 		return CastingAlgorithm::SIMPLE_RAY_CAST;
 	}
