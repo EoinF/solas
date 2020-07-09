@@ -29,7 +29,6 @@ protected:
 
 public:
     virtual LightmapManager* createTestSubject() = 0;
-    virtual CastingAlgorithm getType() = 0;
     LightmapManager * lightmapManager;
 
     ::testing::AssertionResult isTileLit(int x, int y)

@@ -28,7 +28,7 @@ void scenario1(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
     {
         for (int j = 0; j < numLightsY; ++j)
         {
-            addLight(((i + 0.5f) * mapWidth) / numLightsX, ((j + 0.5f) * mapHeight) / numLightsY, glm::normalize(glm::vec2(0.4f, -1.0f)), 6.28f, 32.0f);
+            addLight(((i + 0.5f) * mapWidth) / numLightsX, ((j + 0.5f) * mapHeight) / numLightsY, glm::normalize(glm::vec2(0.4f, -1.0f)), 6.28f, 100.0f);
         }
     }
 }

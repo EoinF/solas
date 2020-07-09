@@ -6,10 +6,7 @@
 
 class BoundRayCast_AddLightTest : public BaseLightingTest {
     LightmapManager* createTestSubject() {
-        return new LightmapManager(100, 100, TILE_SIZE, getType());
-    }
-    CastingAlgorithm getType() {
-        return CastingAlgorithm::BOUND_RAY_CAST;
+        return new LightmapManager(100, 100, TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST);
     }
 };
 
