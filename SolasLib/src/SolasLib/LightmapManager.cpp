@@ -34,19 +34,19 @@ LightmapManager::LightmapManager(int width, int height, int tileSize, CastingAlg
 	}
 }
 
-int LightmapManager::addLight(float x, float y, glm::vec2 direction, float span, float range)
+int LightmapManager::addLight(float x, float y, float span, float range)
 {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(std::pair<int, Light*>(lightId, new Light(x, y, glm::normalize(direction), span, range, tileSize)));
+	this->lightsMap.insert(std::pair<int, Light*>(lightId, new Light(x, y, 0.0f, span, range, tileSize)));
 	this->lightsMap[lightId]->shouldUpdate = true;
 	return lightId;
 }
 
-void LightmapManager::updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range)
+void LightmapManager::updateLight(int lightId, float x, float y, float span, float range, glm::vec2 direction)
 {
 	this->lightsMap[lightId]->x = x;
 	this->lightsMap[lightId]->y = y;
-	this->lightsMap[lightId]->direction = glm::normalize(direction);
+	this->lightsMap[lightId]->direction = std::atan2(direction.y, direction.x);
 	this->lightsMap[lightId]->span = span;
 	this->lightsMap[lightId]->range = range;
 	this->lightsMap[lightId]->shouldUpdate = true;

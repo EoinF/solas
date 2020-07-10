@@ -10,7 +10,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
     this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::BOUND_RAY_CAST);
     lightmapOverlay.create(numTilesX, numTilesY);
-    lightmapOverlay.setSmooth(false);
+    lightmapOverlay.setSmooth(true);
 
     this->scenarioIndex = 2;
 
@@ -99,7 +99,15 @@ void Game::startScenario(int index)
     this->lightmapManager->clearLights();
     this->lightmapManager->clearTileState();
     this->gameObjects.clear();
+    for (auto debugSprite : this->debugSprites)
+    {
+        delete debugSprite;
+    }
     this->debugSprites.clear();
+    for (auto sprite: this->sprites)
+    {
+        delete sprite.second;
+    }
     this->sprites.clear();
     loadScenario(
         index + 1,
@@ -107,8 +115,8 @@ void Game::startScenario(int index)
             this->lightmapManager->getTileState(tileX, tileY)->isWall = isWall;
             this->addWall(tileX, tileY, r, g, b);
         },
-        [=](float x, float y, glm::vec2 direction, float span, float range) {
-            this->lightmapManager->addLight(x, y, direction, span, range);
+        [=](float x, float y, float span, float range) {
+            this->lightmapManager->addLight(x, y, span, range);
             this->addLight(x, y);
         },
         numTilesX, numTilesY, tileSize);

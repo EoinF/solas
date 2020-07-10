@@ -45,8 +45,8 @@ public:
 		return this->lightsMap;
 	}
 
-	int addLight(float x, float y, glm::vec2 direction, float span, float range);
-	void updateLight(int lightId, float x, float y, glm::vec2 direction, float span, float range);
+	int addLight(float x, float y, float span, float range);
+	void updateLight(int lightId, float x, float y, float span, float range, glm::vec2 direction);
 	void clearLights();
 	void clearTileState();
 	void removeLight(int lightId);

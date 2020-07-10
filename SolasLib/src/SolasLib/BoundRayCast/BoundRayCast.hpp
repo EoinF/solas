@@ -21,11 +21,12 @@ struct BoundRayCastNode {
 };
 
 struct BoundLight {
-	BoundLight() : BoundLight(0, 0, 1) {};
-	BoundLight(int srcX, int srcY, int halfCastingMapWidth) {
+	BoundLight() : BoundLight(0, 0, 1, 0) {};
+	BoundLight(int srcX, int srcY, int halfCastingMapWidth, float span) {
 		this->srcX = srcX;
 		this->srcY = srcY;
 		this->halfCastingMapWidth = halfCastingMapWidth;
+		this->span = span;
 		this->castingMapWidth = halfCastingMapWidth * 2;
 
 		this->dependencyTreeRoot.location.x = 0;
@@ -37,6 +38,7 @@ struct BoundLight {
 	int * lightMap;
 	int srcX, srcY;
 	BoundRayCastNode dependencyTreeRoot;
+	float span;
 	int halfCastingMapWidth;
 	int castingMapWidth;
 

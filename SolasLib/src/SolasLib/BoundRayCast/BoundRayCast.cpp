@@ -7,12 +7,9 @@ void applyLightDependencyPath(BoundLight* boundLight, BoundRayCastNode* currentN
 void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
 {
 	float tileSizeF = (float)tileSize;
-	float spanDifference;
-
 	int srcTileX = (int)(light->x / tileSizeF);
 	int srcTileY = (int)(light->y / tileSizeF);
 
-	int newLighting = 255;
 	BoundLight* boundLight;
 
 	// Check if a mapping for this light exists
@@ -22,7 +19,7 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 	}
 	else
 	{
-		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF));
+		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span);
 		int startX = boundLight->srcX - boundLight->halfCastingMapWidth;
 		int startY = boundLight->srcY - boundLight->halfCastingMapWidth;
 		BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
@@ -77,6 +74,11 @@ void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int floo
 
 void boundRayCast(BoundLight * boundLight, int i, int j, int floorGridWidth, int floorGridHeight, std::vector<TileLightState> & tileArray)
 {
+	float angle = std::atan2f(j, i);
+	if (2 * abs(angle) > boundLight->span)
+	{
+		return;
+	}
 	BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 

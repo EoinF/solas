@@ -7,6 +7,7 @@ set(SOURCES_BOUND_RAY_CAST
     BoundRayCast/addLight.cpp
     BoundRayCast/removeLight.cpp
     BoundRayCast/wallTile.cpp
+    BoundRayCast/span.cpp
 )
 
 set(SOURCES_SIMPLE_RAY_CAST

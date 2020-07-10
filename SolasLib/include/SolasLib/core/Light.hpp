@@ -10,13 +10,13 @@ class Light
 public:
 	float x, y;
 	float range;
-	glm::vec2 direction;
+	float direction;
 	float span;
 	bool shouldUpdate;
 	int *lightMap;
 	int lightMapWidth;
 	int lightMapHeight;
-	Light(float x, float y, glm::vec2 direction, float span, float range, int tileSize)
+	Light(float x, float y, float direction, float span, float range, int tileSize)
 	{
 		this->x = x;
 		this->y = y;
