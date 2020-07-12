@@ -104,3 +104,15 @@ TEST_F(BoundRayCast_AddLightTest, brightness_decreases_smoothly)
         previousBrightness = lightData.brightness;
     }
 }
+
+TEST_F(BoundRayCast_AddLightTest, light_out_of_bounds)
+{
+    const auto RANGE_IN_TILES = 7;
+    const auto LIGHT_X = -1;
+    const auto LIGHT_Y = 10;
+    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 2, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->update();
+
+    EXPECT_TRUE(isTileLit(0, LIGHT_Y));
+    EXPECT_TRUE(isTileLit(1, LIGHT_Y));
+}

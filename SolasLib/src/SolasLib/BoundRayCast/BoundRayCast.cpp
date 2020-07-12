@@ -1,6 +1,7 @@
 #include "BoundRayCast.hpp"
 #include "../DiscreteLinePather.hpp";
 
+void clearLightMapping(BoundLight* boundLight, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray);
 void boundRayCast(BoundLight* boundLight, int i, int j, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray);
 void applyLightDependencyPath(BoundLight* boundLight, BoundRayCastNode* currentNode, std::vector<TileLightState>& tileArray, int floorGridWidth, int floorGridHeight);
 
@@ -16,6 +17,10 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 	if (boundLightMap.find(lightId) != boundLightMap.end())
 	{
 		boundLight = boundLightMap[lightId];
+
+		clearLightMapping(boundLight, tileSize, floorGridWidth, floorGridHeight, tileArray);
+		boundLight->srcX = srcTileX;
+		boundLight->srcY = srcTileY;
 	}
 	else
 	{
@@ -44,14 +49,19 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 
 	// Apply the dependency tree
 	applyLightDependencyPath(boundLight, &boundLight->dependencyTreeRoot, tileArray, floorGridWidth, floorGridHeight);
-
 	light->shouldUpdate = false;
 }
 
 void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
 {
 	BoundLight* boundLight = boundLightMap[lightId];
+	clearLightMapping(boundLight, tileSize, floorGridWidth, floorGridHeight, tileArray);
+	delete boundLightMap[lightId];
+	boundLightMap.erase(lightId);
+}
 
+void clearLightMapping(BoundLight* boundLight, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray)
+{
 	int startX = glm::max(boundLight->halfCastingMapWidth - boundLight->srcX, 0);
 	int startY = glm::max(boundLight->halfCastingMapWidth - boundLight->srcY, 0);
 
@@ -64,12 +74,11 @@ void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int floo
 		{
 			int tileX = boundLight->srcX + x - boundLight->halfCastingMapWidth;
 			int tileY = boundLight->srcY + y - boundLight->halfCastingMapWidth;
-			
+
 			tileArray[tileX + tileY * floorGridWidth].subtractLighting(boundLight->lightMap[x + y * boundLight->castingMapWidth]);
+			boundLight->lightMap[x + y * boundLight->castingMapWidth] = 0;
 		}
 	}
-	delete boundLightMap[lightId];
-	boundLightMap.erase(lightId);
 }
 
 void boundRayCast(BoundLight * boundLight, int i, int j, int floorGridWidth, int floorGridHeight, std::vector<TileLightState> & tileArray)

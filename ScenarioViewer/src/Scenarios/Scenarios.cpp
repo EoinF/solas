@@ -74,5 +74,5 @@ void scenario3(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
         setGridType(endX, j, true, 255, 255, 255);
     }
 
-    addLight(tileSize * ((float)(endX + startX) / 2.0f), tileSize * (0.5f + (float)(endY + startY) / 2.0f), 0.8f, 300.0f, glm::vec2(1, 0));
+    addLight(tileSize * ((float)(endX + startX) / 2.0f), tileSize * (0.5f + (float)(endY + startY) / 2.0f), 2.8f, 300.0f, glm::vec2(1, 0));
 }

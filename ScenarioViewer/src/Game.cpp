@@ -35,6 +35,14 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     //        light->span,
     //        light->range);
     //}
+
+    /*auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
+    this->lightmapManager->updateLight(
+        heldLightId,
+        mousePosition.x, mousePosition.y,
+        heldLight->span,
+        heldLight->range,
+        glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));*/
     lightmapManager->update();
 
     auto tiles = lightmapManager->getTileArray();
@@ -120,4 +128,7 @@ void Game::startScenario(int index)
             this->addLight(x, y);
         },
         numTilesX, numTilesY, tileSize);
+
+    this->heldLightId = this->lightmapManager->addLight(-10, 150, glm::pi<float>(), 300);
+    this->lightmapManager->update();
 }

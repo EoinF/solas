@@ -45,9 +45,9 @@ protected:
     int tileSize;
     sf::Image lightmapOverlayImage;
     sf::Uint8 *pixels;
+    int heldLightId = 0;
 
 public:
-    bool halt = false;
     std::map<int, sf::Shape *> sprites;
     std::vector<sf::Shape *> debugSprites;
     sf::Texture lightmapOverlay;
