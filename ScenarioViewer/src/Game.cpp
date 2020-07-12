@@ -115,8 +115,8 @@ void Game::startScenario(int index)
             this->lightmapManager->getTileState(tileX, tileY)->isWall = isWall;
             this->addWall(tileX, tileY, r, g, b);
         },
-        [=](float x, float y, float span, float range) {
-            this->lightmapManager->addLight(x, y, span, range);
+        [=](float x, float y, float span, float range, glm::vec2 direction) {
+            this->lightmapManager->addLight(x, y, span, range, direction);
             this->addLight(x, y);
         },
         numTilesX, numTilesY, tileSize);

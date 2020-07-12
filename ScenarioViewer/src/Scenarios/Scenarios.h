@@ -5,7 +5,7 @@
 #include <functional>
 
 using SetGridTypeFunction = std::function<void(int tileX, int tileY, bool isWall, float r, float g, float b)>;
-using AddLightFunction = std::function<void(float x, float y, float span, float range)>;
+using AddLightFunction = std::function<void(float x, float y, float span, float range, glm::vec2 direction)>;
 
 const int NUM_SCENARIOS = 3;
 

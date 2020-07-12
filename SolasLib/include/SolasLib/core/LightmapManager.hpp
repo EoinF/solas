@@ -46,6 +46,7 @@ public:
 	}
 
 	int addLight(float x, float y, float span, float range);
+	int addLight(float x, float y, float span, float range, glm::vec2 direction);
 	void updateLight(int lightId, float x, float y, float span, float range, glm::vec2 direction);
 	void clearLights();
 	void clearTileState();

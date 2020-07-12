@@ -10,15 +10,6 @@ class BoundRayCast_LightSpanTest : public BaseLightingTest {
     }
 };
 
-float getSmallestAngleToTile(float x, float y)
-{
-    float angleTopLeft = std::atan2(y, x);
-    float angleTopRight = std::atan2(y, x + 1);
-    float angleBottomLeft = std::atan2(y + 1, x);
-    float angleBottomRight = std::atan2(y + 1, x + 1);
-    return glm::min(abs(angleTopLeft), abs(angleTopRight), abs(angleBottomLeft), abs(angleBottomRight));
-}
-
 TEST_F(BoundRayCast_LightSpanTest, lighting_semi_circle_test)
 {
     const auto RANGE_IN_TILES = 7;
@@ -28,42 +19,39 @@ TEST_F(BoundRayCast_LightSpanTest, lighting_semi_circle_test)
     lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, SPAN, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
-    for (auto lightData: getOrderedLightData(LIGHT_X, LIGHT_Y, 2))
-    {
-        float angle = getSmallestAngleToTile(lightData.x - (LIGHT_X + 0.5f), lightData.y - (LIGHT_Y + 0.5f));
-        if (2.0f * angle <= SPAN)
-        {
-            EXPECT_TRUE(isTileLit(lightData.x, lightData.y));
-        }
-        else {
-            EXPECT_TRUE(isTileUnlit(lightData.x, lightData.y));
-        }
-    }
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y - 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y));
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y + 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y - 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y + 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y - 2));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y + 2));
+
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y - 1));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y + 1));
 }
 
 TEST_F(BoundRayCast_LightSpanTest, lighting_quarter_circle_test)
 {
     const auto RANGE_IN_TILES = 7;
     const auto SPAN = PI / 2.0f;
-    const auto MARGIN_OF_ERROR = 0.0001f;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
     lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, SPAN, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
-    for (auto lightData : getOrderedLightData(LIGHT_X, LIGHT_Y, 2))
-    {
-        float angle = getSmallestAngleToTile(lightData.x - (LIGHT_X + 0.5f), lightData.y - (LIGHT_Y + 0.5f));
-        if (SPAN - (2.0f * angle) > MARGIN_OF_ERROR) { // Give some leeway on tiles that are on the perimeter of the span
-            if (2.0f * angle < SPAN)
-            {
-                EXPECT_TRUE(isTileLit(lightData.x, lightData.y));
-            }
-            else {
-                EXPECT_TRUE(isTileUnlit(lightData.x, lightData.y));
-            }
-        }
-    }
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y - 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y));
+    EXPECT_TRUE(isTileLit(LIGHT_X + 1, LIGHT_Y + 1));
+    EXPECT_TRUE(isTileLit(LIGHT_X, LIGHT_Y));
+
+    EXPECT_TRUE(isTileUnlit(LIGHT_X, LIGHT_Y - 2));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X, LIGHT_Y + 2));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y - 1));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y));
+    EXPECT_TRUE(isTileUnlit(LIGHT_X - 1, LIGHT_Y + 1));
 }
 
 TEST_F(BoundRayCast_LightSpanTest, lighting_full_circle_test)

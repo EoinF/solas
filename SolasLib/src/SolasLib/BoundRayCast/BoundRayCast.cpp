@@ -19,7 +19,7 @@ void BoundRayCast::update(int tileSize, Light* light, int lightId, int floorGrid
 	}
 	else
 	{
-		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span);
+		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span, light->direction);
 		int startX = boundLight->srcX - boundLight->halfCastingMapWidth;
 		int startY = boundLight->srcY - boundLight->halfCastingMapWidth;
 		BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
@@ -74,8 +74,10 @@ void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int floo
 
 void boundRayCast(BoundLight * boundLight, int i, int j, int floorGridWidth, int floorGridHeight, std::vector<TileLightState> & tileArray)
 {
-	float angle = std::atan2f(j, i);
-	if (2 * abs(angle) > boundLight->span)
+	glm::vec2 rayDirection = glm::vec2(i, j);
+	float dotProduct = glm::dot(boundLight->direction, rayDirection);
+	float angle = glm::acos(dotProduct / (glm::length(boundLight->direction) * glm::length(rayDirection)));
+	if (angle > boundLight->span / 2.0f)
 	{
 		return;
 	}
