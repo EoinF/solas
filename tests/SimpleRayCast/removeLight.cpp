@@ -5,7 +5,7 @@
 
 class SimpleRayCast_RemoveLightTest : public BaseLightingTest {
     LightmapManager* createTestSubject() {
-        return new LightmapManager(100, 100, TILE_SIZE, CastingAlgorithm::SIMPLE_RAY_CAST);
+        return new LightmapManager(TILE_SIZE, CastingAlgorithm::SIMPLE_RAY_CAST, 100);
     }
 };
 

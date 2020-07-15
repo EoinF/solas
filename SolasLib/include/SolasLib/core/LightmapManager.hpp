@@ -10,30 +10,37 @@
 #include <SolasLib/core/LightCaster.hpp>
 #include <SolasLib/core/Light.hpp>
 
+// The max number of chunks in the x direction
+const long MAX_CHUNKS_X = 2048;
+
+long getChunkIndex(int x, int y);
+TileLightState * getChunkFast(int tileX, int tileY, int chunkSize, ChunkMap& chunkMap);
+
 class LightmapManager
 {
+private:
+	void allocateChunksForLight(float x, float y, float range);
+	void allocateChunk(int chunkIndex);
+	std::vector<TileLightState> & getOrAllocateChunk(int chunkIndex);
+
 protected:
-	std::vector<TileLightState> tileArray;
+	ChunkMap chunkMap;
 	int tileSize;
 	std::map<int, Light *> lightsMap;
+	int chunkSize;
 	int nextLightId;
-	int floorGridWidth;
-	int floorGridHeight;
 	bool isPaused;
 	LightCaster * lightCaster;
 
 public:
-	LightmapManager(int width, int height, int tileSize, CastingAlgorithm type);
+	LightmapManager(int tileSize, CastingAlgorithm type, int chunkSize);
 
 	std::vector<TileLightState> &getTileArray()
 	{
-		return this->tileArray;
+		return this->chunkMap[getChunkIndex(0,0)];
 	}
 
-	TileLightState *getTileState(int x, int y)
-	{
-		return &this->tileArray[y * floorGridWidth + x];
-	}
+	TileLightState* getTileState(int x, int y);
 
 	void setTileSize(int tileSize)
 	{

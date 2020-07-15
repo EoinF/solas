@@ -4,6 +4,6 @@
 #include <glm/glm.hpp>
 
 class SimpleRayCast : public LightCaster {
-	void removeLight(int lightId, Light* light, int tileSize, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) override;
-	void update(int tileSize, Light* light, int lightId, int floorGridWidth, int floorGridHeight, std::vector<TileLightState>& tileArray) override;
+	void removeLight(int lightId, Light* light, int tileSize, int chunkSize, ChunkMap& chunkMap) override;
+	void update(int tileSize, Light* light, int lightId, int chunkSize, ChunkMap& chunkMap) override;
 };

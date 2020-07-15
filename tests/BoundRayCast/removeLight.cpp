@@ -3,9 +3,11 @@
 #include <glm/glm.hpp>
 #include "../testUtils.hpp"
 
+const int CHUNK_SIZE = 100;
+
 class BoundRayCast_RemoveLightTest : public BaseLightingTest {
     LightmapManager* createTestSubject() {
-        return new LightmapManager(100, 100, TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST);
+        return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, CHUNK_SIZE);
     }
 };
 

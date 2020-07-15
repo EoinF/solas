@@ -8,7 +8,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->numTilesX = numTilesX;
     this->numTilesY = numTilesY;
     this->pixels = new sf::Uint8[numTilesX * numTilesY * 4];
-    this->lightmapManager = new LightmapManager(numTilesX, numTilesY, tileSize, CastingAlgorithm::BOUND_RAY_CAST);
+    this->lightmapManager = new LightmapManager(tileSize, CastingAlgorithm::BOUND_RAY_CAST, numTilesY);
     lightmapOverlay.create(numTilesX, numTilesY);
     lightmapOverlay.setSmooth(true);
 
@@ -36,33 +36,36 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
     //        light->range);
     //}
 
-    /*auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
+    auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
     this->lightmapManager->updateLight(
         heldLightId,
         mousePosition.x, mousePosition.y,
         heldLight->span,
         heldLight->range,
-        glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));*/
+        glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
     lightmapManager->update();
 
-    auto tiles = lightmapManager->getTileArray();
     int index = 0;
-    for (auto &tile : tiles)
+    for (int j = 0; j < numTilesY; j++)
     {
-        /*if (tile.r() > 0) {
-            pixels[index] = 255;
-            pixels[index + 1] = 255;
-            pixels[index + 2] = 255;
-            pixels[index + 3] = 255;
-        }
-        else */
+        for (int i = 0; i < numTilesX; i++)
         {
-            pixels[index] = tile.brightness();
-            pixels[index + 1] = tile.brightness();
-            pixels[index + 2] = tile.brightness();
-            pixels[index + 3] = 255 - tile.brightness();
+            auto tile = lightmapManager->getTileState(i, j);
+            /*if (tile.r() > 0) {
+                pixels[index] = 255;
+                pixels[index + 1] = 255;
+                pixels[index + 2] = 255;
+                pixels[index + 3] = 255;
+            }
+            else */
+            {
+                pixels[index] = tile->brightness();
+                pixels[index + 1] = tile->brightness();
+                pixels[index + 2] = tile->brightness();
+                pixels[index + 3] = 255 - tile->brightness();
+            }
+            index += 4;
         }
-        index += 4;
     }
     lightmapOverlayImage.create(numTilesX, numTilesY, pixels);
     lightmapOverlay.update(lightmapOverlayImage);
@@ -129,6 +132,6 @@ void Game::startScenario(int index)
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(-10, 150, glm::pi<float>(), 300);
+    this->heldLightId = this->lightmapManager->addLight(200, 200, 2 * glm::pi<float>(), 100);
     this->lightmapManager->update();
 }

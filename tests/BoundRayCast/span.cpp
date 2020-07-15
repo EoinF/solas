@@ -6,7 +6,7 @@
 
 class BoundRayCast_LightSpanTest : public BaseLightingTest {
     LightmapManager* createTestSubject() {
-        return new LightmapManager(100, 100, TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST);
+        return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, 100);
     }
 };
 
