@@ -21,18 +21,19 @@ struct BoundRayCastNode {
 };
 
 struct BoundLight {
-	BoundLight() : BoundLight(0, 0, 1, 0.0f, glm::vec2(0, 0)) {};
-	BoundLight(int srcX, int srcY, int halfCastingMapWidth, float span, glm::vec2 direction) {
+	BoundLight() : BoundLight(0, 0, 1, 0.0f, glm::vec2(0, 0), 0) {};
+	BoundLight(int srcX, int srcY, int halfCastingMapWidth, float span, glm::vec2 direction, int brightness) {
 		this->srcX = srcX;
 		this->srcY = srcY;
 		this->halfCastingMapWidth = halfCastingMapWidth;
 		this->span = span;
 		this->direction = direction;
+		this->brightness = brightness;
 		this->castingMapWidth = halfCastingMapWidth * 2;
 
 		this->dependencyTreeRoot.location.x = 0;
 		this->dependencyTreeRoot.location.y = 0;
-		this->dependencyTreeRoot.brightness = 255;
+		this->dependencyTreeRoot.brightness = brightness;
 
 		this->lightMap = new int[castingMapWidth * castingMapWidth]();
 	}
@@ -41,6 +42,7 @@ struct BoundLight {
 	BoundRayCastNode dependencyTreeRoot;
 	float span;
 	glm::vec2 direction;
+	int brightness;
 	int halfCastingMapWidth;
 	int castingMapWidth;
 

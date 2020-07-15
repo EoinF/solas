@@ -10,9 +10,9 @@ private:
 	int _brightness = 0;
 
 public:
-	uint8_t brightness()
+	int brightness()
 	{
-		return (uint8_t)glm::min(_brightness, 255);
+		return _brightness;
 	}
 	const void addLighting(int _brightness)
 	{

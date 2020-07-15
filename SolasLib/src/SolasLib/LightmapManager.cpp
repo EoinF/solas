@@ -15,8 +15,8 @@ long getChunkIndex(int x, int y)
 TileLightState * getChunkFast(int tileX, int tileY, int chunkSize, ChunkMap & chunkMap)
 {
 	float chunkSizeF = (float)chunkSize;
-	int chunkX = floorf(tileX / chunkSizeF);
-	int chunkY = floorf(tileY / chunkSizeF);
+	int chunkX = (int)floorf(tileX / chunkSizeF);
+	int chunkY = (int)floorf(tileY / chunkSizeF);
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
@@ -98,15 +98,10 @@ TileLightState* LightmapManager::getTileState(int x, int y)
 	return &(LightmapManager::getOrAllocateChunk(chunkIndex)[chunkTileX + chunkTileY * chunkSize]);
 }
 
-int LightmapManager::addLight(float x, float y, float span, float range)
-{
-	return addLight(x, y, span, range, glm::vec2(1, 0));
-}
-
-int LightmapManager::addLight(float x, float y, float span, float range, glm::vec2 direction)
+int LightmapManager::addLight(float x, float y, float span, float range, glm::vec2 direction, int brightness)
 {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(std::pair<int, Light*>(lightId, new Light(x, y, direction, span, range, tileSize)));
+	this->lightsMap.insert(std::pair<int, Light*>(lightId, new Light(x, y, direction, span, range, brightness, tileSize)));
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, range);

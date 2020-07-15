@@ -25,7 +25,7 @@ void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize
 	}
 	else
 	{
-		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span, light->direction);
+		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span, light->direction, light->brightness);
 		BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
 
 		// Precalculate the ray paths to each perimeter tile
@@ -114,7 +114,7 @@ void boundRayCast(BoundLight * boundLight, int i, int j)
 			currentNode = currentNode->children[tileIndex];
 		}
 
-		int brightness = (int)(255.0f * ((float)boundLight->halfCastingMapWidth - distance) / (float)boundLight->halfCastingMapWidth);
+		int brightness = (int)(boundLight->brightness * ((float)boundLight->halfCastingMapWidth - distance) / (float)boundLight->halfCastingMapWidth);
 		if (currentNode->brightness < brightness)
 		{
 			currentNode->brightness = brightness;

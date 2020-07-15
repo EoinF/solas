@@ -62,7 +62,7 @@ void Game::update(sf::Vector2i mousePosition, float timeDelta)
                 pixels[index] = tile->brightness();
                 pixels[index + 1] = tile->brightness();
                 pixels[index + 2] = tile->brightness();
-                pixels[index + 3] = 255 - tile->brightness();
+                pixels[index + 3] = 255 - glm::min(255, tile->brightness());
             }
             index += 4;
         }
@@ -127,11 +127,11 @@ void Game::startScenario(int index)
             this->addWall(tileX, tileY, r, g, b);
         },
         [=](float x, float y, float span, float range, glm::vec2 direction) {
-            this->lightmapManager->addLight(x, y, span, range, direction);
+            this->lightmapManager->addLight(x, y, span, range, direction, 255);
             this->addLight(x, y);
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(200, 200, 2 * glm::pi<float>(), 100);
+    this->heldLightId = this->lightmapManager->addLight(200, 200, 2 * glm::pi<float>(), 200, glm::vec2(1,0), 255);
     this->lightmapManager->update();
 }
