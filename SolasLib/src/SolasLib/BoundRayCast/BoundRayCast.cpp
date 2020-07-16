@@ -22,6 +22,7 @@ void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize
 		clearLightMapping(boundLight, tileSize, chunkSize, chunkMap);
 		boundLight->srcX = srcTileX;
 		boundLight->srcY = srcTileY;
+		boundLight->direction = glm::normalize(light->direction);
 	}
 	else
 	{
@@ -76,13 +77,6 @@ void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, Chun
 
 void boundRayCast(BoundLight * boundLight, int i, int j)
 {
-	glm::vec2 rayDirection = glm::vec2(i, j);
-	float dotProduct = glm::dot(boundLight->direction, rayDirection);
-	float angle = glm::acos(dotProduct / (glm::length(boundLight->direction) * glm::length(rayDirection)));
-	if (angle > boundLight->span / 2.0f)
-	{
-		return;
-	}
 	BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 
@@ -102,7 +96,7 @@ void boundRayCast(BoundLight * boundLight, int i, int j)
 
 		// If this node doesn't exist create it
 		if (currentNode->children.find(tileIndex) == currentNode->children.end()) {
-			auto newNode = new BoundRayCastNode(nextTile.x, nextTile.y);
+			auto newNode = new BoundRayCastNode(nextTile.x, nextTile.y, 0);
 			currentNode->children.insert({
 				tileIndex,
 				newNode
@@ -114,6 +108,9 @@ void boundRayCast(BoundLight * boundLight, int i, int j)
 			currentNode = currentNode->children[tileIndex];
 		}
 
+		glm::vec2 rayDirection = glm::vec2(i, j);
+		currentNode->directionsToNode.push_back(glm::normalize(rayDirection));
+
 		int brightness = (int)(boundLight->brightness * ((float)boundLight->halfCastingMapWidth - distance) / (float)boundLight->halfCastingMapWidth);
 		if (currentNode->brightness < brightness)
 		{
@@ -122,8 +119,28 @@ void boundRayCast(BoundLight * boundLight, int i, int j)
 	}
 }
 
+bool isNodeReachable(BoundRayCastNode* node, glm::vec2 direction, float span) {
+	if (node->directionsToNode.size() > 0)
+	{
+		for (auto directionToNode : node->directionsToNode)
+		{
+			// Direction vectors are all normalized so no need to divide by their lengths
+			float angle = glm::acos(glm::dot(direction, directionToNode));
+			if (angle <= span / 2.0f)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	return true;
+}
+
 void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * currentNode, int chunkSize, ChunkMap& chunkMap)
 {
+	if (!isNodeReachable(currentNode, boundLight->direction, boundLight->span)) {
+		return;
+	}
 	int tileX = boundLight->srcX + currentNode->location.x;
 	int tileY = boundLight->srcY + currentNode->location.y;
 

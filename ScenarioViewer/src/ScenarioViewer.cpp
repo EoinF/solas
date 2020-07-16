@@ -120,13 +120,27 @@ void update()
         inputTimeout -= timeDelta;
     }
 
+    glm::vec2 deltaPosition(0, 0);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        deltaPosition.y -= TILE_SIZE;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        deltaPosition.y += TILE_SIZE;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        deltaPosition.x -= TILE_SIZE;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        deltaPosition.x += TILE_SIZE;
+    }
+
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 
     // clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window.pushGLStates();
 
-    game.update(mousePosition, timeDelta);
+    game.update(mousePosition, deltaPosition, timeDelta);
 
     window.clear(sf::Color::Blue);
     for (auto element : game.sprites)

@@ -9,6 +9,7 @@ struct BoundRayCastNode {
 		this->location.y = y;
 		this->brightness = brightness;
 	}
+	std::vector<glm::vec2> directionsToNode;
 	glm::ivec2 location;
 	std::map<int, BoundRayCastNode*> children; // Maps each tile index to the next dependent tile
 	int brightness;
