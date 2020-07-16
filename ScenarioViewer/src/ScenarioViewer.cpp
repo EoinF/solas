@@ -24,6 +24,8 @@ int totalFrames = 0;
 float inputTimeout = 0;
 
 bool showOverlay = true;
+bool isMouseClicked = false;
+bool wasMouseClicked = false;
 
 // Hacky solution to get the current path
 // but it's fine because this app isn't meant to be distributed anyway
@@ -122,25 +124,27 @@ void update()
 
     glm::vec2 deltaPosition(0, 0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        deltaPosition.y -= TILE_SIZE;
+        deltaPosition.y -= timeDelta * 600;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        deltaPosition.y += TILE_SIZE;
+        deltaPosition.y += timeDelta * 600;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        deltaPosition.x -= TILE_SIZE;
+        deltaPosition.x -= timeDelta * 600;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        deltaPosition.x += TILE_SIZE;
+        deltaPosition.x += timeDelta * 600;
     }
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+    wasMouseClicked = isMouseClicked;
+    isMouseClicked = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
     // clear the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window.pushGLStates();
 
-    game.update(mousePosition, deltaPosition, timeDelta);
+    game.update(mousePosition, deltaPosition, wasMouseClicked && !isMouseClicked, timeDelta);
 
     window.clear(sf::Color::Blue);
     for (auto element : game.sprites)

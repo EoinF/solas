@@ -17,7 +17,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->startScenario(this->scenarioIndex);
 };
 
-void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float timeDelta)
+void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, bool isMouseClicked, float timeDelta)
 {
     currentTime += timeDelta * 2.0f;
     //for (auto idLightPair : this->lightmapManager->getLightsMap())
@@ -45,6 +45,11 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float tim
         heldLight->range,
         glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
     lightmapManager->update();
+
+    if (isMouseClicked)
+    {
+        this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>() / 2.0f, 200, glm::vec2(1, 0), 255);
+    }
 
     int index = 0;
     for (int j = 0; j < numTilesY; j++)
