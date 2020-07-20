@@ -12,7 +12,7 @@ long getChunkIndex(int x, int y)
 	return (x + MAX_CHUNKS_X / 2) + (y * MAX_CHUNKS_X + 1);
 }
 
-TileLightState * getChunkFast(int tileX, int tileY, int chunkSize, ChunkMap & chunkMap)
+TileLightState * getTileFast(int tileX, int tileY, int chunkSize, ChunkMap & chunkMap)
 {
 	float chunkSizeF = (float)chunkSize;
 	int chunkX = (int)floorf(tileX / chunkSizeF);

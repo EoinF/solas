@@ -69,7 +69,7 @@ void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, Chun
 			int tileX = boundLight->srcX + x - boundLight->halfCastingMapWidth;
 			int tileY = boundLight->srcY + y - boundLight->halfCastingMapWidth;
 
-			getChunkFast(tileX, tileY, chunkSize, chunkMap)->subtractLighting(boundLight->lightMap[x + y * boundLight->castingMapWidth]);
+			getTileFast(tileX, tileY, chunkSize, chunkMap)->subtractLighting(boundLight->lightMap[x + y * boundLight->castingMapWidth]);
 			boundLight->lightMap[x + y * boundLight->castingMapWidth] = 0;
 		}
 	}
@@ -144,26 +144,22 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 	int tileX = boundLight->srcX + currentNode->location.x;
 	int tileY = boundLight->srcY + currentNode->location.y;
 
-	auto chunk = getChunkFast(tileX, tileY, chunkSize, chunkMap);
-	auto chunk2 = getChunkFast(tileX, tileY, chunkSize, chunkMap);
+	auto tile = getTileFast(tileX, tileY, chunkSize, chunkMap);
+	float angleToTile = glm::acos(glm::dot(boundLight->direction, glm::normalize(glm::vec2(currentNode->location.x, currentNode->location.y))));
+
+	int newLighting = currentNode->brightness * glm::min(1.0f, 2.0f * ((0.1f + boundLight->span) - angleToTile * 2));
 
 	int lightMapArrayIndex = ((boundLight->halfCastingMapWidth + currentNode->location.x) + (boundLight->halfCastingMapWidth + currentNode->location.y) * boundLight->castingMapWidth);
-	int newLighting = currentNode->brightness;
-
 	int existingLighting = boundLight->lightMap[lightMapArrayIndex];
 	if (newLighting > existingLighting)
 	{
 		boundLight->lightMap[lightMapArrayIndex] = newLighting;
 		int lightingDelta = newLighting - existingLighting;
 
-		chunk->addLighting(lightingDelta);
-		//std::cout << "chunk1:" << std::to_string(chunk->brightness()) << std::endl;
-		//std::cout << "chunk2:" << std::to_string(chunk2->brightness()) << std::endl;
-		//auto chunk3 = getChunkFast(tileX, tileY, chunkSize, chunkMap);
-		//std::cout << "chunk3:" << std::to_string(chunk3->brightness()) << std::endl;
+		tile->addLighting(lightingDelta);
 	}
 
-	if (chunk->isWall)
+	if (tile->isWall)
 	{
 		return;
 	}

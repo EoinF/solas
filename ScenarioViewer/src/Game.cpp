@@ -138,6 +138,6 @@ void Game::startScenario(int index)
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>() / 2.0f, 200, glm::vec2(1,0), 255);
+    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>() * 3.0f, 200, glm::vec2(1,0), 255);
     this->lightmapManager->update();
 }

@@ -14,7 +14,7 @@
 const long MAX_CHUNKS_X = 2048;
 
 long getChunkIndex(int x, int y);
-TileLightState * getChunkFast(int tileX, int tileY, int chunkSize, ChunkMap& chunkMap);
+TileLightState * getTileFast(int tileX, int tileY, int chunkSize, ChunkMap& chunkMap);
 
 class LightmapManager
 {

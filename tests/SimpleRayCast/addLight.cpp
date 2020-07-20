@@ -12,7 +12,7 @@ class SimpleRayCast_AddLightTest : public BaseLightingTest {
 
 TEST_F(SimpleRayCast_AddLightTest, basic_lighting_test)
 {
-    lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, PI * 2, 10 * TILE_SIZE);
+    lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, PI * 3, 10 * TILE_SIZE);
     lightmapManager->update();
 
     EXPECT_TRUE(isTileLit(22, 10));
@@ -23,7 +23,7 @@ TEST_F(SimpleRayCast_AddLightTest, lighting_range_test)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 2, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     for (int i = 1; i <= RANGE_IN_TILES; i++)

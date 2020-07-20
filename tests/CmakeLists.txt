@@ -62,4 +62,4 @@ package_add_test(allTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SIMPLE_RAY_CAST} $
 package_add_test(boundRayCastTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
 package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
 
-package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/updateLight.cpp)
+package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/brightness.cpp)
