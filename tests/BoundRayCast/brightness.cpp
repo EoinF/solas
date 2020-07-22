@@ -19,7 +19,7 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_at_center)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE, glm::vec2(1, 0), BRIGHTNESS);
+    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE, glm::vec2(1, 0), BRIGHTNESS);
     lightmapManager->update();
 
     EXPECT_EQ(BRIGHTNESS, lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness());
@@ -30,7 +30,7 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     int brightnessAtCenter = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
@@ -44,7 +44,7 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases_with_distance_from_sour
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 21;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     int brightness = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
@@ -73,7 +73,7 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases_smoothly)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     int brightness = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
@@ -96,7 +96,7 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_smooth_at_span_edge)
     const auto RANGE_IN_TILES = 7;
     const auto LIGHT_X = 22;
     const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5) * TILE_SIZE, (LIGHT_Y + 0.5) * TILE_SIZE, PI, RANGE_IN_TILES * TILE_SIZE);
+    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     int brightnessAtEdge = lightmapManager->getTileState(LIGHT_X, LIGHT_Y - 2)->brightness();

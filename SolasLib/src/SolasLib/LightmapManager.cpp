@@ -109,16 +109,15 @@ int LightmapManager::addLight(float x, float y, float span, float range, glm::ve
 	return lightId;
 }
 
-void LightmapManager::updateLight(int lightId, float x, float y, float span, float range, glm::vec2 direction)
+void LightmapManager::updateLight(int lightId, float x, float y, float span, glm::vec2 direction)
 {
 	this->lightsMap[lightId]->x = x;
 	this->lightsMap[lightId]->y = y;
 	this->lightsMap[lightId]->direction = direction;
 	this->lightsMap[lightId]->span = span;
-	this->lightsMap[lightId]->range = range;
 	this->lightsMap[lightId]->shouldUpdate = true;
 
-	allocateChunksForLight(x, y, range);
+	allocateChunksForLight(x, y, this->lightsMap[lightId]->range);
 }
 
 void LightmapManager::clearTileState()

@@ -60,5 +60,5 @@ public:
     int modeIndex;
 
     Game(int tileSize = 8, int numTilesX = 50, int numTilesY = 50);
-    void update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, bool isMouseClicked, float timeDelta);
+    void update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float deltaSpan, bool isMouseClicked, float timeDelta);
 };

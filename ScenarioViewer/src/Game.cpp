@@ -17,7 +17,7 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     this->startScenario(this->scenarioIndex);
 };
 
-void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, bool isMouseClicked, float timeDelta)
+void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float deltaSpan, bool isMouseClicked, float timeDelta)
 {
     currentTime += timeDelta * 2.0f;
     //for (auto idLightPair : this->lightmapManager->getLightsMap())
@@ -36,19 +36,26 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, bool isMo
     //        light->range);
     //}
 
+
     auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
+
+    float updatedSpan = heldLight->span + deltaSpan;
+    if (updatedSpan > 2.3f * glm::pi<float>()) {
+        updatedSpan = 0.0f;
+    }
+
     this->lightmapManager->updateLight(
         heldLightId,
         heldLight->x + deltaPosition.x,
         heldLight->y + deltaPosition.y,
-        heldLight->span,
+        updatedSpan,
         heldLight->range,
         glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
     lightmapManager->update();
 
     if (isMouseClicked)
     {
-        this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>() / 2.0f, 200, glm::vec2(1, 0), 255);
+        this->heldLightId = this->lightmapManager->addLight(heldLight->x, heldLight->y, heldLight->span, heldLight->range, heldLight->direction, heldLight->brightness);
     }
 
     int index = 0;
@@ -138,6 +145,6 @@ void Game::startScenario(int index)
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>() * 3.0f, 200, glm::vec2(1,0), 255);
+    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>(), 200, glm::vec2(1,0), 255);
     this->lightmapManager->update();
 }

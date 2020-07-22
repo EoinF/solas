@@ -1,6 +1,5 @@
 #include "BoundRayCast.hpp"
 #include "../DiscreteLinePather.hpp"
-#include<string>
 
 void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, ChunkMap& chunkMap);
 void boundRayCast(BoundLight* boundLight, int i, int j);
@@ -23,6 +22,7 @@ void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize
 		boundLight->srcX = srcTileX;
 		boundLight->srcY = srcTileY;
 		boundLight->direction = glm::normalize(light->direction);
+		boundLight->span = light->span;
 	}
 	else
 	{
@@ -147,7 +147,7 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 	auto tile = getTileFast(tileX, tileY, chunkSize, chunkMap);
 	float angleToTile = glm::acos(glm::dot(boundLight->direction, glm::normalize(glm::vec2(currentNode->location.x, currentNode->location.y))));
 
-	int newLighting = currentNode->brightness * glm::min(1.0f, 2.0f * ((0.1f + boundLight->span) - angleToTile * 2));
+	int newLighting = (int)(currentNode->brightness * glm::min(1.0f, 2.0f * ((0.1f + boundLight->span) - angleToTile * 2)));
 
 	int lightMapArrayIndex = ((boundLight->halfCastingMapWidth + currentNode->location.x) + (boundLight->halfCastingMapWidth + currentNode->location.y) * boundLight->castingMapWidth);
 	int existingLighting = boundLight->lightMap[lightMapArrayIndex];

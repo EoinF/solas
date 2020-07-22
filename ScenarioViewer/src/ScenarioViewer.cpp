@@ -123,6 +123,7 @@ void update()
     }
 
     glm::vec2 deltaPosition(0, 0);
+    float deltaSpan = 0.0f;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         deltaPosition.y -= timeDelta * 600;
     }
@@ -135,6 +136,9 @@ void update()
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         deltaPosition.x += timeDelta * 600;
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        deltaSpan += timeDelta * 5.0f;
+    }
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
     wasMouseClicked = isMouseClicked;
@@ -144,7 +148,7 @@ void update()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     window.pushGLStates();
 
-    game.update(mousePosition, deltaPosition, wasMouseClicked && !isMouseClicked, timeDelta);
+    game.update(mousePosition, deltaPosition, deltaSpan, wasMouseClicked && !isMouseClicked, timeDelta);
 
     window.clear(sf::Color::Blue);
     for (auto element : game.sprites)
