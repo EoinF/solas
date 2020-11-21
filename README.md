@@ -11,7 +11,7 @@ A cross platform library for dynamic 2d lighting.
 
 Use the following to set up a dev environment on Windows 10
 
-### Initial setup
+### Initial setup (Windows)
 
 Open command prompt and run `./scripts/windows/bootstrap.bat`
 
@@ -36,7 +36,7 @@ A window should open with test results displayed inside
 
 Use the following to set up a dev environment on macOS (tested with Catalina)
 
-### Initial setup
+### Initial setup (Mac)
 
 Run the script `./scripts/osx/bootstrap.sh` to install the necessary dependencies.
 
@@ -75,5 +75,4 @@ Next add the following to settings.json
 This is a demo app that uses the solas API
 
 - Use arrow keys left and right to switch between scenarios.
-- Use up and down to enable/disable lighting.
 - Use 'L' key to toggle lighting on/off

@@ -36,11 +36,11 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
     //        light->range);
     //}
 
-
     auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
 
     float updatedSpan = heldLight->span + deltaSpan;
-    if (updatedSpan > 2.3f * glm::pi<float>()) {
+    if (updatedSpan > 2.3f * glm::pi<float>())
+    {
         updatedSpan = 0.0f;
     }
 
@@ -49,7 +49,6 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
         heldLight->x + deltaPosition.x,
         heldLight->y + deltaPosition.y,
         updatedSpan,
-        heldLight->range,
         glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
     lightmapManager->update();
 
@@ -90,17 +89,17 @@ void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b)
     float y = (float)(tileY * tileSize);
     GameObject gameObject = GameObject(x, y, r, g, b);
     this->gameObjects.push_back(gameObject);
-    sf::Shape* newSprite = new sf::RectangleShape(sf::Vector2f((float)tileSize, (float)tileSize));
+    sf::Shape *newSprite = new sf::RectangleShape(sf::Vector2f((float)tileSize, (float)tileSize));
     newSprite->setFillColor(gameObject.getColour());
     newSprite->setPosition(x, y);
-    this->sprites.insert(std::pair<int, sf::Shape*>(tileY * numTilesX + tileX, newSprite));
+    this->sprites.insert(std::pair<int, sf::Shape *>(tileY * numTilesX + tileX, newSprite));
 }
 
 void Game::addLight(float x, float y)
 {
     GameObject gameObject = GameObject(x, y, 125, 255, 125);
     this->gameObjects.push_back(gameObject);
-    sf::Shape* newSprite = new sf::CircleShape(3.0f);
+    sf::Shape *newSprite = new sf::CircleShape(3.0f);
     newSprite->setFillColor(gameObject.getColour());
     newSprite->setPosition(x, y);
     this->debugSprites.push_back(newSprite);
@@ -128,7 +127,7 @@ void Game::startScenario(int index)
         delete debugSprite;
     }
     this->debugSprites.clear();
-    for (auto sprite: this->sprites)
+    for (auto sprite : this->sprites)
     {
         delete sprite.second;
     }
@@ -145,6 +144,6 @@ void Game::startScenario(int index)
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>(), 200, glm::vec2(1,0), 255);
+    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>(), 200, glm::vec2(1, 0), 255);
     this->lightmapManager->update();
 }
