@@ -55,7 +55,7 @@ First install two plugins
 - C/C++
 - Cmake Tools
 
-Next add the following to settings.json
+Next add the following to .vscode/settings.json
 
     "cmake.configureOnOpen": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
@@ -70,9 +70,16 @@ Next add the following to settings.json
     ],
     "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
 
+Finally, make sure to configure the IDE to use the correct compiler.
+
+- Press cmd + shift + p to open the command pallette and enter "CMake: Select a kit"
+- Select the appropriate compiler from the options provided (may require some trial and error to find the most optimized one)
+
 ## Scenario Viewer
 
 This is a demo app that uses the solas API
 
 - Use arrow keys left and right to switch between scenarios.
+- Use WASD to move the current light around
+- Left click adds a new light
 - Use 'L' key to toggle lighting on/off
