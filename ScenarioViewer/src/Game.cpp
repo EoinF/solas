@@ -63,19 +63,11 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
         for (int i = 0; i < numTilesX; i++)
         {
             auto tile = lightmapManager->getTileState(i, j);
-            /*if (tile.r() > 0) {
-                pixels[index] = 255;
-                pixels[index + 1] = 255;
-                pixels[index + 2] = 255;
-                pixels[index + 3] = 255;
-            }
-            else */
-            {
-                pixels[index] = tile->brightness();
-                pixels[index + 1] = tile->brightness();
-                pixels[index + 2] = tile->brightness();
-                pixels[index + 3] = 255 - glm::min(255, tile->brightness());
-            }
+            pixels[index] = tile->brightness();
+            pixels[index + 1] = tile->brightness();
+            pixels[index + 2] = tile->brightness();
+            pixels[index + 3] = 255 - glm::min(255, tile->brightness());
+
             index += 4;
         }
     }

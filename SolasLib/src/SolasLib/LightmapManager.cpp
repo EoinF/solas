@@ -6,13 +6,12 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-
 long getChunkIndex(int x, int y)
 {
 	return (x + MAX_CHUNKS_X / 2) + (y * MAX_CHUNKS_X + 1);
 }
 
-TileLightState * getTileFast(int tileX, int tileY, int chunkSize, ChunkMap & chunkMap)
+TileLightState *getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap)
 {
 	float chunkSizeF = (float)chunkSize;
 	int chunkX = (int)floorf(tileX / chunkSizeF);
@@ -76,10 +75,10 @@ void LightmapManager::allocateChunk(int chunkIndex)
 		tileArray.push_back(TileLightState());
 	}
 
-	this->chunkMap.insert({ chunkIndex, tileArray });
+	this->chunkMap.insert({chunkIndex, tileArray});
 }
 
-std::vector<TileLightState> & LightmapManager::getOrAllocateChunk(int chunkIndex)
+std::vector<TileLightState> &LightmapManager::getOrAllocateChunk(int chunkIndex)
 {
 	if (this->chunkMap.find(chunkIndex) == this->chunkMap.end())
 	{
@@ -88,7 +87,7 @@ std::vector<TileLightState> & LightmapManager::getOrAllocateChunk(int chunkIndex
 	return this->chunkMap[chunkIndex];
 }
 
-TileLightState* LightmapManager::getTileState(int x, int y)
+TileLightState *LightmapManager::getTileState(int x, int y)
 {
 	int chunkX = floorf(x / (float)chunkSize);
 	int chunkY = floorf(y / (float)chunkSize);
@@ -101,7 +100,7 @@ TileLightState* LightmapManager::getTileState(int x, int y)
 int LightmapManager::addLight(float x, float y, float span, float range, glm::vec2 direction, int brightness)
 {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(std::pair<int, Light*>(lightId, new Light(x, y, direction, span, range, brightness, tileSize)));
+	this->lightsMap.insert(std::pair<int, Light *>(lightId, new Light(x, y, direction, span, range, brightness, tileSize)));
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, range);
@@ -122,16 +121,19 @@ void LightmapManager::updateLight(int lightId, float x, float y, float span, glm
 
 void LightmapManager::clearTileState()
 {
-	auto& tileArray = this->getTileArray();
-	for (int i = 0; i < this->chunkSize * this->chunkSize; i++)
+	auto &tileArray = this->getTileArray();
+	for (auto &chunk : this->chunkMap)
 	{
-		tileArray[i].isWall = false;
+		for (int i = 0; i < chunkSize * chunkSize; i++)
+		{
+			chunk.second[i].isWall = false;
+		}
 	}
 }
 
 void LightmapManager::clearLights()
 {
-	for (auto& lightIdPair : this->lightsMap)
+	for (auto &lightIdPair : this->lightsMap)
 	{
 		this->lightCaster->removeLight(lightIdPair.first, lightIdPair.second, tileSize, chunkSize, chunkMap);
 		delete lightIdPair.second;
@@ -141,7 +143,7 @@ void LightmapManager::clearLights()
 
 void LightmapManager::removeLight(int lightId)
 {
-	Light* light = lightsMap[lightId];
+	Light *light = lightsMap[lightId];
 	this->lightCaster->removeLight(lightId, light, tileSize, chunkSize, chunkMap);
 	delete light;
 	lightsMap.erase(lightId);
@@ -149,7 +151,7 @@ void LightmapManager::removeLight(int lightId)
 
 void LightmapManager::resetLighting()
 {
-	for (auto& lightIdPair : this->lightsMap)
+	for (auto &lightIdPair : this->lightsMap)
 	{
 		for (int i = 0; i < lightIdPair.second->lightMapWidth; i++)
 		{
@@ -166,7 +168,7 @@ void LightmapManager::update()
 	for (auto idLightPair : this->lightsMap)
 	{
 		int lightId = idLightPair.first;
-		Light* light = idLightPair.second;
+		Light *light = idLightPair.second;
 
 		if (light->shouldUpdate)
 		{
