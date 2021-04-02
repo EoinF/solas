@@ -6,15 +6,20 @@
 
 const int CHUNK_SIZE = 100;
 
-class BoundRayCast_AddLightTest : public BaseLightingTest {
-    LightmapManager* createTestSubject() {
+class BoundRayCast_AddLightTest : public BaseLightingTest
+{
+    LightmapManager *createTestSubject()
+    {
         return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, CHUNK_SIZE);
     }
 };
 
 TEST_F(BoundRayCast_AddLightTest, basic_lighting_test)
 {
-    lightmapManager->addLight(22 * TILE_SIZE, 10 * TILE_SIZE, PI * 3, 10 * TILE_SIZE);
+    const auto RANGE_IN_TILES = 10;
+    const auto LIGHT_X = 22;
+    const auto LIGHT_Y = 10;
+    lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 
     EXPECT_TRUE(isTileLit(22, 10));
@@ -40,71 +45,6 @@ TEST_F(BoundRayCast_AddLightTest, lighting_range_test)
     EXPECT_TRUE(isTileUnlit(LIGHT_X - RANGE_IN_TILES - 1, LIGHT_Y));
     EXPECT_TRUE(isTileUnlit(LIGHT_X, LIGHT_Y + RANGE_IN_TILES + 1));
     EXPECT_TRUE(isTileUnlit(LIGHT_X, LIGHT_Y - RANGE_IN_TILES - 1));
-}
-
-TEST_F(BoundRayCast_AddLightTest, brightness_decreases)
-{
-    const auto RANGE_IN_TILES = 7;
-    const auto LIGHT_X = 22;
-    const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
-    lightmapManager->update();
-
-    int brightnessAtCenter = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
-    int brightnessAtEdge = lightmapManager->getTileState(LIGHT_X + RANGE_IN_TILES, LIGHT_Y)->brightness();
-
-    EXPECT_LT(brightnessAtEdge, brightnessAtCenter);
-}
-
-
-TEST_F(BoundRayCast_AddLightTest, brightness_decreases_with_distance_from_source)
-{
-    const auto RANGE_IN_TILES = 7;
-    const auto LIGHT_X = 22;
-    const auto LIGHT_Y = 21;
-    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
-    lightmapManager->update();
-
-    int brightness = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
-
-    auto orderedLightData = getOrderedLightData(LIGHT_X, LIGHT_Y, RANGE_IN_TILES);
-
-    TestLightData previousLightData(255, 0, 0, 0);
-    for (auto lightData : orderedLightData)
-    {
-        EXPECT_TRUE(previousLightData.brightness <= lightData.brightness
-            ? ::testing::AssertionSuccess() :
-            ::testing::AssertionFailure()
-            << std::endl
-            << "(x, y) | distance | brightness" << std::endl
-            << "(" << lightData.x << "," << lightData.y << ") | " << lightData.distance << " | " << lightData.brightness << std::endl
-            << "(" << previousLightData.x << "," << previousLightData.y << ") | " << previousLightData.distance << " | " << previousLightData.brightness << std::endl
-        );
-
-        previousLightData = lightData;
-    }
-}
-
-TEST_F(BoundRayCast_AddLightTest, brightness_decreases_smoothly)
-{
-    const auto DELTA_LIMIT = 40;
-    const auto RANGE_IN_TILES = 7;
-    const auto LIGHT_X = 22;
-    const auto LIGHT_Y = 10;
-    lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
-    lightmapManager->update();
-
-    int brightness = lightmapManager->getTileState(LIGHT_X, LIGHT_Y)->brightness();
-
-    auto orderedLightData = getOrderedLightData(LIGHT_X, LIGHT_Y, RANGE_IN_TILES);
-
-    int previousBrightness = 0;
-    for (auto lightData : orderedLightData)
-    {
-        EXPECT_LT(lightData.brightness - previousBrightness, DELTA_LIMIT);
-
-        previousBrightness = lightData.brightness;
-    }
 }
 
 TEST_F(BoundRayCast_AddLightTest, light_at_edge_of_chunk)

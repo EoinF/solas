@@ -6,8 +6,10 @@
 const auto WALL_X = 25;
 const auto WALL_Y = 10;
 
-class BoundRayCast_WallTileTest : public BaseLightingTest {
-	LightmapManager* createTestSubject() {
+class BoundRayCast_WallTileTest : public BaseLightingTest
+{
+	LightmapManager *createTestSubject()
+	{
 		return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, 100);
 	}
 };
@@ -40,7 +42,6 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_down)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X, WALL_Y + 1));
-
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_up)
@@ -51,7 +52,6 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_up)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X, WALL_Y - 1));
-
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northwest)
@@ -62,7 +62,6 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northwest)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X - 1, WALL_Y - 1));
-
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northeast)
@@ -73,7 +72,6 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northeast)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y - 1));
-
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southwest)
@@ -94,5 +92,4 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southeast)
 	lightmapManager->update();
 
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y + 1));
-
 }

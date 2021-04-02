@@ -4,8 +4,10 @@
 
 #include "../testUtils.hpp"
 
-class BoundRayCast_LightDirectionTest : public BaseLightingTest {
-    LightmapManager* createTestSubject() {
+class BoundRayCast_LightDirectionTest : public BaseLightingTest
+{
+    LightmapManager *createTestSubject()
+    {
         return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, 100);
     }
 };

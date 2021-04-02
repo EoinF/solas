@@ -6,12 +6,13 @@
 
 const int CHUNK_SIZE = 100;
 
-class BoundRayCast_BrightnessTest : public BaseLightingTest {
-    LightmapManager* createTestSubject() {
+class BoundRayCast_BrightnessTest : public BaseLightingTest
+{
+    LightmapManager *createTestSubject()
+    {
         return new LightmapManager(TILE_SIZE, CastingAlgorithm::BOUND_RAY_CAST, CHUNK_SIZE);
     }
 };
-
 
 TEST_F(BoundRayCast_BrightnessTest, brightness_at_center)
 {
@@ -55,13 +56,12 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases_with_distance_from_sour
     for (auto lightData : orderedLightData)
     {
         EXPECT_TRUE(previousLightData.brightness <= lightData.brightness
-            ? ::testing::AssertionSuccess() :
-            ::testing::AssertionFailure()
-            << std::endl
-            << "(x, y) | distance | brightness" << std::endl
-            << "(" << lightData.x << "," << lightData.y << ") | " << lightData.distance << " | " << lightData.brightness << std::endl
-            << "(" << previousLightData.x << "," << previousLightData.y << ") | " << previousLightData.distance << " | " << previousLightData.brightness << std::endl
-        );
+                        ? ::testing::AssertionSuccess()
+                        : ::testing::AssertionFailure()
+                              << std::endl
+                              << "(x, y) | distance | brightness" << std::endl
+                              << "(" << lightData.x << "," << lightData.y << ") | " << lightData.distance << " | " << lightData.brightness << std::endl
+                              << "(" << previousLightData.x << "," << previousLightData.y << ") | " << previousLightData.distance << " | " << previousLightData.brightness << std::endl);
 
         previousLightData = lightData;
     }
@@ -88,7 +88,6 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases_smoothly)
         previousBrightness = lightData.brightness;
     }
 }
-
 
 TEST_F(BoundRayCast_BrightnessTest, brightness_smooth_at_span_edge)
 {
