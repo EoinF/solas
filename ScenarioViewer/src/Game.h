@@ -34,6 +34,12 @@ public:
     }
 };
 
+enum PlacementMode
+{
+    LIGHT,
+    WALL
+};
+
 class Game
 {
 protected:
@@ -46,6 +52,9 @@ protected:
     sf::Image lightmapOverlayImage;
     sf::Uint8 *pixels;
     int heldLightId = 0;
+    sf::Shape *placementSprite;
+    PlacementMode placementMode;
+    glm::vec2 placementPosition;
 
 public:
     std::map<int, sf::Shape *> sprites;
@@ -54,6 +63,9 @@ public:
     int scenarioIndex;
     void nextScenario();
     void previousScenario();
+    void updatePlacement(bool isMouseClicked, sf::Vector2i mousePosition, glm::vec2 deltaPosition, float deltaSpan);
+    PlacementMode getPlacementMode() { return placementMode; }
+    void setPlacementMode(PlacementMode mode);
 
     void addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b);
     void addLight(float x, float y);

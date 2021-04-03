@@ -80,6 +80,8 @@ Finally, make sure to configure the IDE to use the correct compiler.
 This is a demo app that uses the solas API
 
 - Use arrow keys left and right to switch between scenarios.
-- Use WASD to move the current light around
+- Use WASD to move the placement cursor around
+- Hold left shift to move around slowly for more precise placement
 - Left click adds a new light
 - Use 'L' key to toggle lighting on/off
+- Use 'P' to switch between Light placement and Wall placement

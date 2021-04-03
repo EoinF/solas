@@ -116,6 +116,21 @@ void update()
             showOverlay = !showOverlay;
             inputTimeout = 0.3f;
         }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+        {
+            auto currentMode = game.getPlacementMode();
+            if (currentMode == PlacementMode::LIGHT)
+            {
+                currentMode = PlacementMode::WALL;
+            }
+            else
+            {
+                currentMode = PlacementMode::LIGHT;
+            }
+            game.setPlacementMode(currentMode);
+            inputTimeout = 0.3f;
+        }
     }
     else
     {
@@ -124,19 +139,29 @@ void update()
 
     glm::vec2 deltaPosition(0, 0);
     float deltaSpan = 0.0f;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        deltaPosition.y -= timeDelta * 600;
+    float moveSpeed = 600.0f;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        moveSpeed = 100.0f;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        deltaPosition.y += timeDelta * 600;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
+        deltaPosition.y -= timeDelta * moveSpeed;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        deltaPosition.x -= timeDelta * 600;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        deltaPosition.y += timeDelta * moveSpeed;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        deltaPosition.x += timeDelta * 600;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        deltaPosition.x -= timeDelta * moveSpeed;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        deltaPosition.x += timeDelta * moveSpeed;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+    {
         deltaSpan += timeDelta * 5.0f;
     }
 
@@ -159,7 +184,7 @@ void update()
     {
         window.draw(lightmapOverlaySprite);
     }
-    for (auto& spritePtr : game.debugSprites)
+    for (auto &spritePtr : game.debugSprites)
     {
         window.draw(*spritePtr);
     }

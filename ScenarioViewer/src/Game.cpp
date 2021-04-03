@@ -12,6 +12,8 @@ Game::Game(int tileSize, int numTilesX, int numTilesY)
     lightmapOverlay.create(numTilesX, numTilesY);
     lightmapOverlay.setSmooth(true);
 
+    placementPosition = glm::vec2(200, 200);
+
     this->scenarioIndex = 2;
 
     this->startScenario(this->scenarioIndex);
@@ -36,26 +38,8 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
     //        light->range);
     //}
 
-    auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
-
-    float updatedSpan = heldLight->span + deltaSpan;
-    if (updatedSpan > 2.3f * glm::pi<float>())
-    {
-        updatedSpan = 0.0f;
-    }
-
-    this->lightmapManager->updateLight(
-        heldLightId,
-        heldLight->x + deltaPosition.x,
-        heldLight->y + deltaPosition.y,
-        updatedSpan,
-        glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
+    updatePlacement(isMouseClicked, mousePosition, deltaPosition, deltaSpan);
     lightmapManager->update();
-
-    if (isMouseClicked)
-    {
-        this->heldLightId = this->lightmapManager->addLight(heldLight->x, heldLight->y, heldLight->span, heldLight->range, heldLight->direction, heldLight->brightness);
-    }
 
     int index = 0;
     for (int j = 0; j < numTilesY; j++)
@@ -73,6 +57,70 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
     }
     lightmapOverlayImage.create(numTilesX, numTilesY, pixels);
     lightmapOverlay.update(lightmapOverlayImage);
+}
+
+void Game::setPlacementMode(PlacementMode newMode)
+{
+    std::cout << "setting placement mode" << std::endl;
+    if (newMode == PlacementMode::LIGHT)
+    {
+        this->heldLightId = this->lightmapManager->addLight(placementPosition.x, placementPosition.y, glm::pi<float>(), 200, glm::vec2(1, 0), 255);
+    }
+    else
+    {
+        std::cout << "removing light" << std::endl;
+        this->lightmapManager->removeLight(heldLightId);
+        std::cout << "removed light" << std::endl;
+    }
+    placementMode = newMode;
+}
+
+void Game::updatePlacement(bool isMouseClicked, sf::Vector2i mousePosition, glm::vec2 deltaPosition, float deltaSpan)
+{
+    placementPosition += deltaPosition;
+    int tileX = floorf(placementPosition.x / tileSize);
+    int tileY = floorf(placementPosition.y / tileSize);
+    placementSprite->setPosition(tileX * tileSize, tileY * tileSize);
+    auto heldLight = this->lightmapManager->getLightsMap()[heldLightId];
+    if (placementMode == PlacementMode::LIGHT)
+    {
+        float updatedSpan = heldLight->span + deltaSpan;
+        if (updatedSpan > 2.3f * glm::pi<float>())
+        {
+            updatedSpan = 0.0f;
+        }
+
+        this->lightmapManager->updateLight(
+            heldLightId,
+            placementPosition.x,
+            placementPosition.y,
+            updatedSpan,
+            glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
+        if (isMouseClicked)
+        {
+            std::cout << "placed light at: " << tileX << "," << tileY << std::endl;
+            this->heldLightId = this->lightmapManager->addLight(tileX * tileSize, tileY * tileSize, heldLight->span, heldLight->range, heldLight->direction, heldLight->brightness);
+            this->addLight(tileX * tileSize, tileY * tileSize);
+        }
+    }
+    else
+    {
+        if (isMouseClicked)
+        {
+            bool wasWall = this->lightmapManager->getTileState(tileX, tileY)->isWall;
+            if (!wasWall)
+            {
+                addWall(tileX, tileY, 125, 255, 125);
+            }
+            else
+            {
+                int index = tileY * numTilesX + tileX;
+                delete this->sprites[index];
+                this->sprites.erase(index);
+            }
+            this->lightmapManager->getTileState(tileX, tileY)->isWall = !wasWall;
+        }
+    }
 }
 
 void Game::addWall(int tileX, int tileY, uint8_t r, uint8_t g, uint8_t b)
@@ -136,6 +184,13 @@ void Game::startScenario(int index)
         },
         numTilesX, numTilesY, tileSize);
 
-    this->heldLightId = this->lightmapManager->addLight(200, 200, glm::pi<float>(), 200, glm::vec2(1, 0), 255);
+    placementSprite = new sf::RectangleShape(sf::Vector2f(tileSize, tileSize));
+    placementSprite->setFillColor(sf::Color(255, 125, 125));
+    placementSprite->setPosition(placementPosition.x, placementPosition.y);
+    this->debugSprites.push_back(placementSprite);
+    if (placementMode == PlacementMode::LIGHT)
+    {
+        this->heldLightId = this->lightmapManager->addLight(placementPosition.x, placementPosition.y, glm::pi<float>(), 200, glm::vec2(1, 0), 255);
+    }
     this->lightmapManager->update();
 }

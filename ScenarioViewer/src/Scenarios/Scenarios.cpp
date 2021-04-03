@@ -35,13 +35,25 @@ void scenario1(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
 
 void scenario2(SetGridTypeFunction setGridType, AddLightFunction addLight, int numTilesX, int numTilesY, int tileSize)
 {
-    for (int j = numTilesY / 3; j < 2 * numTilesY / 3; j++)
+    int startX = numTilesX / 3;
+    int startX2 = 3 * numTilesX / 4;
+    int startY = numTilesY / 3;
+    int startY2 = numTilesY / 3;
+
+    int endY = 2 * numTilesY / 3;
+    int endY2 = 3 * numTilesY / 4;
+    std::cout << "Loading scenario 2" << std::endl;
+    std::cout << "start (X, X2) = " << startX << ", " << startX2 << std::endl;
+    std::cout << "start (Y, Y2) = " << startY << ", " << startY2 << std::endl;
+    std::cout << "end (Y, Y2) = " << endY << ", " << endY2 << std::endl;
+
+    for (int j = startY; j < endY; j++)
     {
-        setGridType(numTilesX / 3, j, true, 125, 125, 0);
+        setGridType(startX, j, true, 125, 125, 0);
     }
 
     int skip = 0;
-    for (int j = numTilesY / 4; j < 3 * numTilesY / 4; j++)
+    for (int j = startY2; j < endY2; j++)
     {
         skip++;
         if (skip > 10)
@@ -49,7 +61,7 @@ void scenario2(SetGridTypeFunction setGridType, AddLightFunction addLight, int n
             skip = 0;
             continue;
         }
-        setGridType(3 * numTilesX / 4, j, true, 0, 255, 0);
+        setGridType(startX2, j, true, 0, 255, 0);
     }
 }
 

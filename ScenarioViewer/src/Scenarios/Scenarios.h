@@ -1,4 +1,6 @@
 #pragma once
+#include <stdio.h>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
