@@ -3,9 +3,9 @@
 #include "../RayCastUtils.hpp"
 
 void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
-	float tileSize, Light* light, int chunkSize, ChunkMap & chunkMap);
+				float tileSize, Light *light, int chunkSize, ChunkMap &chunkMap);
 
-void SimpleRayCast::update(int tileSize, Light* light, int lightId, int chunkSize, ChunkMap& chunkMap)
+void SimpleRayCast::update(int tileSize, Light *light, int lightId, int chunkSize, ChunkMap &chunkMap)
 {
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
@@ -15,7 +15,6 @@ void SimpleRayCast::update(int tileSize, Light* light, int lightId, int chunkSiz
 	int startY = (int)glm::floor((light->y - light->range) / tileSizeF);
 	int endX = (int)glm::ceil((light->x + light->range) / tileSizeF);
 	int endY = (int)glm::ceil((light->y + light->range) / tileSizeF);
-
 
 	//
 	// Reset the lightcast mask for this light
@@ -30,7 +29,7 @@ void SimpleRayCast::update(int tileSize, Light* light, int lightId, int chunkSiz
 			int y = -light->lightMapHeight / 2 + j + (int)(light->y / tileSizeF);
 			int chunkIndex = getChunkIndex(x, y);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
-			
+
 			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
 	}
@@ -52,7 +51,7 @@ void SimpleRayCast::update(int tileSize, Light* light, int lightId, int chunkSiz
 	light->shouldUpdate = false;
 }
 
-void SimpleRayCast::removeLight(int lightId, Light * light, int tileSize, int chunkSize, ChunkMap & chunkMap)
+void SimpleRayCast::removeLight(int lightId, Light *light, int tileSize, int chunkSize, ChunkMap &chunkMap)
 {
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
@@ -77,14 +76,19 @@ void SimpleRayCast::removeLight(int lightId, Light * light, int tileSize, int ch
 
 			int chunkIndex = getChunkIndex(x, y);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
-			
+
 			light->lightMap[i + j * light->lightMapWidth] = 0;
 		}
 	}
 }
 
+const std::set<int> &SimpleRayCast::getAffectedLights(int tileX, int tileY, int tileSize, int chunkSize)
+{
+	//TODO update lights based on tile
+}
+
 void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
-	float tileSize, Light* light, int chunkSize, ChunkMap & chunkMap)
+				float tileSize, Light *light, int chunkSize, ChunkMap &chunkMap)
 {
 	float spanDifference = getSpanDifference(light, toTileX, toTileY, tileSize);
 	if (spanDifference > 0)
@@ -102,10 +106,7 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY,
 				int x = light->lightMapWidth / 2 + nextTile.x - (int)(light->x / tileSize);
 				int y = light->lightMapHeight / 2 + nextTile.y - (int)(light->y / tileSize);
 				int newLighting = (int)(255.0f *
-					(
-						glm::min(1.0f, 0.0f + spanDifference) * (1.0f - (distanceFromSrc / light->range))
-					)
-				);
+										(glm::min(1.0f, 0.0f + spanDifference) * (1.0f - (distanceFromSrc / light->range))));
 
 				int existingLighting = light->lightMap[x + y * light->lightMapWidth];
 				if (newLighting > existingLighting)

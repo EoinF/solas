@@ -11,7 +11,7 @@ int TILE_SIZE = 8;
 
 Game game(TILE_SIZE, WINDOW_WIDTH / TILE_SIZE, WINDOW_HEIGHT / TILE_SIZE);
 
-sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test", 7U, sf::ContextSettings(0U, 0U, 8));
+sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test", sf::Style::Default, sf::ContextSettings(0U, 0U, 8U));
 sf::Clock gameClock;
 sf::Font font;
 sf::Text fpsLabel;

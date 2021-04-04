@@ -10,11 +10,11 @@ private:
 	int _brightness = 0;
 
 public:
-	int brightness()
+	int brightness() const
 	{
 		return _brightness;
 	}
-	const void addLighting(int _brightness)
+	void addLighting(int _brightness)
 	{
 		this->_brightness += _brightness;
 	}

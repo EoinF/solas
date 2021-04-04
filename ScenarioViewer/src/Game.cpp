@@ -118,7 +118,7 @@ void Game::updatePlacement(bool isMouseClicked, sf::Vector2i mousePosition, glm:
                 delete this->sprites[index];
                 this->sprites.erase(index);
             }
-            this->lightmapManager->getTileState(tileX, tileY)->isWall = !wasWall;
+            this->lightmapManager->updateTile(tileX, tileY, !wasWall);
         }
     }
 }
@@ -175,7 +175,7 @@ void Game::startScenario(int index)
     loadScenario(
         index + 1,
         [=](int tileX, int tileY, bool isWall, uint8_t r, uint8_t g, uint8_t b) {
-            this->lightmapManager->getTileState(tileX, tileY)->isWall = isWall;
+            this->lightmapManager->updateTile(tileX, tileY, isWall);
             this->addWall(tileX, tileY, r, g, b);
         },
         [=](float x, float y, float span, float range, glm::vec2 direction) {

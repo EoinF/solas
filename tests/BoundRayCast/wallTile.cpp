@@ -17,7 +17,7 @@ class BoundRayCast_WallTileTest : public BaseLightingTest
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_left)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X + 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -28,7 +28,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_left)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_right)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X - 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -39,7 +39,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_right)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_down)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y - 2) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -50,7 +50,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_down)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_up)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y + 2) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -61,7 +61,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_up)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northwest)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X + 1) * TILE_SIZE, (WALL_Y + 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -72,7 +72,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northwest)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northeast)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X - 1) * TILE_SIZE, (WALL_Y + 1) * TILE_SIZE, 2 * PI, 5 * TILE_SIZE);
 	lightmapManager->update();
@@ -83,7 +83,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northeast)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southwest)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X + 1) * TILE_SIZE, (WALL_Y - 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
@@ -94,7 +94,7 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southwest)
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southeast)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
+	this->lightmapManager->updateTile(WALL_X, WALL_Y, true);
 
 	lightmapManager->addLight((WALL_X - 1) * TILE_SIZE, (WALL_Y - 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();

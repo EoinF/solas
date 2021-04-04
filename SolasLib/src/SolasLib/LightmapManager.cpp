@@ -87,7 +87,7 @@ std::vector<TileLightState> &LightmapManager::getOrAllocateChunk(int chunkIndex)
 	return this->chunkMap[chunkIndex];
 }
 
-TileLightState *LightmapManager::getTileState(int x, int y)
+TileLightState *LightmapManager::_getTileState(int x, int y)
 {
 	int chunkX = floorf(x / (float)chunkSize);
 	int chunkY = floorf(y / (float)chunkSize);
@@ -95,6 +95,11 @@ TileLightState *LightmapManager::getTileState(int x, int y)
 	int chunkTileX = x - chunkSize * chunkX;
 	int chunkTileY = y - chunkSize * chunkY;
 	return &(LightmapManager::getOrAllocateChunk(chunkIndex)[chunkTileX + chunkTileY * chunkSize]);
+}
+
+const TileLightState *LightmapManager::getTileState(int x, int y)
+{
+	return _getTileState(x, y);
 }
 
 int LightmapManager::addLight(float x, float y, float span, float range, glm::vec2 direction, int brightness)
@@ -117,6 +122,18 @@ void LightmapManager::updateLight(int lightId, float x, float y, float span, glm
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, this->lightsMap[lightId]->range);
+}
+
+void LightmapManager::updateTile(int x, int y, bool isWall)
+{
+	auto tile = _getTileState(x, y);
+	tile->isWall = isWall;
+	auto tileKey = glm::vec2(x, y);
+	auto affectedLights = lightCaster->getAffectedLights(x, y, tileSize, chunkSize);
+	for (auto lightId : affectedLights)
+	{
+		lightsMap[lightId]->shouldUpdate = true;
+	}
 }
 
 void LightmapManager::clearTileState()
