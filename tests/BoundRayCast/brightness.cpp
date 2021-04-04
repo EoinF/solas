@@ -43,8 +43,8 @@ TEST_F(BoundRayCast_BrightnessTest, brightness_decreases)
 TEST_F(BoundRayCast_BrightnessTest, brightness_decreases_with_distance_from_source)
 {
     const auto RANGE_IN_TILES = 7;
-    const auto LIGHT_X = 22;
-    const auto LIGHT_Y = 21;
+    const auto LIGHT_X = 10;
+    const auto LIGHT_Y = 10;
     lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3, RANGE_IN_TILES * TILE_SIZE);
     lightmapManager->update();
 

@@ -1,17 +1,17 @@
 #include "BoundRayCast.hpp"
 #include "../DiscreteLinePather.hpp"
 
-void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, ChunkMap& chunkMap);
-void boundRayCast(BoundLight* boundLight, int i, int j);
-void applyLightDependencyPath(BoundLight* boundLight, BoundRayCastNode* currentNode, int chunkSize, ChunkMap& chunkMap);
+void clearLightMapping(BoundLight *boundLight, int tileSize, int chunkSize, ChunkMap &chunkMap);
+void boundRayCast(BoundLight *boundLight, int i, int j);
+void applyLightDependencyPath(BoundLight *boundLight, BoundRayCastNode *currentNode, int chunkSize, ChunkMap &chunkMap);
 
-void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize, ChunkMap& chunkMap)
+void BoundRayCast::update(int lightId, Light *light, int tileSize, int chunkSize, ChunkMap &chunkMap)
 {
 	float tileSizeF = (float)tileSize;
 	int srcTileX = (int)(light->x / tileSizeF);
 	int srcTileY = (int)(light->y / tileSizeF);
 
-	BoundLight* boundLight;
+	BoundLight *boundLight;
 
 	// Check if a mapping for this light exists
 	if (boundLightMap.find(lightId) != boundLightMap.end())
@@ -27,24 +27,24 @@ void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize
 	else
 	{
 		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light->range / tileSizeF), light->span, light->direction, light->brightness);
-		BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
+		BoundRayCastNode *currentNode = &boundLight->dependencyTreeRoot;
 
 		// Precalculate the ray paths to each perimeter tile
-		for (int i = -boundLight->halfCastingMapWidth; i < boundLight->halfCastingMapWidth; i++)
+		for (int i = -boundLight->halfCastingMapWidth; i < boundLight->halfCastingMapWidth + 1; i++)
 		{
 			int j = -boundLight->halfCastingMapWidth;
 			boundRayCast(boundLight, i, j);
 			j = +boundLight->halfCastingMapWidth;
 			boundRayCast(boundLight, i, j);
 		}
-		for (int j = -boundLight->halfCastingMapWidth + 1; j < boundLight->halfCastingMapWidth - 1; j++)
+		for (int j = -boundLight->halfCastingMapWidth + 1; j < boundLight->halfCastingMapWidth; j++)
 		{
 			int i = -boundLight->halfCastingMapWidth;
 			boundRayCast(boundLight, i, j);
 			i = +boundLight->halfCastingMapWidth;
 			boundRayCast(boundLight, i, j);
 		}
-		boundLightMap.insert({ lightId, boundLight });
+		boundLightMap.insert({lightId, boundLight});
 	}
 
 	// Apply the dependency tree
@@ -52,15 +52,15 @@ void BoundRayCast::update(int lightId, Light* light, int tileSize, int chunkSize
 	light->shouldUpdate = false;
 }
 
-void BoundRayCast::removeLight(int lightId, Light* light, int tileSize, int chunkSize, ChunkMap& chunkMap)
+void BoundRayCast::removeLight(int lightId, Light *light, int tileSize, int chunkSize, ChunkMap &chunkMap)
 {
-	BoundLight* boundLight = boundLightMap[lightId];
+	BoundLight *boundLight = boundLightMap[lightId];
 	clearLightMapping(boundLight, tileSize, chunkSize, chunkMap);
 	delete boundLightMap[lightId];
 	boundLightMap.erase(lightId);
 }
 
-void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, ChunkMap& chunkMap)
+void clearLightMapping(BoundLight *boundLight, int tileSize, int chunkSize, ChunkMap &chunkMap)
 {
 	for (int x = 0; x < boundLight->castingMapWidth; x++)
 	{
@@ -75,32 +75,30 @@ void clearLightMapping(BoundLight* boundLight, int tileSize, int chunkSize, Chun
 	}
 }
 
-void boundRayCast(BoundLight * boundLight, int i, int j)
+void boundRayCast(BoundLight *boundLight, int i, int j)
 {
-	BoundRayCastNode* currentNode = &boundLight->dependencyTreeRoot;
+	BoundRayCastNode *currentNode = &boundLight->dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 
-	while (!pather.isFinished) {
+	while (!pather.isFinished)
+	{
 		auto nextTile = pather.nextTile();
 		float distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
-		
+
 		if (distance >= boundLight->halfCastingMapWidth)
 		{
 			break;
 		}
-
 		int tileX = boundLight->srcX + nextTile.x;
 		int tileY = boundLight->srcY + nextTile.y;
 
 		int tileIndex = (boundLight->halfCastingMapWidth + nextTile.x) + (boundLight->halfCastingMapWidth + nextTile.y) * boundLight->castingMapWidth;
 
 		// If this node doesn't exist create it
-		if (currentNode->children.find(tileIndex) == currentNode->children.end()) {
+		if (currentNode->children.find(tileIndex) == currentNode->children.end())
+		{
 			auto newNode = new BoundRayCastNode(nextTile.x, nextTile.y, 0);
-			currentNode->children.insert({
-				tileIndex,
-				newNode
-			});
+			currentNode->children.insert({tileIndex, newNode});
 			currentNode = newNode;
 		}
 		else // otherwise use the existing node
@@ -119,7 +117,8 @@ void boundRayCast(BoundLight * boundLight, int i, int j)
 	}
 }
 
-bool isNodeReachable(BoundRayCastNode* node, glm::vec2 direction, float span) {
+bool isNodeReachable(BoundRayCastNode *node, glm::vec2 direction, float span)
+{
 	if (node->directionsToNode.size() > 0)
 	{
 		for (auto directionToNode : node->directionsToNode)
@@ -136,9 +135,10 @@ bool isNodeReachable(BoundRayCastNode* node, glm::vec2 direction, float span) {
 	return true;
 }
 
-void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * currentNode, int chunkSize, ChunkMap& chunkMap)
+void applyLightDependencyPath(BoundLight *boundLight, BoundRayCastNode *currentNode, int chunkSize, ChunkMap &chunkMap)
 {
-	if (!isNodeReachable(currentNode, boundLight->direction, boundLight->span)) {
+	if (!isNodeReachable(currentNode, boundLight->direction, boundLight->span))
+	{
 		return;
 	}
 	int tileX = boundLight->srcX + currentNode->location.x;
@@ -164,7 +164,8 @@ void applyLightDependencyPath(BoundLight * boundLight, BoundRayCastNode * curren
 		return;
 	}
 
-	for (auto node : currentNode->children) {
+	for (auto node : currentNode->children)
+	{
 		applyLightDependencyPath(boundLight, node.second, chunkSize, chunkMap);
 	}
 }

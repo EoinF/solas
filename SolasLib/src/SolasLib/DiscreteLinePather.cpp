@@ -1,6 +1,7 @@
 #include "DiscreteLinePather.hpp"
 #include <glm/glm.hpp>
 #include <stdexcept>
+#include <iostream>
 
 DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, int destY)
 {
@@ -35,11 +36,14 @@ DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, in
 	isFinished = currentX == destX;
 }
 
-glm::ivec2 DiscreteLinePather::nextTile() {
-	if (currentX == destX) {
+glm::ivec2 DiscreteLinePather::nextTile()
+{
+	if (currentX == destX)
+	{
 		throw std::runtime_error("Pathing is already finished. Check with 'isFinished'");
 	}
-	else {
+	else
+	{
 		int i;
 		int j;
 		if (isSteep)
@@ -55,7 +59,8 @@ glm::ivec2 DiscreteLinePather::nextTile() {
 
 		int tileX = i;
 		int tileY = j;
-		if (isSteep) {
+		if (isSteep)
+		{
 			tileX = j;
 			tileY = i;
 		}
@@ -70,13 +75,15 @@ glm::ivec2 DiscreteLinePather::nextTile() {
 	}
 
 	glm::ivec2 nextTileLocation(currentX, currentY);
-	if (isSteep) {
+	currentX += xstep;
+	nextTileLocation.x = currentX;
+	if (isSteep)
+	{
 		nextTileLocation.x = currentY;
 		nextTileLocation.y = currentX;
 	}
 
-	currentX += xstep;
 	isFinished = currentX == destX;
-	
+
 	return nextTileLocation;
 }

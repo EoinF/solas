@@ -5,6 +5,7 @@
 
 const auto WALL_X = 25;
 const auto WALL_Y = 10;
+const auto RANGE_IN_TILES = 4;
 
 class BoundRayCast_WallTileTest : public BaseLightingTest
 {
@@ -18,9 +19,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_left)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X + 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X + 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X - 1, WALL_Y));
 }
 
@@ -28,9 +30,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_right)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X - 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X - 2) * TILE_SIZE, WALL_Y * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y));
 }
 
@@ -38,9 +41,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_down)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y - 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y - 2) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X, WALL_Y + 1));
 }
 
@@ -48,9 +52,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_up)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y + 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight(WALL_X * TILE_SIZE, (WALL_Y + 2) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X, WALL_Y - 1));
 }
 
@@ -58,9 +63,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northwest)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X + 2) * TILE_SIZE, (WALL_Y + 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X + 1) * TILE_SIZE, (WALL_Y + 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X - 1, WALL_Y - 1));
 }
 
@@ -68,9 +74,10 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_northeast)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X - 2) * TILE_SIZE, (WALL_Y + 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X - 1) * TILE_SIZE, (WALL_Y + 1) * TILE_SIZE, 2 * PI, 5 * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y - 1));
 }
 
@@ -78,18 +85,20 @@ TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southwest)
 {
 	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X + 2) * TILE_SIZE, (WALL_Y - 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X + 1) * TILE_SIZE, (WALL_Y - 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X - 1, WALL_Y + 1));
 }
 
 TEST_F(BoundRayCast_WallTileTest, wall_blocks_light_pointing_southeast)
 {
-	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = false;
+	lightmapManager->getTileState(WALL_X, WALL_Y)->isWall = true;
 
-	lightmapManager->addLight((WALL_X - 2) * TILE_SIZE, (WALL_Y - 2) * TILE_SIZE, 2 * PI, 3 * TILE_SIZE);
+	lightmapManager->addLight((WALL_X - 1) * TILE_SIZE, (WALL_Y - 1) * TILE_SIZE, 2 * PI, RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
+	EXPECT_TRUE(isTileLit(WALL_X, WALL_Y));
 	EXPECT_TRUE(isTileUnlit(WALL_X + 1, WALL_Y + 1));
 }
