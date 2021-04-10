@@ -52,6 +52,7 @@ target_compile_features(SolasLib
 
 target_compile_options(SolasLib
                        PRIVATE
+                    #    $<$<CXX_COMPILER_ID:AppleClang,Clang>:-O0>
                        $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive- /TP>
                        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>)
 
