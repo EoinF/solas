@@ -13,14 +13,20 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/Scenarios/Scenarios.cpp
 )
 
+set(CMAKE_CXX_STANDARD 17)
+
 # Add source to this project's executable.
 if (APPLE)
     add_executable (ScenarioViewer MACOSX_BUNDLE ${SOURCES})
-    set(CMAKE_CXX_STANDARD 17)
 else (APPLE)
     add_executable (ScenarioViewer ${SOURCES})
-    set_target_properties(ScenarioViewer PROPERTIES LINKER_LANGUAGE cxx_std_17)
 endif(APPLE)
+
+if(UNIX AND NOT APPLE)
+    SET(GLM_LIB glm::glm)
+else()
+    SET(GLM_LIB glm)
+endif()
 
 target_compile_features(ScenarioViewer
                     PRIVATE
@@ -39,7 +45,7 @@ target_link_libraries(ScenarioViewer
                       
 target_link_libraries(ScenarioViewer
                       PRIVATE
-                      glm)
+		      ${GLM_LIB})
 
 target_link_libraries(ScenarioViewer
                       PRIVATE

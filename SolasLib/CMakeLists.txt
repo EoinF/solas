@@ -40,11 +40,7 @@ endif()
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")
 
-if (APPLE)
-    set(CMAKE_CXX_STANDARD 17)
-else (APPLE)
-    set_target_properties(SolasLib PROPERTIES LINKER_LANGUAGE cxx_std_17)
-endif(APPLE)
+set(CMAKE_CXX_STANDARD 17)
 
 target_compile_features(SolasLib
                     PRIVATE
@@ -56,9 +52,15 @@ target_compile_options(SolasLib
                        $<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive- /TP>
                        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>)
 
+if(UNIX AND NOT APPLE)
+	set(GLM_LIB glm::glm)
+else()
+	set(GLM_LIB glm)
+endif()
+
 target_link_libraries(SolasLib
-                      PRIVATE
-                      glm)
-                      
+       PRIVATE
+       ${GLM_LIB})
+
 # IDEs should put the headers in a nice place
 source_group(TREE "${CMAKE_CURRENT_LIST_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})

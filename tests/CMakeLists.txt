@@ -31,16 +31,18 @@ set_target_properties(gtest_main PROPERTIES FOLDER extern)
 set_target_properties(gmock PROPERTIES FOLDER extern)
 set_target_properties(gmock_main PROPERTIES FOLDER extern)
 
+if(UNIX AND NOT APPLE)
+    set(GLM_LIB glm::glm)
+else()
+    set(GLM_LIB glm)
+endif()
+
 macro(package_add_test TESTNAME)
     message (INFO ${ARGN})
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
 
-    if (APPLE)
-        set(CMAKE_CXX_STANDARD 17)
-    else (APPLE)
-        set_target_properties(${TESTNAME} PROPERTIES LINKER_LANGUAGE cxx_std_17)
-    endif(APPLE)
+    set(CMAKE_CXX_STANDARD 17)
 
     target_compile_features(${TESTNAME}
                         PRIVATE
@@ -48,7 +50,7 @@ macro(package_add_test TESTNAME)
 
     # link the Google test infrastructure, mocking library, and a default main fuction to
     # the test executable.  Remove g_test_main if writing your own main function.
-    target_link_libraries(${TESTNAME} PRIVATE gtest gmock gtest_main SolasLib glm)
+    target_link_libraries(${TESTNAME} PRIVATE gtest gmock gtest_main SolasLib ${GLM_LIB})
     # gtest_discover_tests replaces gtest_add_tests,
     # see https://cmake.org/cmake/help/v3.10/module/GoogleTest.html for more options to pass to it
     gtest_discover_tests(${TESTNAME}
