@@ -45,7 +45,7 @@
     {
       "name": "x64-Test",
       "generator": "Visual Studio 16 2019 Win64",
-      "configurationType": "Debug",
+      "configurationType": "Release",
       "buildRoot": "${projectDir}\\build\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
@@ -63,6 +63,27 @@
         },
         {
           "name": "BUILD_TESTING",
+          "value": "true",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "x64-RelWithDebInfo",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\build\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "%HOMEPATH%\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+          "type": "STRING"
+        },
+        {
+          "name": "BUILD_SCENARIO_VIEWER",
           "value": "true",
           "type": "BOOL"
         }

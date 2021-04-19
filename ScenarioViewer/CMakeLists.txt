@@ -30,7 +30,7 @@ endif()
 
 target_compile_features(ScenarioViewer
                     PRIVATE
-                    cxx_std_17)
+                    cxx_std_17) 
 
 target_compile_options(ScenarioViewer
                        PRIVATE
@@ -38,7 +38,7 @@ target_compile_options(ScenarioViewer
                        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>)
 
 target_link_libraries(ScenarioViewer PRIVATE OpenGL::GL)
-                       
+
 target_link_libraries(ScenarioViewer
                       PRIVATE
                       sfml-graphics)
