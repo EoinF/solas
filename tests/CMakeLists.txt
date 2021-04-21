@@ -1,6 +1,15 @@
 find_package(glm REQUIRED)
 add_subdirectory("${PROJECT_SOURCE_DIR}/extern/googletest" "extern/googletest")
 
+include(FetchContent)
+
+FetchContent_Declare(googlebenchmark
+        GIT_REPOSITORY https://github.com/google/benchmark.git
+        GIT_TAG master) # need master for benchmark::benchmark
+
+FetchContent_MakeAvailable(
+        googlebenchmark)
+
 set(SOURCES_SHARED testUtils.hpp)
 
 set(SOURCES_BOUND_RAY_CAST
@@ -66,3 +75,14 @@ package_add_test(boundRayCastTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
 package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
 
 package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/removeLight.cpp)
+
+
+add_executable(benchmarktest ${SOURCES_SHARED} benchmarks/basic.cpp)
+
+set(CMAKE_CXX_STANDARD 17)
+
+target_compile_features(benchmarktest
+                    PRIVATE
+                    cxx_std_17)
+
+target_link_libraries(benchmarktest PRIVATE gtest benchmark::benchmark SolasLib ${GLM_LIB})
