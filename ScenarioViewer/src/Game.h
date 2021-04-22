@@ -34,7 +34,7 @@ public:
     }
 };
 
-enum PlacementMode
+enum class PlacementMode
 {
     LIGHT,
     WALL
@@ -43,22 +43,22 @@ enum PlacementMode
 class Game
 {
 protected:
-    LightmapManager *lightmapManager;
+    std::unique_ptr<LightmapManager> lightmapManager;
     std::vector<GameObject> gameObjects;
     int numTilesX, numTilesY;
     float currentTime;
     void startScenario(int index);
     int tileSize;
     sf::Image lightmapOverlayImage;
-    sf::Uint8 *pixels;
+    std::unique_ptr<sf::Uint8[]> pixels;
     int heldLightId = 0;
-    sf::Shape *placementSprite;
+    std::shared_ptr<sf::Shape> placementSprite;
     PlacementMode placementMode;
     glm::vec2 placementPosition;
 
 public:
-    std::map<int, sf::Shape *> sprites;
-    std::vector<sf::Shape *> debugSprites;
+    std::map<int, std::unique_ptr<sf::Shape>> sprites;
+    std::vector<std::shared_ptr<sf::Shape>> debugSprites;
     sf::Texture lightmapOverlay;
     int scenarioIndex;
     void nextScenario();

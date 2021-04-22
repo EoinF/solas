@@ -15,7 +15,7 @@
 const long MAX_CHUNKS_X = 2048;
 
 long getChunkIndex(int x, int y);
-TileLightState *getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap);
+TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap);
 
 class LightmapManager
 {
@@ -27,12 +27,12 @@ private:
 protected:
 	ChunkMap chunkMap;
 	int tileSize;
-	std::map<int, Light *> lightsMap;
+	std::map<int, std::unique_ptr<Light>> lightsMap;
 	int chunkSize;
 	int nextLightId;
 	bool isPaused;
-	LightCaster *lightCaster;
-	TileLightState *_getTileState(int x, int y);
+	std::unique_ptr<LightCaster> lightCaster;
+	TileLightState &_getTileState(int x, int y);
 
 public:
 	LightmapManager(int tileSize, CastingAlgorithm type, int chunkSize);
@@ -42,14 +42,14 @@ public:
 		return this->chunkMap[getChunkIndex(0, 0)];
 	}
 
-	const TileLightState *getTileState(int x, int y);
+	const TileLightState &getTileState(int x, int y);
 
 	void setTileSize(int tileSize)
 	{
 		this->tileSize = tileSize;
 	}
 
-	std::map<int, Light *> getLightsMap()
+	std::map<int, std::unique_ptr<Light>> &getLightsMap()
 	{
 		return this->lightsMap;
 	}

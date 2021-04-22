@@ -15,16 +15,8 @@ struct BoundRayCastNode
 	}
 	std::vector<glm::vec2> directionsToNode;
 	glm::ivec2 location;
-	std::map<int, BoundRayCastNode *> children; // Maps each tile index to the next dependent tile
+	std::map<int, BoundRayCastNode*> children; // Maps each tile index to the next dependent tile
 	int brightness;
-
-	~BoundRayCastNode()
-	{
-		for (auto child : children)
-		{
-			delete child.second;
-		}
-	}
 };
 
 struct BoundLight
@@ -44,9 +36,9 @@ struct BoundLight
 		this->dependencyTreeRoot.location.y = 0;
 		this->dependencyTreeRoot.brightness = brightness;
 
-		this->lightMap = new int[castingMapWidth * castingMapWidth]();
+		this->lightMap = std::make_unique<int[]>(castingMapWidth * castingMapWidth);
 	}
-	int *lightMap;
+	std::unique_ptr<int[]> lightMap;
 	int srcX, srcY;
 	BoundRayCastNode dependencyTreeRoot;
 	float span;
@@ -54,11 +46,6 @@ struct BoundLight
 	int brightness;
 	int halfCastingMapWidth;
 	int castingMapWidth;
-
-	~BoundLight()
-	{
-		delete[] lightMap;
-	}
 };
 
 typedef std::map<int, std::map<int, std::set<int>>> ChunkTileLightIdsMap;
@@ -71,6 +58,6 @@ public:
 	ChunkTileLightIdsMap tilesToLightIdsMap;
 
 	const std::set<int> &getAffectedLights(int tileX, int tileY, int tileSize, int chunkSize) override;
-	void removeLight(int lightId, Light *light, int tileSize, int chunkSize, ChunkMap &chunkMap) override;
-	void update(int lightId, Light *light, int tileSize, int chunkSize, ChunkMap &chunkMap) override;
+	void removeLight(int lightId, Light &light, int tileSize, int chunkSize, ChunkMap &chunkMap) override;
+	void update(int lightId, Light &light, int tileSize, int chunkSize, ChunkMap &chunkMap) override;
 };

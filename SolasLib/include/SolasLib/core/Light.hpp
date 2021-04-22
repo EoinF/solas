@@ -1,5 +1,5 @@
 #pragma once
-
+#include <memory>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
@@ -15,7 +15,7 @@ public:
 	bool shouldUpdate;
 	int brightness;
 
-	int *lightMap;
+	std::unique_ptr<int[]> lightMap;
 	int lightMapWidth;
 	int lightMapHeight;
 	Light(float x, float y, glm::vec2 direction, float span, float range, int brightness, int tileSize)
@@ -31,7 +31,6 @@ public:
 		int radiusInTiles = (int)(range / (float)tileSize);
 		this->lightMapWidth = TILE_BUFFER * 2 + radiusInTiles * 2;
 		this->lightMapHeight = TILE_BUFFER * 2 + radiusInTiles * 2;
-
-		this->lightMap = new int[lightMapWidth * lightMapHeight]();
+		lightMap = std::make_unique<int[]>(lightMapWidth * lightMapHeight);
 	}
 };

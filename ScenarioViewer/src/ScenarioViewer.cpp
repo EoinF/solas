@@ -7,7 +7,7 @@ float calculateFrameRate(float timeDelta);
 
 int WINDOW_WIDTH = 1080;
 int WINDOW_HEIGHT = 720;
-int TILE_SIZE = 8;
+int TILE_SIZE = 4;
 
 Game game(TILE_SIZE, WINDOW_WIDTH / TILE_SIZE, WINDOW_HEIGHT / TILE_SIZE);
 
@@ -176,9 +176,9 @@ void update()
     game.update(mousePosition, deltaPosition, deltaSpan, wasMouseClicked && !isMouseClicked, timeDelta);
 
     window.clear(sf::Color::Blue);
-    for (auto element : game.sprites)
+    for (auto &element : game.sprites)
     {
-        window.draw(*(element.second));
+        window.draw(*element.second);
     }
     if (showOverlay)
     {
