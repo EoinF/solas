@@ -17,7 +17,7 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 	// Check if a mapping for this light exists
 	if (boundLightMap.find(lightId) != boundLightMap.end())
 	{
-		boundLight = boundLightMap[lightId];
+		boundLight = boundLightMap[lightId].get();
 
 		clearLightMapping(lightId, *boundLight, tileSize, chunkSize, chunkMap, tilesToLightIdsMap);
 		boundLight->srcX = srcTileX;
@@ -28,6 +28,7 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 	else
 	{
 		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light.range / tileSizeF), light.span, light.direction, light.brightness);
+		boundLightMap.insert({ lightId, std::unique_ptr<BoundLight>(boundLight) });
 		BoundRayCastNode &currentNode = boundLight->dependencyTreeRoot;
 
 		// Precalculate the ray paths to each perimeter tile
@@ -45,7 +46,6 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 			i = +boundLight->halfCastingMapWidth;
 			boundRayCast(*boundLight, i, j);
 		}
-		boundLightMap.insert({lightId, boundLight});
 	}
 
 	// Apply the dependency tree
@@ -124,12 +124,12 @@ void boundRayCast(BoundLight &boundLight, int i, int j)
 		if (currentNode->children.find(tileIndex) == currentNode->children.end())
 		{
 			BoundRayCastNode * newNode = new BoundRayCastNode(nextTile.x, nextTile.y, 0);
-			currentNode->children.insert({tileIndex, newNode});
+			currentNode->children.insert({tileIndex, std::unique_ptr<BoundRayCastNode>(newNode)});
 			currentNode = newNode;
 		}
 		else // otherwise use the existing node
 		{
-			currentNode = currentNode->children[tileIndex];
+			currentNode = currentNode->children[tileIndex].get();
 		}
 
 		glm::vec2 rayDirection = glm::vec2(i, j);

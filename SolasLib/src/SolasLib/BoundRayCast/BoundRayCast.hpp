@@ -15,7 +15,7 @@ struct BoundRayCastNode
 	}
 	std::vector<glm::vec2> directionsToNode;
 	glm::ivec2 location;
-	std::map<int, BoundRayCastNode*> children; // Maps each tile index to the next dependent tile
+	std::map<int, std::unique_ptr<BoundRayCastNode>> children; // Maps each tile index to the next dependent tile
 	int brightness;
 };
 
@@ -54,7 +54,7 @@ class BoundRayCast : public LightCaster
 {
 
 public:
-	std::map<int, BoundLight *> boundLightMap;
+	std::map<int, std::unique_ptr<BoundLight>> boundLightMap;
 	ChunkTileLightIdsMap tilesToLightIdsMap;
 
 	const std::set<int> &getAffectedLights(int tileX, int tileY, int tileSize, int chunkSize) override;
