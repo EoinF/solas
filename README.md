@@ -23,6 +23,10 @@ Ensure that cmake support is installed as part of Visual Studio so that it can a
 
 Open the project using either 'File > Open > Folder..' or 'Open local folder' from the Getting started screen
 
+### Visual Studio Code (See below)
+
+See below in Mac setup instructions
+
 ### Running tests in Visual Studio
 
 - Install the "google test adapter" extension
@@ -68,6 +72,7 @@ Next add the following to .vscode/settings.json
         "./extern/googletest/googletest/include",
         "./extern/googletest/googlemock/include"
     ],
+    "C_Cpp.default.cppStandard": "c++17",
     "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
 
 Finally, make sure to configure the IDE to use the correct compiler.
