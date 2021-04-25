@@ -70,7 +70,8 @@ Next add the following to .vscode/settings.json
         "~/vcpkg/installed/x64-osx/include",
         "./SolasLib/include",
         "./extern/googletest/googletest/include",
-        "./extern/googletest/googlemock/include"
+        "./extern/googletest/googlemock/include",
+        "./extern/googlebenchmark/include"
     ],
     "C_Cpp.default.cppStandard": "c++17",
     "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
