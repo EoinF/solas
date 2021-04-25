@@ -12,9 +12,8 @@ void addLightDependency(int lightId, int tileX, int tileY, int chunkSize,
 
 void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize,
 						  ChunkMap &chunkMap) {
-	float tileSizeF = (float)tileSize;
-	int srcTileX = (int)(light.x / tileSizeF);
-	int srcTileY = (int)(light.y / tileSizeF);
+	int srcTileX = light.x / tileSize;
+	int srcTileY = light.y / tileSize;
 
 	BoundLight *boundLight;
 
@@ -28,7 +27,8 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 		boundLight->direction = glm::normalize(light.direction);
 		boundLight->span = light.span;
 	} else {
-		boundLight = new BoundLight(srcTileX, srcTileY, 1 + (int)glm::ceil(light.range / tileSizeF),
+		boundLight = new BoundLight(srcTileX, srcTileY,
+									1 + static_cast<int>(glm::ceil(light.range / tileSize)),
 									light.span, light.direction, light.brightness);
 		boundLightMap.insert({lightId, std::unique_ptr<BoundLight>(boundLight)});
 		BoundRayCastNode &currentNode = boundLight->dependencyTreeRoot;
@@ -65,9 +65,9 @@ void BoundRayCast::removeLight(int lightId, Light &light, int tileSize, int chun
 
 const std::set<int> &BoundRayCast::getAffectedLights(int tileX, int tileY, int tileSize,
 													 int chunkSize) {
-	float chunkSizeF = (float)chunkSize;
-	int chunkX = (int)floorf(tileX / chunkSizeF);
-	int chunkY = (int)floorf(tileY / chunkSizeF);
+	float chunkSizeF = static_cast<float>(chunkSize);
+	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
+	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
@@ -88,9 +88,9 @@ void clearLightMapping(int lightId, BoundLight &boundLight, int tileSize, int ch
 			int tileX = boundLight.srcX + x - boundLight.halfCastingMapWidth;
 			int tileY = boundLight.srcY + y - boundLight.halfCastingMapWidth;
 
-			float chunkSizeF = (float)chunkSize;
-			int chunkX = (int)floorf(tileX / chunkSizeF);
-			int chunkY = (int)floorf(tileY / chunkSizeF);
+			float chunkSizeF = static_cast<float>(chunkSize);
+			int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
+			int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
 			int chunkIndex = getChunkIndex(chunkX, chunkY);
 			int chunkTileX = tileX - chunkX * chunkSize;
 			int chunkTileY = tileY - chunkY * chunkSize;
@@ -133,9 +133,8 @@ void boundRayCast(BoundLight &boundLight, int i, int j) {
 		glm::vec2 rayDirection = glm::vec2(i, j);
 		currentNode->directionsToNode.push_back(glm::normalize(rayDirection));
 
-		int brightness =
-			(int)(boundLight.brightness * ((float)boundLight.halfCastingMapWidth - distance) /
-				  (float)boundLight.halfCastingMapWidth);
+		int brightness = (boundLight.brightness * (boundLight.halfCastingMapWidth - distance) /
+						  boundLight.halfCastingMapWidth);
 		if (currentNode->brightness < brightness) {
 			currentNode->brightness = brightness;
 		}
@@ -173,8 +172,9 @@ void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastN
 		glm::dot(boundLight.direction,
 				 glm::normalize(glm::vec2(currentNode.location.x, currentNode.location.y))));
 
-	int newLighting = (int)(currentNode.brightness *
-							glm::min(1.0f, 2.0f * ((0.1f + boundLight.span) - angleToTile * 2)));
+	int newLighting =
+		static_cast<int>(currentNode.brightness *
+						 glm::min(1.0f, 2.0f * ((0.1f + boundLight.span) - angleToTile * 2)));
 
 	int lightMapArrayIndex =
 		((boundLight.halfCastingMapWidth + currentNode.location.x) +
@@ -199,9 +199,9 @@ void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastN
 
 void addLightDependency(int lightId, int tileX, int tileY, int chunkSize,
 						ChunkTileLightIdsMap &tilesToLightIdsMap) {
-	float chunkSizeF = (float)chunkSize;
-	int chunkX = (int)floorf(tileX / chunkSizeF);
-	int chunkY = (int)floorf(tileY / chunkSizeF);
+	float chunkSizeF = static_cast<float>(chunkSize);
+	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
+	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;

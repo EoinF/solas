@@ -27,7 +27,7 @@ class Light {
 		this->brightness = brightness;
 		this->shouldUpdate = true;
 
-		int radiusInTiles = (int)(range / (float)tileSize);
+		int radiusInTiles = static_cast<int>(range / tileSize);
 		this->lightMapWidth = TILE_BUFFER * 2 + radiusInTiles * 2;
 		this->lightMapHeight = TILE_BUFFER * 2 + radiusInTiles * 2;
 		lightMap = std::make_unique<int[]>(lightMapWidth * lightMapHeight);

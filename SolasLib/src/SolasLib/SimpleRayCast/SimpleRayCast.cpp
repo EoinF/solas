@@ -7,14 +7,14 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY, float ti
 
 void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSize,
 						   ChunkMap &chunkMap) {
-	float tileSizeF = (float)tileSize;
-	int srcTileX = (int)(light.x / tileSizeF);
-	int srcTileY = (int)(light.y / tileSizeF);
+	float tileSizeF = static_cast<float>(tileSize);
+	int srcTileX = static_cast<int>(light.x / tileSizeF);
+	int srcTileY = static_cast<int>(light.y / tileSizeF);
 
-	int startX = (int)glm::floor((light.x - light.range) / tileSizeF);
-	int startY = (int)glm::floor((light.y - light.range) / tileSizeF);
-	int endX = (int)glm::ceil((light.x + light.range) / tileSizeF);
-	int endY = (int)glm::ceil((light.y + light.range) / tileSizeF);
+	int startX = static_cast<int>(glm::floor((light.x - light.range) / tileSizeF));
+	int startY = static_cast<int>(glm::floor((light.y - light.range) / tileSizeF));
+	int endX = static_cast<int>(glm::ceil((light.x + light.range) / tileSizeF));
+	int endY = static_cast<int>(glm::ceil((light.y + light.range) / tileSizeF));
 
 	//
 	// Reset the lightcast mask for this light
@@ -23,8 +23,8 @@ void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSiz
 		for (int j = 0; j < light.lightMapHeight; j++) {
 			int brightness = light.lightMap[i + j * light.lightMapWidth];
 
-			int x = -light.lightMapWidth / 2 + i + (int)(light.x / tileSizeF);
-			int y = -light.lightMapHeight / 2 + j + (int)(light.y / tileSizeF);
+			int x = -light.lightMapWidth / 2 + i + static_cast<int>(light.x / tileSizeF);
+			int y = -light.lightMapHeight / 2 + j + static_cast<int>(light.y / tileSizeF);
 			int chunkIndex = getChunkIndex(x, y);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
 
@@ -49,14 +49,14 @@ void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSiz
 
 void SimpleRayCast::removeLight(int lightId, Light &light, int tileSize, int chunkSize,
 								ChunkMap &chunkMap) {
-	float tileSizeF = (float)tileSize;
-	int srcTileX = (int)(light.x / tileSizeF);
-	int srcTileY = (int)(light.y / tileSizeF);
+	float tileSizeF = static_cast<float>(tileSize);
+	int srcTileX = static_cast<int>(light.x / tileSizeF);
+	int srcTileY = static_cast<int>(light.y / tileSizeF);
 
-	int startX = (int)(-0.5 + (light.x - light.range) / tileSizeF);
-	int startY = (int)(-0.5 + (light.y - light.range) / tileSizeF);
-	int endX = (int)(0.5 + (light.x + light.range) / tileSizeF);
-	int endY = (int)(0.5 + (light.y + light.range) / tileSizeF);
+	int startX = static_cast<int>(-0.5 + (light.x - light.range) / tileSizeF);
+	int startY = static_cast<int>(-0.5 + (light.y - light.range) / tileSizeF);
+	int endX = static_cast<int>(0.5 + (light.x + light.range) / tileSizeF);
+	int endY = static_cast<int>(0.5 + (light.y + light.range) / tileSizeF);
 
 	//
 	// Reset the lightcast mask for this light
@@ -65,8 +65,8 @@ void SimpleRayCast::removeLight(int lightId, Light &light, int tileSize, int chu
 		for (int j = 0; j < light.lightMapHeight; j++) {
 			int brightness = light.lightMap[i + j * light.lightMapWidth];
 
-			int x = i + (int)(light.x / tileSizeF) - light.lightMapWidth / 2;
-			int y = j + (int)(light.y / tileSizeF) - light.lightMapHeight / 2;
+			int x = i + static_cast<int>(light.x / tileSizeF) - light.lightMapWidth / 2;
+			int y = j + static_cast<int>(light.y / tileSizeF) - light.lightMapHeight / 2;
 
 			int chunkIndex = getChunkIndex(x, y);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
@@ -95,10 +95,12 @@ void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY, float ti
 				glm::vec2(nextTile.x * tileSize - light.x, nextTile.y * tileSize - light.y));
 
 			if (distanceFromSrc < light.range) {
-				int x = light.lightMapWidth / 2 + nextTile.x - (int)(light.x / tileSize);
-				int y = light.lightMapHeight / 2 + nextTile.y - (int)(light.y / tileSize);
-				int newLighting = (int)(255.0f * (glm::min(1.0f, 0.0f + spanDifference) *
-												  (1.0f - (distanceFromSrc / light.range))));
+				int x = light.lightMapWidth / 2 + nextTile.x - static_cast<int>(light.x / tileSize);
+				int y =
+					light.lightMapHeight / 2 + nextTile.y - static_cast<int>(light.y / tileSize);
+				int newLighting =
+					static_cast<int>(255.0f * (glm::min(1.0f, 0.0f + spanDifference) *
+											   (1.0f - (distanceFromSrc / light.range))));
 
 				int existingLighting = light.lightMap[x + y * light.lightMapWidth];
 				if (newLighting > existingLighting) {

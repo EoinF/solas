@@ -2,14 +2,12 @@
 #include "BoundRayCast/BoundRayCast.hpp"
 #include "SimpleRayCast/SimpleRayCast.hpp"
 
-std::uint64_t getChunkIndex(int x, int y) {
-	return (x + MAX_CHUNKS_X / 2) + (y * MAX_CHUNKS_X + 1);
-}
+std::int64_t getChunkIndex(int x, int y) { return (x + MAX_CHUNKS_X / 2) + (y * MAX_CHUNKS_X + 1); }
 
 TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap) {
-	float chunkSizeF = (float)chunkSize;
-	int chunkX = (int)floorf(tileX / chunkSizeF);
-	int chunkY = (int)floorf(tileY / chunkSizeF);
+	float chunkSizeF = static_cast<float>(chunkSize);
+	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
+	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
@@ -18,14 +16,14 @@ TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunk
 }
 
 void LightmapManager::allocateChunksForLight(float x, float y, float range) {
-	float divisor = (float)(chunkSize * tileSize);
-	float rangeInTiles = 1 + glm::ceil(range / (float)tileSize);
+	int divisor = chunkSize * tileSize;
+	float rangeInTiles = 1 + glm::ceil(range / static_cast<float>(tileSize));
 	float actualRange = rangeInTiles * tileSize;
 
-	int startChunkX = (int)floorf((x - actualRange) / divisor);
-	int startChunkY = (int)floorf((y - actualRange) / divisor);
-	int endChunkX = (int)floorf((x + actualRange) / divisor);
-	int endChunkY = (int)floorf((y + actualRange) / divisor);
+	int startChunkX = static_cast<int>(floorf((x - actualRange) / divisor));
+	int startChunkY = static_cast<int>(floorf((y - actualRange) / divisor));
+	int endChunkX = static_cast<int>(floorf((x + actualRange) / divisor));
+	int endChunkY = static_cast<int>(floorf((y + actualRange) / divisor));
 
 	for (int i = startChunkX; i <= endChunkX; i++) {
 		for (int j = startChunkY; j <= endChunkY; j++) {

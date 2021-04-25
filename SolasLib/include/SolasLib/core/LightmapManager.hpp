@@ -13,9 +13,9 @@
 #include <SolasLib/core/Light.hpp>
 
 // The max number of chunks in the x direction
-const std::uint64_t MAX_CHUNKS_X = 2048;
+const std::int64_t MAX_CHUNKS_X = 2048;
 
-std::uint64_t getChunkIndex(int x, int y);
+std::int64_t getChunkIndex(int x, int y);
 TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap);
 
 class LightmapManager {
