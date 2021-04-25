@@ -1,16 +1,12 @@
 #include "DiscreteLinePather.hpp"
-#include <glm/glm.hpp>
-#include <stdexcept>
-#include <iostream>
 
-DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, int destY)
-{
+DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, int destY) {
 	//
-	// Check each square from the source tile to the destination tile until a blocking square is found; using the Bresenham line algorithm
+	// Check each square from the source tile to the destination tile until a blocking square is
+	// found; using the Bresenham line algorithm
 	//
 	isSteep = abs(destY - srcTileY) > abs(destX - srcTileX);
-	if (isSteep)
-	{
+	if (isSteep) {
 		int temp = srcTileX;
 		srcTileX = srcTileY;
 		srcTileY = temp;
@@ -36,39 +32,30 @@ DiscreteLinePather::DiscreteLinePather(int srcTileX, int srcTileY, int destX, in
 	isFinished = currentX == destX;
 }
 
-glm::ivec2 DiscreteLinePather::nextTile()
-{
-	if (currentX == destX)
-	{
+glm::ivec2 DiscreteLinePather::nextTile() {
+	if (currentX == destX) {
 		throw std::runtime_error("Pathing is already finished. Check with 'isFinished'");
-	}
-	else
-	{
+	} else {
 		int i;
 		int j;
-		if (isSteep)
-		{
+		if (isSteep) {
 			i = currentY;
 			j = currentX;
-		}
-		else
-		{
+		} else {
 			i = currentX;
 			j = currentY;
 		}
 
 		int tileX = i;
 		int tileY = j;
-		if (isSteep)
-		{
+		if (isSteep) {
 			tileX = j;
 			tileY = i;
 		}
 
 		error -= deltaY;
 
-		if (error < 0)
-		{
+		if (error < 0) {
 			currentY += ystep;
 			error += deltaX;
 		}
@@ -77,8 +64,7 @@ glm::ivec2 DiscreteLinePather::nextTile()
 	glm::ivec2 nextTileLocation(currentX, currentY);
 	currentX += xstep;
 	nextTileLocation.x = currentX;
-	if (isSteep)
-	{
+	if (isSteep) {
 		nextTileLocation.x = currentY;
 		nextTileLocation.y = currentX;
 	}

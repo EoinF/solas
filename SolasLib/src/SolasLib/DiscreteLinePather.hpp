@@ -1,8 +1,10 @@
 #pragma once
+#include <stdexcept>
+#include <iostream>
 #include <glm/glm.hpp>
 
 class DiscreteLinePather {
-private:
+  private:
 	bool isSteep;
 	int deltaX;
 	int deltaY;
@@ -13,7 +15,7 @@ private:
 	int xstep;
 	int ystep;
 
-public:
+  public:
 	bool isFinished;
 	DiscreteLinePather(int srcTileX, int srcTileY, int destX, int destY);
 	glm::ivec2 nextTile();
