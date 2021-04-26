@@ -4,7 +4,7 @@
 
 #include "../testUtils.hpp"
 
-const int CHUNK_SIZE = 100;
+const int CHUNK_SIZE = 1024;
 
 class BoundRayCast_AddLightTest : public BaseLightingTest {
 	LightmapManager *createTestSubject() {

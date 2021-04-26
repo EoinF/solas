@@ -3,10 +3,10 @@
 #include "../RayCastUtils.hpp"
 
 void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY, float tileSize,
-				Light &light, int chunkSize, ChunkMap &chunkMap);
+				Light &light, int chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap);
 
-void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSize,
-						   ChunkMap &chunkMap) {
+void SimpleRayCast::update(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
+						   std::int64_t maxChunks, ChunkMap &chunkMap) {
 	float tileSizeF = static_cast<float>(tileSize);
 	int srcTileX = static_cast<int>(light.x / tileSizeF);
 	int srcTileY = static_cast<int>(light.y / tileSizeF);
@@ -25,7 +25,7 @@ void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSiz
 
 			int x = -light.lightMapWidth / 2 + i + static_cast<int>(light.x / tileSizeF);
 			int y = -light.lightMapHeight / 2 + j + static_cast<int>(light.y / tileSizeF);
-			int chunkIndex = getChunkIndex(x, y);
+			chunk_index_t chunkIndex = _getChunkIndex(x, y, maxChunks);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
 
 			light.lightMap[i + j * light.lightMapWidth] = 0;
@@ -36,18 +36,19 @@ void SimpleRayCast::update(int tileSize, Light &light, int lightId, int chunkSiz
 	// Use the raycast algorithm on the outer edges of the ray source
 	//
 	for (int i = startX; i <= endX; i++) {
-		rayCastOne(srcTileX, srcTileY, i, startY, tileSizeF, light, chunkSize, chunkMap);
-		rayCastOne(srcTileX, srcTileY, i, endY, tileSizeF, light, chunkSize, chunkMap);
+		rayCastOne(srcTileX, srcTileY, i, startY, tileSizeF, light, chunkSize, maxChunks, chunkMap);
+		rayCastOne(srcTileX, srcTileY, i, endY, tileSizeF, light, chunkSize, maxChunks, chunkMap);
 	}
 
 	for (int j = startY + 1; j < endY; j++) {
-		rayCastOne(srcTileX, srcTileY, startX, j, tileSizeF, light, chunkSize, chunkMap);
-		rayCastOne(srcTileX, srcTileY, endX, j, tileSizeF, light, chunkSize, chunkMap);
+		rayCastOne(srcTileX, srcTileY, startX, j, tileSizeF, light, chunkSize, maxChunks, chunkMap);
+		rayCastOne(srcTileX, srcTileY, endX, j, tileSizeF, light, chunkSize, maxChunks, chunkMap);
 	}
 	light.shouldUpdate = false;
 }
 
-void SimpleRayCast::removeLight(int lightId, Light &light, int tileSize, int chunkSize,
+void SimpleRayCast::removeLight(int lightId, Light &light, std::int64_t tileSize,
+								std::int64_t chunkSize, std::int64_t maxChunks,
 								ChunkMap &chunkMap) {
 	float tileSizeF = static_cast<float>(tileSize);
 	int srcTileX = static_cast<int>(light.x / tileSizeF);
@@ -68,7 +69,7 @@ void SimpleRayCast::removeLight(int lightId, Light &light, int tileSize, int chu
 			int x = i + static_cast<int>(light.x / tileSizeF) - light.lightMapWidth / 2;
 			int y = j + static_cast<int>(light.y / tileSizeF) - light.lightMapHeight / 2;
 
-			int chunkIndex = getChunkIndex(x, y);
+			chunk_index_t chunkIndex = _getChunkIndex(x, y, maxChunks);
 			chunkMap[chunkIndex][y * chunkSize + x].subtractLighting(brightness);
 
 			light.lightMap[i + j * light.lightMapWidth] = 0;
@@ -76,20 +77,21 @@ void SimpleRayCast::removeLight(int lightId, Light &light, int tileSize, int chu
 	}
 }
 
-const std::set<int> &SimpleRayCast::getAffectedLights(int tileX, int tileY, int tileSize,
-													  int chunkSize) {
+const std::set<int> &SimpleRayCast::getAffectedLights(std::int64_t tileX, std::int64_t tileY,
+													  std::int64_t tileSize, std::int64_t chunkSize,
+													  std::int64_t maxChunks) {
 	// TODO update lights based on tile
 	return {};
 }
 
 void rayCastOne(int fromTileX, int fromTileY, int toTileX, int toTileY, float tileSize,
-				Light &light, int chunkSize, ChunkMap &chunkMap) {
+				Light &light, int chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap) {
 	float spanDifference = getSpanDifference(light, toTileX, toTileY, tileSize);
 	if (spanDifference > 0) {
 		DiscreteLinePather pather(fromTileX, fromTileY, toTileX, toTileY);
 		while (!pather.isFinished) {
 			auto nextTile = pather.nextTile();
-			int chunkIndex = getChunkIndex(nextTile.x, nextTile.y);
+			chunk_index_t chunkIndex = _getChunkIndex(nextTile.x, nextTile.y, maxChunks);
 
 			float distanceFromSrc = glm::length(
 				glm::vec2(nextTile.x * tileSize - light.x, nextTile.y * tileSize - light.y));

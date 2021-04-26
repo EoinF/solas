@@ -1,19 +1,20 @@
 #include "BoundRayCast.hpp"
 #include "../DiscreteLinePather.hpp"
 
-void clearLightMapping(int lightId, BoundLight &boundLight, int tileSize, int chunkSize,
-					   ChunkMap &chunkMap, ChunkTileLightIdsMap &tilesToLightIdsMap);
-void boundRayCast(BoundLight &boundLight, int i, int j);
+void clearLightMapping(int lightId, BoundLight &boundLight, std::int64_t tileSize,
+					   std::int64_t chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap,
+					   ChunkTileLightIdsMap &tilesToLightIdsMap);
+void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j);
 void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastNode &currentNode,
-							  int chunkSize, ChunkMap &chunkMap,
+							  std::int64_t chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap,
 							  ChunkTileLightIdsMap &tilesToLightIdsMap);
-void addLightDependency(int lightId, int tileX, int tileY, int chunkSize,
-						ChunkTileLightIdsMap &tilesToLightIdsMap);
+void addLightDependency(int lightId, std::int64_t tileX, std::int64_t tileY, std::int64_t chunkSize,
+						std::int64_t maxChunks, ChunkTileLightIdsMap &tilesToLightIdsMap);
 
-void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize,
-						  ChunkMap &chunkMap) {
-	int srcTileX = light.x / tileSize;
-	int srcTileY = light.y / tileSize;
+void BoundRayCast::update(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
+						  std::int64_t maxChunks, ChunkMap &chunkMap) {
+	std::int64_t srcTileX = light.x / tileSize;
+	std::int64_t srcTileY = light.y / tileSize;
 
 	BoundLight *boundLight;
 
@@ -21,7 +22,8 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 	if (boundLightMap.find(lightId) != boundLightMap.end()) {
 		boundLight = boundLightMap[lightId].get();
 
-		clearLightMapping(lightId, *boundLight, tileSize, chunkSize, chunkMap, tilesToLightIdsMap);
+		clearLightMapping(lightId, *boundLight, tileSize, chunkSize, maxChunks, chunkMap,
+						  tilesToLightIdsMap);
 		boundLight->srcX = srcTileX;
 		boundLight->srcY = srcTileY;
 		boundLight->direction = glm::normalize(light.direction);
@@ -52,26 +54,28 @@ void BoundRayCast::update(int lightId, Light &light, int tileSize, int chunkSize
 
 	// Apply the dependency tree
 	applyLightDependencyPath(lightId, *boundLight, boundLight->dependencyTreeRoot, chunkSize,
-							 chunkMap, tilesToLightIdsMap);
+							 maxChunks, chunkMap, tilesToLightIdsMap);
+
 	light.shouldUpdate = false;
 }
 
-void BoundRayCast::removeLight(int lightId, Light &light, int tileSize, int chunkSize,
-							   ChunkMap &chunkMap) {
-	clearLightMapping(lightId, *boundLightMap[lightId], tileSize, chunkSize, chunkMap,
+void BoundRayCast::removeLight(int lightId, Light &light, std::int64_t tileSize,
+							   std::int64_t chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap) {
+	clearLightMapping(lightId, *boundLightMap[lightId], tileSize, chunkSize, maxChunks, chunkMap,
 					  tilesToLightIdsMap);
 	boundLightMap.erase(lightId);
 }
 
-const std::set<int> &BoundRayCast::getAffectedLights(int tileX, int tileY, int tileSize,
-													 int chunkSize) {
-	float chunkSizeF = chunkSize;
-	int chunkX = floorf(tileX / chunkSizeF);
-	int chunkY = floorf(tileY / chunkSizeF);
-	int chunkIndex = getChunkIndex(chunkX, chunkY);
-	int chunkTileX = tileX - chunkX * chunkSize;
-	int chunkTileY = tileY - chunkY * chunkSize;
-	int tileIndex = tileX + tileY * chunkSize;
+const std::set<int> &BoundRayCast::getAffectedLights(std::int64_t tileX, std::int64_t tileY,
+													 std::int64_t tileSize, std::int64_t chunkSize,
+													 std::int64_t maxChunks) {
+	double chunkSizeF = chunkSize;
+	std::int64_t chunkX = floor(tileX / chunkSizeF);
+	std::int64_t chunkY = floor(tileY / chunkSizeF);
+	chunk_index_t chunkIndex = _getChunkIndex(chunkX, chunkY, maxChunks);
+	std::int64_t chunkTileX = tileX - chunkX * chunkSize;
+	std::int64_t chunkTileY = tileY - chunkY * chunkSize;
+	std::int64_t tileIndex = tileX + tileY * chunkSize;
 
 	if (tilesToLightIdsMap.count(chunkIndex) > 0 &&
 		tilesToLightIdsMap[chunkIndex].count(tileIndex) > 0) {
@@ -81,45 +85,45 @@ const std::set<int> &BoundRayCast::getAffectedLights(int tileX, int tileY, int t
 	return emptySet;
 }
 
-void clearLightMapping(int lightId, BoundLight &boundLight, int tileSize, int chunkSize,
-					   ChunkMap &chunkMap, ChunkTileLightIdsMap &tilesToLightIdsMap) {
-	for (int x = 0; x < boundLight.castingMapWidth; x++) {
-		for (int y = 0; y < boundLight.castingMapWidth; y++) {
-			int tileX = boundLight.srcX + x - boundLight.halfCastingMapWidth;
-			int tileY = boundLight.srcY + y - boundLight.halfCastingMapWidth;
+void clearLightMapping(int lightId, BoundLight &boundLight, std::int64_t tileSize,
+					   std::int64_t chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap,
+					   ChunkTileLightIdsMap &tilesToLightIdsMap) {
+	for (std::int64_t x = 0; x < boundLight.castingMapWidth; x++) {
+		for (std::int64_t y = 0; y < boundLight.castingMapWidth; y++) {
+			std::int64_t tileX = boundLight.srcX + x - boundLight.halfCastingMapWidth;
+			std::int64_t tileY = boundLight.srcY + y - boundLight.halfCastingMapWidth;
 
-			float chunkSizeF = chunkSize;
-			int chunkX = floorf(tileX / chunkSizeF);
-			int chunkY = floorf(tileY / chunkSizeF);
-			int chunkIndex = getChunkIndex(chunkX, chunkY);
-			int chunkTileX = tileX - chunkX * chunkSize;
-			int chunkTileY = tileY - chunkY * chunkSize;
-			int tileIndex = tileX + tileY * chunkSize;
+			double chunkSizeF = chunkSize;
+			std::int64_t chunkX = floor(tileX / chunkSizeF);
+			std::int64_t chunkY = floor(tileY / chunkSizeF);
+			chunk_index_t chunkIndex = _getChunkIndex(chunkX, chunkY, maxChunks);
+			std::int64_t tileIndex = tileX + tileY * chunkSize;
 			tilesToLightIdsMap[chunkIndex][tileIndex].erase(lightId);
 
-			getTileFast(tileX, tileY, chunkSize, chunkMap)
+			getTileFast(tileX, tileY, chunkSize, maxChunks, chunkMap)
 				.subtractLighting(boundLight.lightMap[x + y * boundLight.castingMapWidth]);
 			boundLight.lightMap[x + y * boundLight.castingMapWidth] = 0;
 		}
 	}
 }
 
-void boundRayCast(BoundLight &boundLight, int i, int j) {
+void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j) {
 	BoundRayCastNode *currentNode = &boundLight.dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 
 	while (!pather.isFinished) {
 		auto nextTile = pather.nextTile();
-		float distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
+		double distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
 
 		if (distance >= boundLight.halfCastingMapWidth) {
 			break;
 		}
-		int tileX = boundLight.srcX + nextTile.x;
-		int tileY = boundLight.srcY + nextTile.y;
+		std::int64_t tileX = boundLight.srcX + nextTile.x;
+		std::int64_t tileY = boundLight.srcY + nextTile.y;
 
-		int tileIndex = (boundLight.halfCastingMapWidth + nextTile.x) +
-						(boundLight.halfCastingMapWidth + nextTile.y) * boundLight.castingMapWidth;
+		std::int64_t tileIndex =
+			(boundLight.halfCastingMapWidth + nextTile.x) +
+			(boundLight.halfCastingMapWidth + nextTile.y) * boundLight.castingMapWidth;
 
 		// If this node doesn't exist create it
 		if (currentNode->children.find(tileIndex) == currentNode->children.end()) {
@@ -156,17 +160,17 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span) {
 }
 
 void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastNode &currentNode,
-							  int chunkSize, ChunkMap &chunkMap,
+							  std::int64_t chunkSize, std::int64_t maxChunks, ChunkMap &chunkMap,
 							  ChunkTileLightIdsMap &tilesToLightIdsMap) {
 	if (!isNodeReachable(currentNode, boundLight.direction, boundLight.span)) {
 		return;
 	}
-	int tileX = boundLight.srcX + currentNode.location.x;
-	int tileY = boundLight.srcY + currentNode.location.y;
+	std::int64_t tileX = boundLight.srcX + currentNode.location.x;
+	std::int64_t tileY = boundLight.srcY + currentNode.location.y;
 
-	auto &tile = getTileFast(tileX, tileY, chunkSize, chunkMap);
+	auto &tile = getTileFast(tileX, tileY, chunkSize, maxChunks, chunkMap);
 
-	addLightDependency(lightId, tileX, tileY, chunkSize, tilesToLightIdsMap);
+	addLightDependency(lightId, tileX, tileY, chunkSize, maxChunks, tilesToLightIdsMap);
 
 	float angleToTile = glm::acos(
 		glm::dot(boundLight.direction,
@@ -180,6 +184,7 @@ void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastN
 		((boundLight.halfCastingMapWidth + currentNode.location.x) +
 		 (boundLight.halfCastingMapWidth + currentNode.location.y) * boundLight.castingMapWidth);
 	int existingLighting = boundLight.lightMap[lightMapArrayIndex];
+
 	if (newLighting > existingLighting) {
 		boundLight.lightMap[lightMapArrayIndex] = newLighting;
 		int lightingDelta = newLighting - existingLighting;
@@ -192,26 +197,24 @@ void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastN
 	}
 
 	for (auto &node : currentNode.children) {
-		applyLightDependencyPath(lightId, boundLight, *node.second, chunkSize, chunkMap,
+		applyLightDependencyPath(lightId, boundLight, *node.second, chunkSize, maxChunks, chunkMap,
 								 tilesToLightIdsMap);
 	}
 }
 
-void addLightDependency(int lightId, int tileX, int tileY, int chunkSize,
-						ChunkTileLightIdsMap &tilesToLightIdsMap) {
-	float chunkSizeF = chunkSize;
-	int chunkX = floorf(tileX / chunkSizeF);
-	int chunkY = floorf(tileY / chunkSizeF);
-	int chunkIndex = getChunkIndex(chunkX, chunkY);
-	int chunkTileX = tileX - chunkX * chunkSize;
-	int chunkTileY = tileY - chunkY * chunkSize;
-	int tileIndex = tileX + tileY * chunkSize;
+void addLightDependency(int lightId, std::int64_t tileX, std::int64_t tileY, std::int64_t chunkSize,
+						std::int64_t maxChunks, ChunkTileLightIdsMap &tilesToLightIdsMap) {
+	double chunkSizeF = chunkSize;
+	std::int64_t chunkX = floor(tileX / chunkSizeF);
+	std::int64_t chunkY = floor(tileY / chunkSizeF);
+	chunk_index_t chunkIndex = _getChunkIndex(chunkX, chunkY, maxChunks);
+	std::int64_t tileIndex = tileX + tileY * chunkSize;
 
 	if (tilesToLightIdsMap.count(chunkIndex) == 0) {
-		tilesToLightIdsMap.insert({chunkIndex, std::map<int, std::set<int>>()});
+		tilesToLightIdsMap.insert({chunkIndex, std::map<std::int64_t, std::set<light_id_t>>()});
 	}
 	if (tilesToLightIdsMap[chunkIndex].count(tileIndex) == 0) {
-		tilesToLightIdsMap[chunkIndex].insert({tileIndex, std::set<int>()});
+		tilesToLightIdsMap[chunkIndex].insert({tileIndex, std::set<light_id_t>()});
 	}
 
 	tilesToLightIdsMap[chunkIndex][tileIndex].insert(lightId);

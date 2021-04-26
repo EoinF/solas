@@ -1,4 +1,4 @@
-set -x
+set -ex
 mkdir -p build/test
 
 TARGET="${1:-allTests}"

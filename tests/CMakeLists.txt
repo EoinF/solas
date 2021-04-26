@@ -66,7 +66,7 @@ package_add_test(allTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SIMPLE_RAY_CAST} $
 package_add_test(boundRayCastTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
 package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
 
-package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/addLight.cpp)
+package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/limits.cpp)
 
 add_executable(benchmarktest ${SOURCES_SHARED} benchmarks/basic.cpp)
 

@@ -28,7 +28,7 @@ class BaseLightingTest : public ::testing::Test {
 	virtual LightmapManager *createTestSubject() = 0;
 	LightmapManager *lightmapManager;
 
-	::testing::AssertionResult isTileLit(int x, int y) {
+	::testing::AssertionResult isTileLit(std::int64_t x, std::int64_t y) {
 		if (lightmapManager->getTileState(x, y).brightness() >= 1) {
 			return ::testing::AssertionSuccess();
 		} else {
@@ -36,7 +36,7 @@ class BaseLightingTest : public ::testing::Test {
 				   << "Expected tile " << x << "," << y << " to be lit";
 		}
 	}
-	::testing::AssertionResult isTileUnlit(int x, int y) {
+	::testing::AssertionResult isTileUnlit(std::int64_t x, std::int64_t y) {
 		if (lightmapManager->getTileState(x, y).brightness() == 0) {
 			return ::testing::AssertionSuccess();
 		} else {
