@@ -5,9 +5,9 @@
 std::int64_t getChunkIndex(int x, int y) { return (x + MAX_CHUNKS_X / 2) + (y * MAX_CHUNKS_X + 1); }
 
 TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunkMap) {
-	float chunkSizeF = static_cast<float>(chunkSize);
-	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
-	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
+	float chunkSizeF = chunkSize;
+	int chunkX = floorf(tileX / chunkSizeF);
+	int chunkY = floorf(tileY / chunkSizeF);
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
@@ -17,13 +17,13 @@ TileLightState &getTileFast(int tileX, int tileY, int chunkSize, ChunkMap &chunk
 
 void LightmapManager::allocateChunksForLight(float x, float y, float range) {
 	int divisor = chunkSize * tileSize;
-	float rangeInTiles = 1 + glm::ceil(range / static_cast<float>(tileSize));
+	float rangeInTiles = 1 + glm::ceil(range / tileSize);
 	float actualRange = rangeInTiles * tileSize;
 
-	int startChunkX = static_cast<int>(floorf((x - actualRange) / divisor));
-	int startChunkY = static_cast<int>(floorf((y - actualRange) / divisor));
-	int endChunkX = static_cast<int>(floorf((x + actualRange) / divisor));
-	int endChunkY = static_cast<int>(floorf((y + actualRange) / divisor));
+	int startChunkX = floorf((x - actualRange) / divisor);
+	int startChunkY = floorf((y - actualRange) / divisor);
+	int endChunkX = floorf((x + actualRange) / divisor);
+	int endChunkY = floorf((y + actualRange) / divisor);
 
 	for (int i = startChunkX; i <= endChunkX; i++) {
 		for (int j = startChunkY; j <= endChunkY; j++) {
@@ -71,8 +71,9 @@ std::vector<TileLightState> &LightmapManager::getOrAllocateChunk(int chunkIndex)
 }
 
 TileLightState &LightmapManager::_getTileState(int x, int y) {
-	int chunkX = floorf(x / static_cast<float>(chunkSize));
-	int chunkY = floorf(y / static_cast<float>(chunkSize));
+	float chunkSizeF = chunkSize;
+	int chunkX = floorf(x / chunkSizeF);
+	int chunkY = floorf(y / chunkSizeF);
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = x - chunkSize * chunkX;
 	int chunkTileY = y - chunkSize * chunkY;

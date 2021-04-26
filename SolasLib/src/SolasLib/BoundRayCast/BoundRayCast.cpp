@@ -65,9 +65,9 @@ void BoundRayCast::removeLight(int lightId, Light &light, int tileSize, int chun
 
 const std::set<int> &BoundRayCast::getAffectedLights(int tileX, int tileY, int tileSize,
 													 int chunkSize) {
-	float chunkSizeF = static_cast<float>(chunkSize);
-	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
-	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
+	float chunkSizeF = chunkSize;
+	int chunkX = floorf(tileX / chunkSizeF);
+	int chunkY = floorf(tileY / chunkSizeF);
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
@@ -88,9 +88,9 @@ void clearLightMapping(int lightId, BoundLight &boundLight, int tileSize, int ch
 			int tileX = boundLight.srcX + x - boundLight.halfCastingMapWidth;
 			int tileY = boundLight.srcY + y - boundLight.halfCastingMapWidth;
 
-			float chunkSizeF = static_cast<float>(chunkSize);
-			int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
-			int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
+			float chunkSizeF = chunkSize;
+			int chunkX = floorf(tileX / chunkSizeF);
+			int chunkY = floorf(tileY / chunkSizeF);
 			int chunkIndex = getChunkIndex(chunkX, chunkY);
 			int chunkTileX = tileX - chunkX * chunkSize;
 			int chunkTileY = tileY - chunkY * chunkSize;
@@ -199,9 +199,9 @@ void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastN
 
 void addLightDependency(int lightId, int tileX, int tileY, int chunkSize,
 						ChunkTileLightIdsMap &tilesToLightIdsMap) {
-	float chunkSizeF = static_cast<float>(chunkSize);
-	int chunkX = static_cast<int>(floorf(tileX / chunkSizeF));
-	int chunkY = static_cast<int>(floorf(tileY / chunkSizeF));
+	float chunkSizeF = chunkSize;
+	int chunkX = floorf(tileX / chunkSizeF);
+	int chunkY = floorf(tileY / chunkSizeF);
 	int chunkIndex = getChunkIndex(chunkX, chunkY);
 	int chunkTileX = tileX - chunkX * chunkSize;
 	int chunkTileY = tileY - chunkY * chunkSize;
