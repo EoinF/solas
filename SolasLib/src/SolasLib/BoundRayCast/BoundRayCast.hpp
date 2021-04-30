@@ -9,6 +9,7 @@
 #include <glm/gtx/hash.hpp>
 #include <SolasLib/core.hpp>
 #include <SolasLib/core/LightCaster.hpp>
+#include <SolasLib/core/ChunkMap.hpp>
 
 struct BoundRayCastNode {
 	explicit BoundRayCastNode(int x = 0, int y = 0, int brightness = 0) {
@@ -59,10 +60,7 @@ class BoundRayCast : public LightCaster {
 	ChunkTileLightIdsMap tilesToLightIdsMap;
 
 	const std::set<int> &getAffectedLights(std::int64_t tileX, std::int64_t tileY,
-										   std::int64_t tileSize, std::int64_t chunkSize,
-										   std::int64_t maxChunks) override;
-	void removeLight(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
-					 std::int64_t maxChunks, ChunkMap &chunkMap) override;
-	void update(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
-				std::int64_t maxChunks, ChunkMap &chunkMap) override;
+										   const ChunkMap &chunkMap) override;
+	void removeLight(int lightId, Light &light, ChunkMap &chunkMap) override;
+	void update(int lightId, Light &light, ChunkMap &chunkMap) override;
 };

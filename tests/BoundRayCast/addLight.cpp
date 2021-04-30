@@ -27,7 +27,7 @@ TEST_F(BoundRayCast_AddLightTest, lighting_range_test) {
 	const auto RANGE_IN_TILES = 7;
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI * 3,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
@@ -48,7 +48,7 @@ TEST_F(BoundRayCast_AddLightTest, light_at_edge_of_chunk) {
 	const auto RANGE_IN_TILES = 7;
 	const auto LIGHT_X = -2;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI * 3,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
@@ -61,7 +61,7 @@ TEST_F(BoundRayCast_AddLightTest, light_at_edge_of_chunk_no_wraparound) {
 	const auto RANGE_IN_TILES = 7;
 	const auto LIGHT_X = -2;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, PI * 3,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI * 3,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 

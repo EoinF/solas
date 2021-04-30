@@ -2,32 +2,11 @@
 #include "BoundRayCast/BoundRayCast.hpp"
 #include "SimpleRayCast/SimpleRayCast.hpp"
 
-chunk_index_t _getChunkIndex(std::int64_t x, std::int64_t y, std::int64_t maxChunks) {
-	return x + y * maxChunks;
-}
-
-TileLightState &getTileFast(std::int64_t tileX, std::int64_t tileY, std::int64_t chunkSize,
-							std::int64_t maxChunks, ChunkMap &chunkMap) {
-	double chunkSizeF = chunkSize;
-	std::int64_t chunkX = floor(tileX / chunkSizeF);
-	std::int64_t chunkY = floor(tileY / chunkSizeF);
-	chunk_index_t chunkIndex = _getChunkIndex(chunkX, chunkY, maxChunks);
-	std::int64_t chunkTileX = tileX - chunkX * chunkSize;
-	std::int64_t chunkTileY = tileY - chunkY * chunkSize;
-
-	return chunkMap[chunkIndex][chunkTileX + chunkTileY * chunkSize];
-}
-
 LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
-								 std::int64_t chunkSize) {
-
-	this->maxChunks = INT64_MAX / (chunkSize * chunkSize);
+								 std::int64_t chunkSize)
+	: chunkMap(chunkSize, tileSize) {
 	this->isPaused = false;
 	this->nextLightId = 0;
-	this->tileSize = tileSize;
-	this->chunkSize = chunkSize;
-
-	allocateChunk(_getChunkIndex(0, 0, maxChunks));
 
 	switch (type) {
 	case CastingAlgorithm::BOUND_RAY_CAST:
@@ -42,9 +21,9 @@ LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
 }
 
 void LightmapManager::allocateChunksForLight(std::int64_t x, std::int64_t y, float range) {
-	std::int64_t divisor = chunkSize * tileSize;
-	double rangeInTiles = 1 + glm::ceil(range / tileSize);
-	double actualRange = rangeInTiles * tileSize;
+	std::int64_t divisor = chunkMap.chunkSize * chunkMap.tileSize;
+	double rangeInTiles = 1 + glm::ceil(range / chunkMap.tileSize);
+	double actualRange = rangeInTiles * chunkMap.tileSize;
 
 	std::int64_t startChunkX = floor((x - actualRange) / divisor);
 	std::int64_t startChunkY = floor((y - actualRange) / divisor);
@@ -53,48 +32,20 @@ void LightmapManager::allocateChunksForLight(std::int64_t x, std::int64_t y, flo
 
 	for (std::int64_t i = startChunkX; i <= endChunkX; i++) {
 		for (std::int64_t j = startChunkY; j <= endChunkY; j++) {
-			getOrAllocateChunk(_getChunkIndex(i, j, maxChunks));
+			chunkMap.allocateChunk(i, j);
 		}
 	}
 }
 
-void LightmapManager::allocateChunk(chunk_index_t chunkIndex) {
-	std::vector<TileLightState> tileArray;
-
-	// tileArray.resize(chunkSize * chunkSize);
-	for (int i = 0; i < chunkSize * chunkSize; i++) {
-		tileArray.push_back(TileLightState());
-	}
-
-	this->chunkMap.insert({chunkIndex, tileArray});
-}
-
-std::vector<TileLightState> &LightmapManager::getOrAllocateChunk(chunk_index_t chunkIndex) {
-	if (this->chunkMap.find(chunkIndex) == this->chunkMap.end()) {
-		allocateChunk(chunkIndex);
-	}
-	return this->chunkMap[chunkIndex];
-}
-
-TileLightState &LightmapManager::_getTileState(std::int64_t x, std::int64_t y) {
-	double chunkSizeF = chunkSize;
-	std::int64_t chunkX = floor(x / chunkSizeF);
-	std::int64_t chunkY = floor(y / chunkSizeF);
-	std::int64_t chunkTileX = x - chunkSize * chunkX;
-	std::int64_t chunkTileY = y - chunkSize * chunkY;
-	return LightmapManager::getOrAllocateChunk(
-		_getChunkIndex(chunkX, chunkY, maxChunks))[chunkTileX + chunkTileY * chunkSize];
-}
-
 const TileLightState &LightmapManager::getTileState(std::int64_t x, std::int64_t y) {
-	return _getTileState(x, y);
+	return chunkMap.getTileLightState(x, y);
 }
 
 int LightmapManager::addLight(std::int64_t x, std::int64_t y, float span, float range,
 							  glm::vec2 direction, int brightness) {
 	int lightId = nextLightId++;
-	this->lightsMap.insert(
-		{lightId, std::make_unique<Light>(x, y, direction, span, range, brightness, tileSize)});
+	this->lightsMap.insert({lightId, std::make_unique<Light>(x, y, direction, span, range,
+															 brightness, chunkMap.tileSize)});
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, range);
@@ -114,34 +65,26 @@ void LightmapManager::updateLight(int lightId, std::int64_t x, std::int64_t y, f
 }
 
 void LightmapManager::updateTile(int x, int y, bool isWall) {
-	auto &tile = _getTileState(x, y);
+	auto &tile = chunkMap.getTileLightState(x, y);
 	tile.isWall = isWall;
 	auto tileKey = glm::vec2(x, y);
-	auto &affectedLights = lightCaster->getAffectedLights(x, y, tileSize, chunkSize, maxChunks);
+	auto &affectedLights = lightCaster->getAffectedLights(x, y, chunkMap);
 	for (int lightId : affectedLights) {
 		lightsMap[lightId]->shouldUpdate = true;
 	}
 }
 
-void LightmapManager::clearTileState() {
-	for (auto &chunk : this->chunkMap) {
-		for (int i = 0; i < chunkSize * chunkSize; i++) {
-			chunk.second[i].isWall = false;
-		}
-	}
-}
+void LightmapManager::clearTileState() { chunkMap.clearTileState(); }
 
 void LightmapManager::clearLights() {
 	for (auto &lightIdPair : this->lightsMap) {
-		this->lightCaster->removeLight(lightIdPair.first, *lightIdPair.second, tileSize, chunkSize,
-									   maxChunks, chunkMap);
+		this->lightCaster->removeLight(lightIdPair.first, *lightIdPair.second, chunkMap);
 	}
 	this->lightsMap.clear();
 }
 
 void LightmapManager::removeLight(int lightId) {
-	this->lightCaster->removeLight(lightId, *lightsMap[lightId], tileSize, chunkSize, maxChunks,
-								   chunkMap);
+	this->lightCaster->removeLight(lightId, *lightsMap[lightId], chunkMap);
 	lightsMap.erase(lightId);
 }
 
@@ -161,7 +104,7 @@ void LightmapManager::update() {
 		Light &light = *idLightPair.second;
 
 		if (light.shouldUpdate) {
-			lightCaster->update(lightId, light, tileSize, chunkSize, maxChunks, chunkMap);
+			lightCaster->update(lightId, light, chunkMap);
 			light.shouldUpdate = false;
 		}
 	}

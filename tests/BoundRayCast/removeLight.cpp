@@ -16,8 +16,8 @@ TEST_F(BoundRayCast_RemoveLightTest, all_lighting_cleared_after_removing) {
 	const auto LIGHT_X = 40;
 	const auto LIGHT_Y = 65;
 
-	auto id = lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE,
-										PI, RANGE_IN_TILES);
+	auto id =
+		lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI, RANGE_IN_TILES);
 	lightmapManager->update();
 	lightmapManager->removeLight(id);
 	lightmapManager->update();
@@ -33,8 +33,8 @@ TEST_F(BoundRayCast_RemoveLightTest, all_lighting_cleared_after_removing_at_edge
 	const auto LIGHT_X = 95;
 	const auto LIGHT_Y = 65;
 
-	auto id = lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE,
-										PI, RANGE_IN_TILES);
+	auto id =
+		lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI, RANGE_IN_TILES);
 	lightmapManager->update();
 	lightmapManager->removeLight(id);
 	lightmapManager->update();
@@ -50,8 +50,8 @@ TEST_F(BoundRayCast_RemoveLightTest, adding_a_wall_after_removing_light_does_not
 	const auto LIGHT_X = 40;
 	const auto LIGHT_Y = 65;
 
-	auto id = lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE,
-										PI, RANGE_IN_TILES);
+	auto id =
+		lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, PI, RANGE_IN_TILES);
 	lightmapManager->update();
 	lightmapManager->removeLight(id);
 	lightmapManager->update();

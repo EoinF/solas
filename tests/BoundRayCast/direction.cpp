@@ -16,7 +16,7 @@ TEST_F(BoundRayCast_LightDirectionTest, lighting_semi_circle_test_pointing_left)
 	const auto DIRECTION = glm::vec2(-1, 0);
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, SPAN,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, SPAN,
 							  RANGE_IN_TILES * TILE_SIZE, DIRECTION);
 	lightmapManager->update();
 
@@ -38,7 +38,7 @@ TEST_F(BoundRayCast_LightDirectionTest, lighting_semi_circle_test_pointing_down)
 	const auto DIRECTION = glm::vec2(0, -1);
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, SPAN,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, SPAN,
 							  RANGE_IN_TILES * TILE_SIZE, DIRECTION);
 	lightmapManager->update();
 

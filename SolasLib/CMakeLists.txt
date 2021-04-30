@@ -8,6 +8,7 @@ set(HEADER_LIST
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/Light.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/LightmapManager.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/LightCaster.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/SolasLib/core/ChunkMap.hpp
 )
 
 set(SOURCES
@@ -21,8 +22,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/LightmapManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/ChunkMap.cpp
 )
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)

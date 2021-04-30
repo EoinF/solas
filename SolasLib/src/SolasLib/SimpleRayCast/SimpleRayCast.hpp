@@ -11,10 +11,7 @@
 
 class SimpleRayCast : public LightCaster {
 	const std::set<int> &getAffectedLights(std::int64_t tileX, std::int64_t tileY,
-										   std::int64_t tileSize, std::int64_t chunkSize,
-										   std::int64_t maxChunks) override;
-	void removeLight(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
-					 std::int64_t maxChunks, ChunkMap &chunkMap) override;
-	void update(int lightId, Light &light, std::int64_t tileSize, std::int64_t chunkSize,
-				std::int64_t maxChunks, ChunkMap &chunkMap) override;
+										   const ChunkMap &chunkMap) override;
+	void removeLight(int lightId, Light &light, ChunkMap &chunkMap) override;
+	void update(int lightId, Light &light, ChunkMap &chunkMap) override;
 };

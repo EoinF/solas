@@ -15,7 +15,7 @@ TEST_F(BoundRayCast_LightSpanTest, lighting_semi_circle_test) {
 	const auto SPAN = PI;
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, SPAN,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, SPAN,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
@@ -38,7 +38,7 @@ TEST_F(BoundRayCast_LightSpanTest, lighting_quarter_circle_test) {
 	const auto SPAN = PI / 2.0f;
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, SPAN,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, SPAN,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 
@@ -59,7 +59,7 @@ TEST_F(BoundRayCast_LightSpanTest, lighting_full_circle_test) {
 	const auto SPAN = 2.0f * PI;
 	const auto LIGHT_X = 22;
 	const auto LIGHT_Y = 10;
-	lightmapManager->addLight((LIGHT_X + 0.5f) * TILE_SIZE, (LIGHT_Y + 0.5f) * TILE_SIZE, SPAN,
+	lightmapManager->addLight(LIGHT_X * TILE_SIZE, LIGHT_Y * TILE_SIZE, SPAN,
 							  RANGE_IN_TILES * TILE_SIZE);
 	lightmapManager->update();
 

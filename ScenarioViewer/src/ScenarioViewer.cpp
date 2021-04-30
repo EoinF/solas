@@ -11,7 +11,8 @@ int TILE_SIZE = 4;
 
 Game game(TILE_SIZE, WINDOW_WIDTH / TILE_SIZE, WINDOW_HEIGHT / TILE_SIZE);
 
-sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test", sf::Style::Default, sf::ContextSettings(0U, 0U, 8U));
+sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dynamic Lightmap Test",
+						sf::Style::Default, sf::ContextSettings(0U, 0U, 8U));
 sf::Clock gameClock;
 sf::Font font;
 sf::Text fpsLabel;
@@ -29,176 +30,147 @@ bool wasMouseClicked = false;
 
 // Hacky solution to get the current path
 // but it's fine because this app isn't meant to be distributed anyway
-std::string get_current_path(std::string executablePath)
-{
-    while (executablePath[executablePath.length() - 1] != '/' && executablePath[executablePath.length() - 1] != '\\')
-    {
-        executablePath = executablePath.substr(0, executablePath.length() - 2);
-    }
-    return executablePath;
+std::string get_current_path(std::string executablePath) {
+	while (executablePath[executablePath.length() - 1] != '/' &&
+		   executablePath[executablePath.length() - 1] != '\\') {
+		executablePath = executablePath.substr(0, executablePath.length() - 2);
+	}
+	return executablePath;
 }
 
-int main(int argc, char **argv)
-{
-    init(get_current_path(argv[0]));
-    while (window.isOpen())
-    {
-        update();
-    }
-    return 0;
+int main(int argc, char **argv) {
+	init(get_current_path(argv[0]));
+	while (window.isOpen()) {
+		update();
+	}
+	return 0;
 }
 
-void init(std::string path)
-{
-    font.loadFromFile(path.append("/assets/Arial.ttf"));
+void init(std::string path) {
+	font.loadFromFile(path.append("/assets/Arial.ttf"));
 
-    scenarioLabel.setFont(font);
-    scenarioLabel.setFillColor(sf::Color::White);
-    scenarioLabel.setString("Scenario: 1");
-    scenarioLabel.setPosition(10, 10);
+	scenarioLabel.setFont(font);
+	scenarioLabel.setFillColor(sf::Color::White);
+	scenarioLabel.setString("Scenario: 1");
+	scenarioLabel.setPosition(10, 10);
 
-    fpsLabel.setFont(font);
-    fpsLabel.setFillColor(sf::Color::White);
-    fpsLabel.setString("...");
-    fpsLabel.setPosition(10, 40);
+	fpsLabel.setFont(font);
+	fpsLabel.setFillColor(sf::Color::White);
+	fpsLabel.setString("...");
+	fpsLabel.setPosition(10, 40);
 
-    lightmapOverlaySprite.setScale((float)TILE_SIZE, (float)TILE_SIZE);
-    lightmapOverlaySprite.setTexture(game.lightmapOverlay);
-    glEnable(GL_TEXTURE_2D);
-    // window.setFramerateLimit(60);
+	lightmapOverlaySprite.setScale((float)TILE_SIZE, (float)TILE_SIZE);
+	lightmapOverlaySprite.setTexture(game.lightmapOverlay);
+	glEnable(GL_TEXTURE_2D);
+	// window.setFramerateLimit(60);
 }
 
-float calculateFrameRate(float timeDelta)
-{
-    totalElapsed += timeDelta;
-    framesThisSecond++;
+float calculateFrameRate(float timeDelta) {
+	totalElapsed += timeDelta;
+	framesThisSecond++;
 
-    if (totalElapsed > 1.0f)
-    {
-        totalSeconds++;
-        totalFrames += framesThisSecond;
-        fpsLabel.setString("current: " + std::to_string(framesThisSecond) + " average: " + std::to_string(totalFrames / totalSeconds));
-        framesThisSecond = 0;
-        totalElapsed -= 1.0f;
-    }
-    return timeDelta;
+	if (totalElapsed > 1.0f) {
+		totalSeconds++;
+		totalFrames += framesThisSecond;
+		fpsLabel.setString("current: " + std::to_string(framesThisSecond) +
+						   " average: " + std::to_string(totalFrames / totalSeconds));
+		framesThisSecond = 0;
+		totalElapsed -= 1.0f;
+	}
+	return timeDelta;
 }
 
-void update()
-{
-    sf::Event event;
-    while (window.pollEvent(event))
-    {
-        if (event.type == sf::Event::Closed)
-            window.close();
-    }
+void update() {
+	sf::Event event;
+	while (window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed)
+			window.close();
+	}
 
-    float timeDelta = gameClock.restart().asSeconds();
-    calculateFrameRate(timeDelta);
+	float timeDelta = gameClock.restart().asSeconds();
+	calculateFrameRate(timeDelta);
 
-    if (inputTimeout < 0)
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            game.previousScenario();
-            updateUI();
-            inputTimeout = 0.3f;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            game.nextScenario();
-            updateUI();
-            inputTimeout = 0.3f;
-        }
+	if (inputTimeout < 0) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			game.previousScenario();
+			updateUI();
+			inputTimeout = 0.3f;
+		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			game.nextScenario();
+			updateUI();
+			inputTimeout = 0.3f;
+		}
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-        {
-            showOverlay = !showOverlay;
-            inputTimeout = 0.3f;
-        }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+			showOverlay = !showOverlay;
+			inputTimeout = 0.3f;
+		}
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
-        {
-            auto currentMode = game.getPlacementMode();
-            if (currentMode == PlacementMode::LIGHT)
-            {
-                currentMode = PlacementMode::WALL;
-            }
-            else
-            {
-                currentMode = PlacementMode::LIGHT;
-            }
-            game.setPlacementMode(currentMode);
-            inputTimeout = 0.3f;
-        }
-    }
-    else
-    {
-        inputTimeout -= timeDelta;
-    }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			auto currentMode = game.getPlacementMode();
+			if (currentMode == PlacementMode::LIGHT) {
+				currentMode = PlacementMode::WALL;
+			} else {
+				currentMode = PlacementMode::LIGHT;
+			}
+			game.setPlacementMode(currentMode);
+			inputTimeout = 0.3f;
+		}
+	} else {
+		inputTimeout -= timeDelta;
+	}
 
-    glm::vec2 deltaPosition(0, 0);
-    float deltaSpan = 0.0f;
-    float moveSpeed = 600.0f;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-    {
-        moveSpeed = 100.0f;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-    {
-        deltaPosition.y -= timeDelta * moveSpeed;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    {
-        deltaPosition.y += timeDelta * moveSpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    {
-        deltaPosition.x -= timeDelta * moveSpeed;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    {
-        deltaPosition.x += timeDelta * moveSpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-    {
-        deltaSpan += timeDelta * 5.0f;
-    }
+	glm::vec2 deltaPosition(0, 0);
+	float deltaSpan = 0.0f;
+	float moveSpeed = 600.0f;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+		moveSpeed = 100.0f;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+		deltaPosition.y -= timeDelta * moveSpeed;
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		deltaPosition.y += timeDelta * moveSpeed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		deltaPosition.x -= timeDelta * moveSpeed;
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		deltaPosition.x += timeDelta * moveSpeed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+		deltaSpan += timeDelta * 5.0f;
+	}
 
-    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-    wasMouseClicked = isMouseClicked;
-    isMouseClicked = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+	wasMouseClicked = isMouseClicked;
+	isMouseClicked = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
-    // clear the buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    window.pushGLStates();
+	// clear the buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	window.pushGLStates();
 
-    game.update(mousePosition, deltaPosition, deltaSpan, wasMouseClicked && !isMouseClicked, timeDelta);
+	game.update(mousePosition, deltaPosition, deltaSpan, wasMouseClicked && !isMouseClicked,
+				timeDelta);
 
-    window.clear(sf::Color::Blue);
-    for (auto &element : game.sprites)
-    {
-        window.draw(*element.second);
-    }
-    if (showOverlay)
-    {
-        window.draw(lightmapOverlaySprite);
-    }
-    for (auto &spritePtr : game.debugSprites)
-    {
-        window.draw(*spritePtr);
-    }
-    window.draw(scenarioLabel);
-    window.draw(fpsLabel);
-    window.popGLStates();
-    window.display();
+	window.clear(sf::Color::Blue);
+	for (auto &element : game.sprites) {
+		window.draw(*element.second);
+	}
+	if (showOverlay) {
+		window.draw(lightmapOverlaySprite);
+	}
+	for (auto &spritePtr : game.debugSprites) {
+		window.draw(*spritePtr);
+	}
+	window.draw(scenarioLabel);
+	window.draw(fpsLabel);
+	window.popGLStates();
+	window.display();
 }
 
-void updateUI()
-{
-    totalFrames = 0;
-    totalElapsed = 0;
-    totalSeconds = 0;
-    framesThisSecond = 0;
-    scenarioLabel.setString("Scenario: " + std::to_string(game.scenarioIndex + 1));
+void updateUI() {
+	totalFrames = 0;
+	totalElapsed = 0;
+	totalSeconds = 0;
+	framesThisSecond = 0;
+	scenarioLabel.setString("Scenario: " + std::to_string(game.scenarioIndex + 1));
 }
