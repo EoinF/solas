@@ -72,8 +72,8 @@ void SimpleRayCast::removeLight(int lightId, Light &light, ChunkMap &chunkMap) {
 	}
 }
 
-const std::set<int> &SimpleRayCast::getAffectedLights(std::int64_t tileX, std::int64_t tileY,
-													  const ChunkMap &chunkMap) {
+std::set<int> SimpleRayCast::getAffectedLights(std::int64_t tileX, std::int64_t tileY,
+											   const ChunkMap &chunkMap) {
 	// TODO update lights based on tile
 	return {};
 }

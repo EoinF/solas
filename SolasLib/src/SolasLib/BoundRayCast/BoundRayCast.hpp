@@ -4,12 +4,14 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <utility>
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 #include <SolasLib/core.hpp>
 #include <SolasLib/core/LightCaster.hpp>
 #include <SolasLib/core/ChunkMap.hpp>
+#include "../DiscreteLinePather.hpp"
 
 struct BoundRayCastNode {
 	explicit BoundRayCastNode(int x = 0, int y = 0, int brightness = 0) {
@@ -52,14 +54,28 @@ struct BoundLight {
 	int castingMapWidth;
 };
 
-typedef std::map<chunk_index_t, std::map<std::int64_t, std::set<light_id_t>>> ChunkTileLightIdsMap;
+struct Rectangle {
+	std::int64_t x, y, width, height;
+	Rectangle(std::int64_t x, std::int64_t y, std::int64_t width, std::int64_t height) {
+		this->x = x;
+		this->y = y;
+		this->width = width;
+		this->height = height;
+	}
+	bool containsPoint(std::int64_t pointX, std::int64_t pointY) {
+		return pointX > this->x && pointX < this->x + this->width && pointY > this->y &&
+			   pointY < this->y + height;
+	}
+};
+
+typedef std::vector<std::pair<Rectangle, light_id_t>> RegionsToLightIds;
 
 class BoundRayCast : public LightCaster {
   public:
 	std::map<int, std::unique_ptr<BoundLight>> boundLightMap;
-	ChunkTileLightIdsMap tilesToLightIdsMap;
+	RegionsToLightIds regionsToLightIds;
 
-	const std::set<int> &getAffectedLights(std::int64_t tileX, std::int64_t tileY,
+	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 										   const ChunkMap &chunkMap) override;
 	void removeLight(int lightId, Light &light, ChunkMap &chunkMap) override;
 	void update(int lightId, Light &light, ChunkMap &chunkMap) override;

@@ -67,9 +67,7 @@ void LightmapManager::updateLight(int lightId, std::int64_t x, std::int64_t y, f
 void LightmapManager::updateTile(int x, int y, bool isWall) {
 	auto &tile = chunkMap.getTileLightState(x, y);
 	tile.isWall = isWall;
-	auto tileKey = glm::vec2(x, y);
-	auto &affectedLights = lightCaster->getAffectedLights(x, y, chunkMap);
-	for (int lightId : affectedLights) {
+	for (int lightId : lightCaster->getAffectedLights(x, y, chunkMap)) {
 		lightsMap[lightId]->shouldUpdate = true;
 	}
 }
