@@ -16,4 +16,6 @@ class LightCaster {
 											const ChunkMap &chunkMap) = 0;
 	virtual void removeLight(int lightId, Light &light, ChunkMap &chunkMap) = 0;
 	virtual void update(int lightId, Light &light, ChunkMap &chunkMap) = 0;
+
+	virtual ~LightCaster(){};
 };

@@ -2,6 +2,12 @@ find_package(glm REQUIRED)
 add_subdirectory("${PROJECT_SOURCE_DIR}/extern/googletest" "extern/googletest")
 add_subdirectory("${PROJECT_SOURCE_DIR}/extern/googlebenchmark" "extern/googlebenchmark")
 
+set(SOURCES_BENCHMARK
+    benchmarks/main.cpp
+    benchmarks/addLight.cpp
+    benchmarks/updateLight.cpp
+)
+
 set(SOURCES_SHARED testUtils.hpp)
 
 set(SOURCES_BOUND_RAY_CAST
@@ -68,7 +74,7 @@ package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED}
 
 package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/updateTile.cpp)
 
-add_executable(benchmarktest ${SOURCES_SHARED} benchmarks/basic.cpp)
+add_executable(benchmarktest ${SOURCES_SHARED} ${SOURCES_BENCHMARK})
 
 set(CMAKE_CXX_STANDARD 17)
 
