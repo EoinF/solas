@@ -32,7 +32,7 @@ void LightmapManager::allocateChunksForLight(std::int64_t x, std::int64_t y, flo
 
 	for (std::int64_t i = startChunkX; i <= endChunkX; i++) {
 		for (std::int64_t j = startChunkY; j <= endChunkY; j++) {
-			chunkMap.allocateChunk(i, j);
+			chunkMap.getOrAllocateChunk(i, j);
 		}
 	}
 }

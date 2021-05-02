@@ -10,7 +10,6 @@ class ChunkMap {
   private:
 	std::map<chunk_index_t, std::vector<TileLightState>> data;
 	std::int64_t maxChunks;
-	std::vector<TileLightState> &getOrAllocateChunk(std::int64_t chunkX, std::int64_t chunkY);
 
   public:
 	std::int64_t tileSize;
@@ -20,6 +19,7 @@ class ChunkMap {
 	}
 
 	void allocateChunk(std::int64_t chunkX, std::int64_t chunkY);
+	std::vector<TileLightState> &getOrAllocateChunk(std::int64_t chunkX, std::int64_t chunkY);
 
 	ChunkMap(std::int64_t chunkSize, std::int64_t tileSize);
 
