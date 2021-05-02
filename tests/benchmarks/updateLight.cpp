@@ -13,7 +13,7 @@ static void MOVE_LIGHT(benchmark::State &state) {
 	auto lightId = lightmapManager.addLight(30, 30, glm::pi<float>(), updateVars::TILE_SIZE * 8);
 	auto light = lightmapManager.getLightsMap()[lightId].get();
 	for (auto _ : state) {
-		lightmapManager.updateLight(lightId, light->x + 1, light->y, light->span, light->direction);
+		lightmapManager.updateLightPosition(lightId, light->x + 1, light->y);
 		lightmapManager.update();
 	}
 }

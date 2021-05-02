@@ -29,7 +29,7 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
 		glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
 		// glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
 
-		this->lightmapManager->updateLight(id, light->x, light->y, light->span, direction);
+		this->lightmapManager->updateLightDirection(id, direction);
 	}
 
 	updatePlacement(isMouseClicked, mousePosition, deltaPosition, deltaSpan);
@@ -77,9 +77,11 @@ void Game::updatePlacement(bool isMouseClicked, sf::Vector2i mousePosition, glm:
 			updatedSpan = 0.0f;
 		}
 
-		this->lightmapManager->updateLight(
-			heldLightId, placementPosition.x, placementPosition.y, updatedSpan,
-			glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
+		this->lightmapManager->updateLightPosition(heldLightId, placementPosition.x,
+												   placementPosition.y);
+		this->lightmapManager->updateLightSpan(heldLightId, updatedSpan);
+		this->lightmapManager->updateLightDirection(
+			heldLightId, glm::vec2(mousePosition.x - heldLight->x, mousePosition.y - heldLight->y));
 		if (isMouseClicked) {
 			std::cout << "placed light at: " << tileX << "," << tileY << std::endl;
 			this->heldLightId = this->lightmapManager->addLight(

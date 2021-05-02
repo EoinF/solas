@@ -53,15 +53,22 @@ int LightmapManager::addLight(std::int64_t x, std::int64_t y, float span, float 
 	return lightId;
 }
 
-void LightmapManager::updateLight(int lightId, std::int64_t x, std::int64_t y, float span,
-								  glm::vec2 direction) {
+void LightmapManager::updateLightPosition(light_id_t lightId, std::int64_t x, std::int64_t y) {
 	this->lightsMap[lightId]->x = x;
 	this->lightsMap[lightId]->y = y;
-	this->lightsMap[lightId]->direction = direction;
-	this->lightsMap[lightId]->span = span;
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, this->lightsMap[lightId]->range);
+}
+
+void LightmapManager::updateLightSpan(int lightId, float span) {
+	this->lightsMap[lightId]->span = span;
+	this->lightsMap[lightId]->shouldUpdate = true;
+}
+
+void LightmapManager::updateLightDirection(int lightId, glm::vec2 direction) {
+	this->lightsMap[lightId]->direction = direction;
+	this->lightsMap[lightId]->shouldUpdate = true;
 }
 
 void LightmapManager::updateTile(int x, int y, bool isWall) {

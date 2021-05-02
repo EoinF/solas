@@ -32,8 +32,9 @@ class LightmapManager {
 
 	light_id_t addLight(std::int64_t x, std::int64_t y, float span, float range,
 						glm::vec2 direction = glm::vec2(1, 0), int brightness = 100);
-	void updateLight(light_id_t lightId, std::int64_t x, std::int64_t y, float span,
-					 glm::vec2 direction = glm::vec2(1, 0));
+	void updateLightPosition(light_id_t lightId, std::int64_t x, std::int64_t y);
+	void updateLightSpan(light_id_t lightId, float span);
+	void updateLightDirection(light_id_t lightId, glm::vec2 direction);
 	void updateTile(int tileX, int tileY, bool isWall);
 	void clearLights();
 	void clearTileState();
