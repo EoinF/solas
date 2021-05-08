@@ -28,10 +28,10 @@ struct BoundRayCastNode {
 
 struct BoundLight {
 	BoundLight() : BoundLight(0, 0, 1, 0.0f, glm::vec2(0, 0), 0) {}
-	BoundLight(std::int64_t srcX, std::int64_t srcY, int halfCastingMapWidth, float span,
+	BoundLight(std::int64_t srcTileX, std::int64_t srcTileY, int halfCastingMapWidth, float span,
 			   glm::vec2 direction, int brightness) {
-		this->srcX = srcX;
-		this->srcY = srcY;
+		this->srcTileX = srcTileX;
+		this->srcTileY = srcTileY;
 		this->halfCastingMapWidth = halfCastingMapWidth;
 		this->span = span;
 		this->direction = direction;
@@ -45,7 +45,7 @@ struct BoundLight {
 		this->lightMap = std::make_unique<int[]>(castingMapWidth * castingMapWidth);
 	}
 	std::unique_ptr<int[]> lightMap;
-	std::int64_t srcX, srcY;
+	std::int64_t srcTileX, srcTileY;
 	BoundRayCastNode dependencyTreeRoot;
 	float span;
 	glm::vec2 direction;
@@ -72,11 +72,17 @@ typedef std::vector<std::pair<Rectangle, light_id_t>> RegionsToLightIds;
 
 class BoundRayCast : public LightCaster {
   public:
-	std::map<int, std::unique_ptr<BoundLight>> boundLightMap;
+	std::map<light_id_t, std::unique_ptr<BoundLight>> boundLightMap;
 	RegionsToLightIds regionsToLightIds;
 
 	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 										   const ChunkMap &chunkMap) override;
-	void removeLight(int lightId, Light &light, ChunkMap &chunkMap) override;
-	void update(int lightId, Light &light, ChunkMap &chunkMap) override;
+	void removeLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
+	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
+
+  protected:
+	BoundLight *addNewLight(light_id_t lightId, std::int64_t srcTileX, std::int64_t srcTileY,
+							Light &light, ChunkMap &chunkMap);
+	BoundLight *updateLight(light_id_t lightId, std::int64_t srcTileX, std::int64_t srcTileY,
+							Light &light, ChunkMap &chunkMap);
 };

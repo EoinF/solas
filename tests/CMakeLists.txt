@@ -4,6 +4,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/extern/googlebenchmark" "extern/googlebe
 
 set(SOURCES_BENCHMARK
     benchmarks/main.cpp
+    benchmarks/startup.cpp
     benchmarks/addLight.cpp
     benchmarks/updateLight.cpp
 )

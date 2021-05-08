@@ -61,12 +61,12 @@ void LightmapManager::updateLightPosition(light_id_t lightId, std::int64_t x, st
 	allocateChunksForLight(x, y, this->lightsMap[lightId]->range);
 }
 
-void LightmapManager::updateLightSpan(int lightId, float span) {
+void LightmapManager::updateLightSpan(light_id_t lightId, float span) {
 	this->lightsMap[lightId]->span = span;
 	this->lightsMap[lightId]->shouldUpdate = true;
 }
 
-void LightmapManager::updateLightDirection(int lightId, glm::vec2 direction) {
+void LightmapManager::updateLightDirection(light_id_t lightId, glm::vec2 direction) {
 	this->lightsMap[lightId]->direction = direction;
 	this->lightsMap[lightId]->shouldUpdate = true;
 }
