@@ -7,6 +7,7 @@ set(SOURCES_BENCHMARK
     benchmarks/startup.cpp
     benchmarks/addLight.cpp
     benchmarks/updateLight.cpp
+    benchmarks/removeLight.cpp
 )
 
 set(SOURCES_SHARED testUtils.hpp)

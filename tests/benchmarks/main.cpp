@@ -1,5 +1,6 @@
 #include "addLight.cpp"
 #include "updateLight.cpp"
+#include "removeLight.cpp"
 #include "startup.cpp"
 #include <benchmark/benchmark.h>
 
@@ -10,6 +11,9 @@ BENCHMARK(STARTUP)->Unit(benchmark::kMillisecond)->MinTime(RUNNING_TIME_SECONDS)
 BENCHMARK(ADD_LIGHT)->Unit(benchmark::kMillisecond)->MinTime(5);
 BENCHMARK(ADD_LIGHT_MID_RANGE)->Unit(benchmark::kMillisecond)->MinTime(5);
 BENCHMARK(ADD_LIGHT_LONG_RANGE)->Unit(benchmark::kMillisecond)->MinTime(5);
+
+BENCHMARK(REMOVE_LIGHT)->Unit(benchmark::kMillisecond)->MinTime(5);
+BENCHMARK(REMOVE_LIGHT_LONG_RANGE)->Unit(benchmark::kMillisecond)->MinTime(5);
 
 BENCHMARK(MOVE_LIGHT)->Unit(benchmark::kMillisecond)->MinTime(RUNNING_TIME_SECONDS);
 BENCHMARK(MOVE_LIGHT_LONG_RANGE)->Unit(benchmark::kMillisecond)->MinTime(5);
