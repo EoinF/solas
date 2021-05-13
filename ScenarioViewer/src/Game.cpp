@@ -4,7 +4,7 @@ int NUM_MODES = 2;
 
 Game::Game(int tileSize, int numTilesX, int numTilesY)
 	: lightmapManager(
-		  std::make_unique<LightmapManager>(tileSize, CastingAlgorithm::BOUND_RAY_CAST, 2048)),
+		  std::make_unique<LightmapManager>(tileSize, CastingAlgorithm::SHADOW_CAST, 2048)),
 	  pixels(std::make_unique<sf::Uint8[]>(numTilesX * numTilesY * 4)) {
 	this->tileSize = tileSize;
 	this->numTilesX = numTilesX;

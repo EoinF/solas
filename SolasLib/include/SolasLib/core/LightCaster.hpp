@@ -6,7 +6,7 @@
 #include <SolasLib/core/Light.hpp>
 #include <SolasLib/core/ChunkMap.hpp>
 
-enum class CastingAlgorithm { BOUND_RAY_CAST };
+enum class CastingAlgorithm { BOUND_RAY_CAST, SHADOW_CAST };
 
 typedef int light_id_t;
 

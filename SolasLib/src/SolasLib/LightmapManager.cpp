@@ -1,5 +1,6 @@
 #include <SolasLib/core/LightmapManager.hpp>
 #include "BoundRayCast/BoundRayCast.hpp"
+#include "ShadowCast/ShadowCast.hpp"
 
 LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
 								 std::int64_t chunkSize)
@@ -10,6 +11,9 @@ LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
 	switch (type) {
 	case CastingAlgorithm::BOUND_RAY_CAST:
 		this->lightCaster = std::make_unique<BoundRayCast>(tileSize);
+		break;
+	case CastingAlgorithm::SHADOW_CAST:
+		this->lightCaster = std::make_unique<ShadowCast>();
 		break;
 	default:
 		this->lightCaster = std::make_unique<BoundRayCast>(tileSize);

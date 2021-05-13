@@ -19,6 +19,8 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/DiscreteLinePather.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/ShadowCast/ShadowCast.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/ShadowCast/ShadowCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/LightmapManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/ChunkMap.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/Rectangle.hpp
