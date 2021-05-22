@@ -27,7 +27,7 @@ class Light {
 		this->brightness = brightness;
 		this->shouldUpdate = true;
 
-		this->rangeInTiles = static_cast<int>(range / tileSize);
+		this->rangeInTiles = static_cast<int>(std::ceil(range / tileSize)) + 1;
 	}
 
 	void setPosition(std::int64_t x, std::int64_t y) {

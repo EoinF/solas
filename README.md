@@ -90,4 +90,5 @@ This is a demo app that uses the solas API
 - Hold left shift to move around slowly for more precise placement
 - Left click adds a new light
 - Use 'L' key to toggle lighting on/off
+- Use 'R' key to alter the light span
 - Use 'P' to switch between Light placement and Wall placement

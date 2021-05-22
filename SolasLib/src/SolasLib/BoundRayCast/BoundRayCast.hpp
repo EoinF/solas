@@ -12,67 +12,27 @@
 #include <SolasLib/core/LightCaster.hpp>
 #include <SolasLib/core/ChunkMap.hpp>
 #include "../DiscreteLinePather.hpp"
+#include "../Rectangle.hpp"
 
 struct BoundRayCastNode {
-	explicit BoundRayCastNode(int x = 0, int y = 0, int brightness = 0) {
+	explicit BoundRayCastNode(int x = 0, int y = 0, float distanceFromSrc = 0) {
 		this->location.x = x;
 		this->location.y = y;
-		this->brightness = brightness;
+		this->distanceFromSrc = distanceFromSrc;
 	}
+	float distanceFromSrc;
 	std::vector<glm::vec2> directionsToNode;
 	glm::ivec2 location;
 	std::map<int, std::unique_ptr<BoundRayCastNode>>
 		children; // Maps each tile index to the next dependent tile
-	int brightness;
-};
-
-struct BoundLight {
-	BoundLight() : BoundLight(0, 0, 1, 0.0f, glm::vec2(0, 0), 0) {}
-	BoundLight(std::int64_t srcTileX, std::int64_t srcTileY, int halfCastingMapWidth, float span,
-			   glm::vec2 direction, int brightness) {
-		this->srcTileX = srcTileX;
-		this->srcTileY = srcTileY;
-		this->halfCastingMapWidth = halfCastingMapWidth;
-		this->span = span;
-		this->direction = direction;
-		this->brightness = brightness;
-		this->castingMapWidth = halfCastingMapWidth * 2;
-
-		this->dependencyTreeRoot.location.x = 0;
-		this->dependencyTreeRoot.location.y = 0;
-		this->dependencyTreeRoot.brightness = brightness;
-
-		this->lightMap = std::make_unique<int[]>(castingMapWidth * castingMapWidth);
-	}
-	std::unique_ptr<int[]> lightMap;
-	std::int64_t srcTileX, srcTileY;
-	BoundRayCastNode dependencyTreeRoot;
-	float span;
-	glm::vec2 direction;
-	int brightness;
-	int halfCastingMapWidth;
-	int castingMapWidth;
-};
-
-struct Rectangle {
-	std::int64_t x, y, width, height;
-	Rectangle(std::int64_t x, std::int64_t y, std::int64_t width, std::int64_t height) {
-		this->x = x;
-		this->y = y;
-		this->width = width;
-		this->height = height;
-	}
-	bool containsPoint(std::int64_t pointX, std::int64_t pointY) {
-		return pointX > this->x && pointX < this->x + this->width && pointY > this->y &&
-			   pointY < this->y + height;
-	}
 };
 
 typedef std::vector<std::pair<Rectangle, light_id_t>> RegionsToLightIds;
 
 class BoundRayCast : public LightCaster {
   public:
-	std::map<light_id_t, std::unique_ptr<BoundLight>> boundLightMap;
+	BoundRayCast(std::int64_t tileSize);
+	std::map<light_id_t, std::unique_ptr<Light>> boundLightMap;
 	RegionsToLightIds regionsToLightIds;
 
 	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
@@ -81,10 +41,12 @@ class BoundRayCast : public LightCaster {
 	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 
   protected:
-	BoundLight *addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
-	BoundLight *updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
+	BoundRayCastNode dependencyTreeRoot;
+	std::map<light_id_t, std::unique_ptr<int[]>> lightCastMap;
+	void addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
+	void updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
 	void clearLightMapping(int lightId, ChunkMap &chunkMap);
-	void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j);
-	void applyLightDependencyPath(int lightId, BoundLight &light, BoundRayCastNode &currentNode,
+	void boundRayCast(std::int64_t i, std::int64_t j, std::int64_t tileSize);
+	void applyLightDependencyPath(int lightId, Light &light, BoundRayCastNode &currentNode,
 								  ChunkMap &chunkMap);
 };

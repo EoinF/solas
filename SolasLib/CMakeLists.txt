@@ -21,6 +21,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/LightmapManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/ChunkMap.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/Rectangle.hpp
 )
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)

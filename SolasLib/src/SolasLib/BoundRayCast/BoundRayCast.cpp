@@ -1,19 +1,35 @@
 #include "BoundRayCast.hpp"
 
-bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span);
+bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, float range);
+
+const int MAX_RANGE = 100;
+
+BoundRayCast::BoundRayCast(std::int64_t tileSize) : LightCaster(tileSize) {
+	// Precalculate the ray paths to each perimeter tile
+	for (int i = -MAX_RANGE; i < MAX_RANGE + 1; i++) {
+		int j = -MAX_RANGE;
+		boundRayCast(i, j, tileSize);
+		j = MAX_RANGE;
+		boundRayCast(i, j, tileSize);
+	}
+	for (int j = -MAX_RANGE + 1; j < MAX_RANGE; j++) {
+		int i = -MAX_RANGE;
+		boundRayCast(i, j, tileSize);
+		i = +MAX_RANGE;
+		boundRayCast(i, j, tileSize);
+	}
+}
 
 void BoundRayCast::update(int lightId, Light &light, ChunkMap &chunkMap) {
-	BoundLight *boundLight;
-
 	// Check if a mapping for this light exists
 	if (boundLightMap.find(lightId) != boundLightMap.end()) {
-		boundLight = updateLight(lightId, light, chunkMap);
+		updateLight(lightId, light, chunkMap);
 	} else {
-		boundLight = addNewLight(lightId, light, chunkMap);
+		addNewLight(lightId, light, chunkMap);
 	}
 
 	// Apply the dependency tree
-	applyLightDependencyPath(lightId, *boundLight, boundLight->dependencyTreeRoot, chunkMap);
+	applyLightDependencyPath(lightId, light, dependencyTreeRoot, chunkMap);
 
 	light.shouldUpdate = false;
 }
@@ -41,89 +57,68 @@ std::set<int> BoundRayCast::getAffectedLights(std::int64_t tileX, std::int64_t t
 	return emptySet;
 }
 
-BoundLight *BoundRayCast::addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
-	BoundLight *boundLight =
-		new BoundLight(light.srcTileX, light.srcTileY,
-					   1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize)), light.span,
-					   light.direction, light.brightness);
-	boundLightMap.insert({lightId, std::unique_ptr<BoundLight>(boundLight)});
-	BoundRayCastNode &currentNode = boundLight->dependencyTreeRoot;
+void BoundRayCast::addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
+	boundLightMap.insert({lightId, std::make_unique<Light>(light)});
+	std::int64_t castingWidth = light.rangeInTiles * 2;
 
-	Rectangle castingRegion(boundLight->srcTileX - boundLight->halfCastingMapWidth,
-							boundLight->srcTileY - boundLight->halfCastingMapWidth,
-							boundLight->castingMapWidth, boundLight->castingMapWidth);
+	this->lightCastMap[lightId] = std::make_unique<int[]>(castingWidth * castingWidth);
+
+	Rectangle castingRegion(light.srcTileX - light.rangeInTiles,
+							light.srcTileY - light.rangeInTiles, castingWidth, castingWidth);
 
 	regionsToLightIds.push_back({castingRegion, lightId});
-
-	// Precalculate the ray paths to each perimeter tile
-	for (int i = -boundLight->halfCastingMapWidth; i < boundLight->halfCastingMapWidth + 1; i++) {
-		int j = -boundLight->halfCastingMapWidth;
-		boundRayCast(*boundLight, i, j);
-		j = +boundLight->halfCastingMapWidth;
-		boundRayCast(*boundLight, i, j);
-	}
-	for (int j = -boundLight->halfCastingMapWidth + 1; j < boundLight->halfCastingMapWidth; j++) {
-		int i = -boundLight->halfCastingMapWidth;
-		boundRayCast(*boundLight, i, j);
-		i = +boundLight->halfCastingMapWidth;
-		boundRayCast(*boundLight, i, j);
-	}
-	return boundLight;
 }
 
-BoundLight *BoundRayCast::updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
+void BoundRayCast::updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
 
-	BoundLight *boundLight = boundLightMap[lightId].get();
+	Light *existingLight = boundLightMap[lightId].get();
 	clearLightMapping(lightId, chunkMap);
-	boundLight->srcTileX = light.srcTileX;
-	boundLight->srcTileY = light.srcTileY;
-	boundLight->direction = glm::normalize(light.direction);
-	boundLight->span = light.span;
+	existingLight->srcTileX = light.srcTileX;
+	existingLight->srcTileY = light.srcTileY;
+	existingLight->direction = glm::normalize(light.direction);
+	existingLight->span = light.span;
 	for (auto regionLightPair : regionsToLightIds) {
 		if (regionLightPair.second == lightId) {
-			regionLightPair.first.x = boundLight->srcTileX - boundLight->halfCastingMapWidth;
-			regionLightPair.first.y = boundLight->srcTileY - boundLight->halfCastingMapWidth;
+			regionLightPair.first.x = existingLight->srcTileX - existingLight->rangeInTiles;
+			regionLightPair.first.y = existingLight->srcTileY - existingLight->rangeInTiles;
 			break;
 		}
 	}
-	return boundLight;
 }
 
 void BoundRayCast::clearLightMapping(int lightId, ChunkMap &chunkMap) {
-	BoundLight &boundLight = *boundLightMap[lightId];
-	for (std::int64_t x = 0; x < boundLight.castingMapWidth; x++) {
-		for (std::int64_t y = 0; y < boundLight.castingMapWidth; y++) {
-			std::int64_t tileX = boundLight.srcTileX + x - boundLight.halfCastingMapWidth;
-			std::int64_t tileY = boundLight.srcTileY + y - boundLight.halfCastingMapWidth;
+	Light &boundLight = *boundLightMap[lightId];
+	for (std::int64_t x = 0; x < boundLight.rangeInTiles * 2; x++) {
+		for (std::int64_t y = 0; y < boundLight.rangeInTiles * 2; y++) {
+			std::int64_t tileX = boundLight.srcTileX + x - boundLight.rangeInTiles;
+			std::int64_t tileY = boundLight.srcTileY + y - boundLight.rangeInTiles;
 
 			chunkMap.getTileLightStateUnsafe(tileX, tileY)
-				.subtractLighting(boundLight.lightMap[x + y * boundLight.castingMapWidth]);
-			boundLight.lightMap[x + y * boundLight.castingMapWidth] = 0;
+				.subtractLighting(lightCastMap[lightId][x + y * boundLight.rangeInTiles * 2]);
+			lightCastMap[lightId][x + y * boundLight.rangeInTiles * 2] = 0;
 		}
 	}
 }
 
-void BoundRayCast::boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j) {
-	BoundRayCastNode *currentNode = &boundLight.dependencyTreeRoot;
+void BoundRayCast::boundRayCast(std::int64_t i, std::int64_t j, std::int64_t tileSize) {
+	BoundRayCastNode *currentNode = &dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 
 	while (!pather.isFinished) {
 		auto nextTile = pather.nextTile();
-		double distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
+		float distance = glm::length(glm::vec2(nextTile.x, nextTile.y));
 
-		if (distance >= boundLight.halfCastingMapWidth) {
+		if (distance >= MAX_RANGE) {
 			break;
 		}
-		std::int64_t tileX = boundLight.srcTileX + nextTile.x;
-		std::int64_t tileY = boundLight.srcTileY + nextTile.y;
 
 		std::int64_t tileIndex =
-			(boundLight.halfCastingMapWidth + nextTile.x) +
-			(boundLight.halfCastingMapWidth + nextTile.y) * boundLight.castingMapWidth;
+			(MAX_RANGE + nextTile.x) + (MAX_RANGE + nextTile.y) * MAX_RANGE * 2;
 
 		// If this node doesn't exist create it
 		if (currentNode->children.find(tileIndex) == currentNode->children.end()) {
-			BoundRayCastNode *newNode = new BoundRayCastNode(nextTile.x, nextTile.y, 0);
+			BoundRayCastNode *newNode =
+				new BoundRayCastNode(nextTile.x, nextTile.y, (distance * tileSize) - tileSize / 2);
 			currentNode->children.insert({tileIndex, std::unique_ptr<BoundRayCastNode>(newNode)});
 			currentNode = newNode;
 		} else { // otherwise use the existing node
@@ -132,16 +127,13 @@ void BoundRayCast::boundRayCast(BoundLight &boundLight, std::int64_t i, std::int
 
 		glm::vec2 rayDirection = glm::vec2(i, j);
 		currentNode->directionsToNode.push_back(glm::normalize(rayDirection));
-
-		int brightness = (boundLight.brightness * (boundLight.halfCastingMapWidth - distance) /
-						  boundLight.halfCastingMapWidth);
-		if (currentNode->brightness < brightness) {
-			currentNode->brightness = brightness;
-		}
 	}
 }
 
-bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span) {
+bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, float range) {
+	if (node.distanceFromSrc > range) {
+		return false;
+	}
 	if (node.directionsToNode.size() > 0) {
 		for (auto &directionToNode : node.directionsToNode) {
 			// Direction vectors are all normalized so no need to divide by their lengths
@@ -155,31 +147,32 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span) {
 	return true;
 }
 
-void BoundRayCast::applyLightDependencyPath(int lightId, BoundLight &boundLight,
+void BoundRayCast::applyLightDependencyPath(int lightId, Light &light,
 											BoundRayCastNode &currentNode, ChunkMap &chunkMap) {
-	if (!isNodeReachable(currentNode, boundLight.direction, boundLight.span)) {
+	if (!isNodeReachable(currentNode, light.direction, light.span, light.range)) {
 		return;
 	}
-	std::int64_t tileX = boundLight.srcTileX + currentNode.location.x;
-	std::int64_t tileY = boundLight.srcTileY + currentNode.location.y;
+	std::int64_t tileX = light.srcTileX + currentNode.location.x;
+	std::int64_t tileY = light.srcTileY + currentNode.location.y;
 
 	auto &tile = chunkMap.getTileLightStateUnsafe(tileX, tileY);
 
 	float angleToTile = glm::acos(
-		glm::dot(boundLight.direction,
+		glm::dot(light.direction,
 				 glm::normalize(glm::vec2(currentNode.location.x, currentNode.location.y))));
 
-	int newLighting =
-		static_cast<int>(currentNode.brightness *
-						 glm::min(1.0f, 2.0f * ((0.1f + boundLight.span) - angleToTile * 2)));
+	int brightness = (light.brightness * (light.range - currentNode.distanceFromSrc) / light.range);
+
+	int newLighting = static_cast<int>(
+		brightness * glm::min(1.0f, 2.0f * ((0.1f + light.span) - angleToTile * 2)));
 
 	int lightMapArrayIndex =
-		((boundLight.halfCastingMapWidth + currentNode.location.x) +
-		 (boundLight.halfCastingMapWidth + currentNode.location.y) * boundLight.castingMapWidth);
-	int existingLighting = boundLight.lightMap[lightMapArrayIndex];
+		((light.rangeInTiles + currentNode.location.x) +
+		 (light.rangeInTiles + currentNode.location.y) * light.rangeInTiles * 2);
+	int existingLighting = lightCastMap[lightId][lightMapArrayIndex];
 
 	if (newLighting > existingLighting) {
-		boundLight.lightMap[lightMapArrayIndex] = newLighting;
+		lightCastMap[lightId][lightMapArrayIndex] = newLighting;
 		int lightingDelta = newLighting - existingLighting;
 
 		tile.addLighting(lightingDelta);
@@ -190,6 +183,6 @@ void BoundRayCast::applyLightDependencyPath(int lightId, BoundLight &boundLight,
 	}
 
 	for (auto &node : currentNode.children) {
-		applyLightDependencyPath(lightId, boundLight, *node.second, chunkMap);
+		applyLightDependencyPath(lightId, light, *node.second, chunkMap);
 	}
 }
