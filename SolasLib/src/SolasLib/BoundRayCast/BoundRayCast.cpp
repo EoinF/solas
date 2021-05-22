@@ -1,22 +1,15 @@
 #include "BoundRayCast.hpp"
 
-void clearLightMapping(int lightId, BoundLight &boundLight, ChunkMap &chunkMap,
-					   RegionsToLightIds &regionsToLightIds);
-void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j);
-void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastNode &currentNode,
-							  ChunkMap &chunkMap);
+bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span);
 
 void BoundRayCast::update(int lightId, Light &light, ChunkMap &chunkMap) {
-	std::int64_t srcTileX = light.x / chunkMap.tileSize;
-	std::int64_t srcTileY = light.y / chunkMap.tileSize;
-
 	BoundLight *boundLight;
 
 	// Check if a mapping for this light exists
 	if (boundLightMap.find(lightId) != boundLightMap.end()) {
-		boundLight = updateLight(lightId, srcTileX, srcTileY, light, chunkMap);
+		boundLight = updateLight(lightId, light, chunkMap);
 	} else {
-		boundLight = addNewLight(lightId, srcTileX, srcTileY, light, chunkMap);
+		boundLight = addNewLight(lightId, light, chunkMap);
 	}
 
 	// Apply the dependency tree
@@ -32,7 +25,7 @@ void BoundRayCast::removeLight(int lightId, Light &light, ChunkMap &chunkMap) {
 			break;
 		}
 	}
-	clearLightMapping(lightId, *boundLightMap[lightId], chunkMap, regionsToLightIds);
+	clearLightMapping(lightId, chunkMap);
 	boundLightMap.erase(lightId);
 }
 
@@ -48,11 +41,11 @@ std::set<int> BoundRayCast::getAffectedLights(std::int64_t tileX, std::int64_t t
 	return emptySet;
 }
 
-BoundLight *BoundRayCast::addNewLight(light_id_t lightId, std::int64_t srcTileX,
-									  std::int64_t srcTileY, Light &light, ChunkMap &chunkMap) {
-	BoundLight *boundLight = new BoundLight(
-		srcTileX, srcTileY, 1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize)),
-		light.span, light.direction, light.brightness);
+BoundLight *BoundRayCast::addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
+	BoundLight *boundLight =
+		new BoundLight(light.srcTileX, light.srcTileY,
+					   1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize)), light.span,
+					   light.direction, light.brightness);
 	boundLightMap.insert({lightId, std::unique_ptr<BoundLight>(boundLight)});
 	BoundRayCastNode &currentNode = boundLight->dependencyTreeRoot;
 
@@ -78,13 +71,12 @@ BoundLight *BoundRayCast::addNewLight(light_id_t lightId, std::int64_t srcTileX,
 	return boundLight;
 }
 
-BoundLight *BoundRayCast::updateLight(light_id_t lightId, std::int64_t srcTileX,
-									  std::int64_t srcTileY, Light &light, ChunkMap &chunkMap) {
+BoundLight *BoundRayCast::updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
 
 	BoundLight *boundLight = boundLightMap[lightId].get();
-	clearLightMapping(lightId, *boundLight, chunkMap, regionsToLightIds);
-	boundLight->srcTileX = srcTileX;
-	boundLight->srcTileY = srcTileY;
+	clearLightMapping(lightId, chunkMap);
+	boundLight->srcTileX = light.srcTileX;
+	boundLight->srcTileY = light.srcTileY;
 	boundLight->direction = glm::normalize(light.direction);
 	boundLight->span = light.span;
 	for (auto regionLightPair : regionsToLightIds) {
@@ -97,8 +89,8 @@ BoundLight *BoundRayCast::updateLight(light_id_t lightId, std::int64_t srcTileX,
 	return boundLight;
 }
 
-void clearLightMapping(int lightId, BoundLight &boundLight, ChunkMap &chunkMap,
-					   RegionsToLightIds &regionsToLightIds) {
+void BoundRayCast::clearLightMapping(int lightId, ChunkMap &chunkMap) {
+	BoundLight &boundLight = *boundLightMap[lightId];
 	for (std::int64_t x = 0; x < boundLight.castingMapWidth; x++) {
 		for (std::int64_t y = 0; y < boundLight.castingMapWidth; y++) {
 			std::int64_t tileX = boundLight.srcTileX + x - boundLight.halfCastingMapWidth;
@@ -111,7 +103,7 @@ void clearLightMapping(int lightId, BoundLight &boundLight, ChunkMap &chunkMap,
 	}
 }
 
-void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j) {
+void BoundRayCast::boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j) {
 	BoundRayCastNode *currentNode = &boundLight.dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
 
@@ -163,8 +155,8 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span) {
 	return true;
 }
 
-void applyLightDependencyPath(int lightId, BoundLight &boundLight, BoundRayCastNode &currentNode,
-							  ChunkMap &chunkMap) {
+void BoundRayCast::applyLightDependencyPath(int lightId, BoundLight &boundLight,
+											BoundRayCastNode &currentNode, ChunkMap &chunkMap) {
 	if (!isNodeReachable(currentNode, boundLight.direction, boundLight.span)) {
 		return;
 	}

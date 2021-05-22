@@ -81,8 +81,10 @@ class BoundRayCast : public LightCaster {
 	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 
   protected:
-	BoundLight *addNewLight(light_id_t lightId, std::int64_t srcTileX, std::int64_t srcTileY,
-							Light &light, ChunkMap &chunkMap);
-	BoundLight *updateLight(light_id_t lightId, std::int64_t srcTileX, std::int64_t srcTileY,
-							Light &light, ChunkMap &chunkMap);
+	BoundLight *addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
+	BoundLight *updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
+	void clearLightMapping(int lightId, ChunkMap &chunkMap);
+	void boundRayCast(BoundLight &boundLight, std::int64_t i, std::int64_t j);
+	void applyLightDependencyPath(int lightId, BoundLight &light, BoundRayCastNode &currentNode,
+								  ChunkMap &chunkMap);
 };

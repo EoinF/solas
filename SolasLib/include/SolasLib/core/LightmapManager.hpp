@@ -39,6 +39,5 @@ class LightmapManager {
 	void clearLights();
 	void clearTileState();
 	void removeLight(light_id_t lightId);
-	void resetLighting();
 	void update();
 };

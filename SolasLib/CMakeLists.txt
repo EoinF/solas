@@ -17,8 +17,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/RayCastUtils.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/DiscreteLinePather.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/DiscreteLinePather.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/SimpleRayCast/SimpleRayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/BoundRayCast/BoundRayCast.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/SolasLib/LightmapManager.cpp

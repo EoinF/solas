@@ -23,12 +23,6 @@ set(SOURCES_BOUND_RAY_CAST
     BoundRayCast/brightness.cpp
 )
 
-set(SOURCES_SIMPLE_RAY_CAST
-    SimpleRayCast/addLight.cpp
-    SimpleRayCast/removeLight.cpp
-    SimpleRayCast/wallTile.cpp
-)
-
 mark_as_advanced(
     BUILD_GMOCK BUILD_GTEST BUILD_SHARED_LIBS
     gmock_build_tests gtest_build_samples gtest_build_tests
@@ -70,9 +64,8 @@ macro(package_add_test TESTNAME)
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
-package_add_test(allTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
+package_add_test(allTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
 package_add_test(boundRayCastTests ${SOURCES_BOUND_RAY_CAST} ${SOURCES_SHARED})
-package_add_test(simpleRayCastTests ${SOURCES_SIMPLE_RAY_CAST} ${SOURCES_SHARED})
 
 package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/updateTile.cpp)
 

@@ -1,6 +1,5 @@
 #include <SolasLib/core/LightmapManager.hpp>
 #include "BoundRayCast/BoundRayCast.hpp"
-#include "SimpleRayCast/SimpleRayCast.hpp"
 
 LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
 								 std::int64_t chunkSize)
@@ -12,11 +11,8 @@ LightmapManager::LightmapManager(std::int64_t tileSize, CastingAlgorithm type,
 	case CastingAlgorithm::BOUND_RAY_CAST:
 		this->lightCaster = std::make_unique<BoundRayCast>();
 		break;
-	case CastingAlgorithm::SIMPLE_RAY_CAST:
-		this->lightCaster = std::make_unique<SimpleRayCast>();
-		break;
 	default:
-		this->lightCaster = std::make_unique<SimpleRayCast>();
+		this->lightCaster = std::make_unique<BoundRayCast>();
 	}
 }
 
@@ -54,8 +50,7 @@ int LightmapManager::addLight(std::int64_t x, std::int64_t y, float span, float 
 }
 
 void LightmapManager::updateLightPosition(light_id_t lightId, std::int64_t x, std::int64_t y) {
-	this->lightsMap[lightId]->x = x;
-	this->lightsMap[lightId]->y = y;
+	this->lightsMap[lightId]->setPosition(x, y);
 	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, this->lightsMap[lightId]->range);
@@ -91,16 +86,6 @@ void LightmapManager::clearLights() {
 void LightmapManager::removeLight(int lightId) {
 	this->lightCaster->removeLight(lightId, *lightsMap[lightId], chunkMap);
 	lightsMap.erase(lightId);
-}
-
-void LightmapManager::resetLighting() {
-	for (auto &lightIdPair : this->lightsMap) {
-		for (int i = 0; i < lightIdPair.second->lightMapWidth; i++) {
-			for (int j = 0; j < lightIdPair.second->lightMapHeight; j++) {
-				lightIdPair.second->lightMap[i + j * lightIdPair.second->lightMapHeight] = 0;
-			}
-		}
-	}
 }
 
 void LightmapManager::update() {
