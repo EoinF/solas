@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <set>
+#include <map>
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -19,9 +20,12 @@ struct Slope // represents the slope Y/X as a rational number
 	int x, y;
 };
 
+typedef std::map<light_id_t, std::unique_ptr<int[]>> ShadowCastLightMap;
+
 class ShadowCast : public LightCaster {
-	std::set<int> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
-									const ChunkMap &chunkMap) override;
-	void removeLight(int lightId, Light &light, ChunkMap &chunkMap) override;
-	void update(int lightId, Light &light, ChunkMap &chunkMap) override;
+	ShadowCastLightMap lightMap;
+	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
+										   const ChunkMap &chunkMap) override;
+	void removeLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
+	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 };

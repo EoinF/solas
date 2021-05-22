@@ -15,31 +15,48 @@
 #include "ShadowCast.hpp"
 
 void compute(int octant, std::int64_t srcTileX, std::int64_t srcTileY, std::int64_t x, Slope top,
-			 Slope bottom, std::int64_t rangeInTiles, ChunkMap &chunkMap, Light &light);
+			 Slope bottom, std::int64_t rangeInTiles, ChunkMap &chunkMap, Light &light,
+			 ShadowCastLightMap &lightMap, light_id_t lightId);
+
+void clearLightMapping(int lightId, Light &light, ShadowCastLightMap &lightMap, ChunkMap &chunkMap);
+void applyLighting(light_id_t lightId, Light &light, ShadowCastLightMap &lightMap,
+				   ChunkMap &chunkMap);
 
 void ShadowCast::update(int lightId, Light &light, ChunkMap &chunkMap) {
 	std::int64_t srcTileX = light.x / chunkMap.tileSize;
 	std::int64_t srcTileY = light.y / chunkMap.tileSize;
-
-	chunkMap.getTileLightState(srcTileX, srcTileY).setLighting(light.brightness);
 	std::int64_t rangeInTiles = 1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize));
+
+	if (lightMap.find(lightId) == lightMap.end()) {
+		printf("creating lightmap entry for %d\n", lightId);
+		lightMap[lightId] = std::make_unique<int[]>((rangeInTiles * 2) * (rangeInTiles * 2));
+	} else {
+		clearLightMapping(lightId, light, lightMap, chunkMap);
+	}
 
 	for (int octant = 0; octant < 8; octant++) {
 		compute(octant, srcTileY, srcTileY, 1, Slope(1, 1), Slope(0, 1), rangeInTiles, chunkMap,
-				light);
+				light, lightMap, lightId);
 	}
+	lightMap[lightId][rangeInTiles + (rangeInTiles * rangeInTiles * 2)] = light.brightness;
+
+	applyLighting(lightId, light, lightMap, chunkMap);
 }
 
 void ShadowCast::removeLight(int lightId, Light &light, ChunkMap &chunkMap) {
-	// TODO: remove the casted light mapping
+	clearLightMapping(lightId, light, lightMap, chunkMap);
+	printf("erasing light %d\n", lightId);
+	lightMap.erase(lightId);
 }
+
 std::set<int> ShadowCast::getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 											const ChunkMap &chunkMap) {
 	return {};
 }
 
 void compute(int octant, std::int64_t srcTileX, std::int64_t srcTileY, std::int64_t x, Slope top,
-			 Slope bottom, std::int64_t rangeInTiles, ChunkMap &chunkMap, Light &light) {
+			 Slope bottom, std::int64_t rangeInTiles, ChunkMap &chunkMap, Light &light,
+			 ShadowCastLightMap &lightMap, light_id_t lightId) {
 	for (; x <= rangeInTiles; x++) // rangeLimit < 0 || x <= rangeLimit
 	{
 		// compute the Y coordinates where the top vector leaves the column (on the right) and where
@@ -95,9 +112,11 @@ void compute(int octant, std::int64_t srcTileX, std::int64_t srcTileY, std::int6
 			float distanceToTile = glm::distance(glm::vec2(srcTileX, srcTileY), glm::vec2(tx, ty));
 			bool inRange = rangeInTiles < 0 || distanceToTile <= rangeInTiles;
 			if (inRange) {
-				// int brightness = light.brightness / 2;
+				int brightness = light.brightness / 4;
+				std::int64_t tileIndex = (tx + rangeInTiles - srcTileX) +
+										 (ty + rangeInTiles - srcTileY) * rangeInTiles * 2;
 				// (light.brightness * (rangeInTiles - distanceToTile) / rangeInTiles);
-				tileState.setLighting(light.brightness);
+				lightMap[lightId][tileIndex] = brightness;
 			}
 			// NOTE: use the next line instead if you want the algorithm to be symmetrical
 			// if(inRange && (y != topY || top.Y*x >= top.X*y) && (y != bottomY || bottom.Y*x <=
@@ -120,7 +139,7 @@ void compute(int octant, std::int64_t srcTileX, std::int64_t srcTileY, std::int6
 						} // don't recurse unless we have to
 						else {
 							compute(octant, srcTileX, srcTileY, x + 1, top, newBottom, rangeInTiles,
-									chunkMap, light);
+									chunkMap, light, lightMap, lightId);
 						}
 					}
 					wasOpaque = 1;
@@ -138,6 +157,42 @@ void compute(int octant, std::int64_t srcTileX, std::int64_t srcTileY, std::int6
 
 		if (wasOpaque != 0) {
 			break; // if the column ended in a clear tile, continue processing the current sector
+		}
+	}
+}
+
+void applyLighting(light_id_t lightId, Light &light, ShadowCastLightMap &lightMap,
+				   ChunkMap &chunkMap) {
+	std::int64_t srcTileX = light.x / chunkMap.tileSize;
+	std::int64_t srcTileY = light.y / chunkMap.tileSize;
+	std::int64_t rangeInTiles = 1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize));
+	std::int64_t lightMapWidth = rangeInTiles * 2;
+	for (std::int64_t x = 0; x < lightMapWidth; x++) {
+		for (std::int64_t y = 0; y < lightMapWidth; y++) {
+			std::int64_t tileX = srcTileX + x - rangeInTiles;
+			std::int64_t tileY = srcTileY + y - rangeInTiles;
+
+			chunkMap.getTileLightStateUnsafe(tileX, tileY)
+				.addLighting(lightMap[lightId][x + y * lightMapWidth]);
+		}
+	}
+}
+
+void clearLightMapping(int lightId, Light &light, ShadowCastLightMap &lightMap,
+					   ChunkMap &chunkMap) {
+	std::int64_t srcTileX = light.x / chunkMap.tileSize;
+	std::int64_t srcTileY = light.y / chunkMap.tileSize;
+
+	std::int64_t rangeInTiles = 1 + static_cast<int>(glm::ceil(light.range / chunkMap.tileSize));
+	std::int64_t lightMapWidth = rangeInTiles * 2;
+	for (std::int64_t x = 0; x < lightMapWidth; x++) {
+		for (std::int64_t y = 0; y < lightMapWidth; y++) {
+			std::int64_t tileX = srcTileX + x - rangeInTiles;
+			std::int64_t tileY = srcTileY + y - rangeInTiles;
+
+			chunkMap.getTileLightStateUnsafe(tileX, tileY)
+				.subtractLighting(lightMap[lightId][x + y * lightMapWidth]);
+			lightMap[lightId][x + y * lightMapWidth] = 0;
 		}
 	}
 }
