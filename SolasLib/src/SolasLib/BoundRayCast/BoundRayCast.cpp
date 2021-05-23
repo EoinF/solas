@@ -4,7 +4,7 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, fl
 
 const int MAX_RANGE = 100;
 
-BoundRayCast::BoundRayCast(std::int64_t tileSize) : LightCaster(tileSize) {
+BoundRayCast::BoundRayCast(std::int64_t tileSize) {
 	// Precalculate the ray paths to each perimeter tile
 	for (int i = -MAX_RANGE; i < MAX_RANGE + 1; i++) {
 		int j = -MAX_RANGE;

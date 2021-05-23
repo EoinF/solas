@@ -12,7 +12,6 @@ typedef int light_id_t;
 
 class LightCaster {
   public:
-	LightCaster(std::int64_t tileSize) {}
 	virtual std::set<int> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 											const ChunkMap &chunkMap) = 0;
 	virtual void addLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) = 0;

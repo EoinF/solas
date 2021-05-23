@@ -32,8 +32,6 @@ typedef std::vector<std::pair<Rectangle, light_id_t>> RegionsToLightIds;
 class BoundRayCast : public LightCaster {
   public:
 	BoundRayCast(std::int64_t tileSize);
-	std::map<light_id_t, std::unique_ptr<Light>> boundLightMap;
-	RegionsToLightIds regionsToLightIds;
 
 	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 										   const ChunkMap &chunkMap) override;
@@ -42,6 +40,8 @@ class BoundRayCast : public LightCaster {
 	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 
   protected:
+	std::map<light_id_t, std::unique_ptr<Light>> boundLightMap;
+	RegionsToLightIds regionsToLightIds;
 	BoundRayCastNode dependencyTreeRoot;
 	std::map<light_id_t, std::unique_ptr<int[]>> lightCastMap;
 	void updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
