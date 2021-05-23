@@ -103,11 +103,11 @@ void ShadowCast::compute(int octant, std::int64_t x, Slope top, Slope bottom, Ch
 				glm::distance(glm::vec2(light.srcTileX, light.srcTileY), glm::vec2(tx, ty));
 			bool inRange = light.rangeInTiles < 0 || distanceToTile <= light.rangeInTiles;
 			if (inRange) {
-				int brightness = light.brightness / 4;
+				int brightness =
+					(light.brightness * (light.rangeInTiles - distanceToTile) / light.rangeInTiles);
 				std::int64_t tileIndex =
 					(tx + light.rangeInTiles - light.srcTileX) +
 					(ty + light.rangeInTiles - light.srcTileY) * light.rangeInTiles * 2;
-				// (light.brightness * (rangeInTiles - distanceToTile) / rangeInTiles);
 				lightCastMap[lightId][tileIndex] = brightness;
 			}
 			// NOTE: use the next line instead if you want the algorithm to be symmetrical
