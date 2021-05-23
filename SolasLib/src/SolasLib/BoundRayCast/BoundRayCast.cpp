@@ -21,12 +21,7 @@ BoundRayCast::BoundRayCast(std::int64_t tileSize) : LightCaster(tileSize) {
 }
 
 void BoundRayCast::update(int lightId, Light &light, ChunkMap &chunkMap) {
-	// Check if a mapping for this light exists
-	if (boundLightMap.find(lightId) != boundLightMap.end()) {
-		updateLight(lightId, light, chunkMap);
-	} else {
-		addNewLight(lightId, light, chunkMap);
-	}
+	updateLight(lightId, light, chunkMap);
 
 	// Apply the dependency tree
 	applyLightDependencyPath(lightId, light, dependencyTreeRoot, chunkMap);
@@ -57,7 +52,7 @@ std::set<int> BoundRayCast::getAffectedLights(std::int64_t tileX, std::int64_t t
 	return emptySet;
 }
 
-void BoundRayCast::addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
+void BoundRayCast::addLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
 	boundLightMap.insert({lightId, std::make_unique<Light>(light)});
 	std::int64_t castingWidth = light.rangeInTiles * 2;
 
@@ -70,7 +65,6 @@ void BoundRayCast::addNewLight(light_id_t lightId, Light &light, ChunkMap &chunk
 }
 
 void BoundRayCast::updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) {
-
 	Light *existingLight = boundLightMap[lightId].get();
 	clearLightMapping(lightId, chunkMap);
 	existingLight->srcTileX = light.srcTileX;

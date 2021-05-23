@@ -42,9 +42,9 @@ int LightmapManager::addLight(std::int64_t x, std::int64_t y, float span, float 
 	int lightId = nextLightId++;
 	this->lightsMap.insert({lightId, std::make_unique<Light>(x, y, direction, span, range,
 															 brightness, chunkMap.tileSize)});
-	this->lightsMap[lightId]->shouldUpdate = true;
 
 	allocateChunksForLight(x, y, range);
+	this->lightCaster->addLight(lightId, *this->lightsMap[lightId], chunkMap);
 
 	return lightId;
 }

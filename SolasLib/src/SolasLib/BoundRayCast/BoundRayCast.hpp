@@ -37,13 +37,13 @@ class BoundRayCast : public LightCaster {
 
 	std::set<light_id_t> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 										   const ChunkMap &chunkMap) override;
+	void addLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 	void removeLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 	void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) override;
 
   protected:
 	BoundRayCastNode dependencyTreeRoot;
 	std::map<light_id_t, std::unique_ptr<int[]>> lightCastMap;
-	void addNewLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
 	void updateLight(light_id_t lightId, Light &light, ChunkMap &chunkMap);
 	void clearLightMapping(int lightId, ChunkMap &chunkMap);
 	void boundRayCast(std::int64_t i, std::int64_t j, std::int64_t tileSize);

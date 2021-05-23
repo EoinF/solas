@@ -15,8 +15,9 @@ class LightCaster {
 	LightCaster(std::int64_t tileSize) {}
 	virtual std::set<int> getAffectedLights(std::int64_t tileX, std::int64_t tileY,
 											const ChunkMap &chunkMap) = 0;
-	virtual void removeLight(int lightId, Light &light, ChunkMap &chunkMap) = 0;
-	virtual void update(int lightId, Light &light, ChunkMap &chunkMap) = 0;
+	virtual void addLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) = 0;
+	virtual void removeLight(light_id_t lightId, Light &light, ChunkMap &chunkMap) = 0;
+	virtual void update(light_id_t lightId, Light &light, ChunkMap &chunkMap) = 0;
 
 	virtual ~LightCaster(){};
 };
