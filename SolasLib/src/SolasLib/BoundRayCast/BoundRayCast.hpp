@@ -20,7 +20,6 @@ struct BoundRayCastNode {
 		this->location.y = y;
 		this->distanceFromSrc = distanceFromSrc;
 		this->span = 2 * glm::pi<float>();
-		this->directionToNode = glm::vec2(1, 0);
 	}
 	float distanceFromSrc;
 	glm::vec2 directionToNode;

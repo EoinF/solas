@@ -5,6 +5,7 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, fl
 const int MAX_RANGE = 128;
 
 BoundRayCast::BoundRayCast(std::int64_t tileSize) : LightCaster(tileSize) {
+	dependencyTreeRoot.directionToNode.x = 1;
 	// Precalculate the ray paths to each perimeter tile
 	for (int i = -MAX_RANGE; i < MAX_RANGE + 1; i++) {
 		int j = -MAX_RANGE;
@@ -97,6 +98,9 @@ void BoundRayCast::clearLightMapping(int lightId, ChunkMap &chunkMap) {
 void BoundRayCast::boundRayCast(std::int64_t i, std::int64_t j, std::int64_t tileSize) {
 	BoundRayCastNode *currentNode = &dependencyTreeRoot;
 	DiscreteLinePather pather(0, 0, i, j);
+	if (i < 0 && j == 0) {
+		printf("raycasting to %d, %d\n", i, j);
+	}
 
 	while (!pather.isFinished) {
 		auto nextTile = pather.nextTile();
@@ -120,23 +124,30 @@ void BoundRayCast::boundRayCast(std::int64_t i, std::int64_t j, std::int64_t til
 		}
 
 		glm::vec2 rayDirection = glm::vec2(i, j);
+		if (i < 0 && j == 0) {
+			printf("%d,%d = %f,%f\n", currentNode->location.x, currentNode->location.y,
+				   currentNode->directionToNode.x, currentNode->directionToNode.y);
+		}
 		if (glm::length(currentNode->directionToNode) == 0) {
 			currentNode->directionToNode = glm::normalize(rayDirection);
 			currentNode->span = 0;
+			if (i < 0 && j == 0) {
+				printf("setting to %d, %d\n", i, j);
+			}
 		} else {
-			// auto angleBetween =
-			// 	glm::acos(glm::dot(glm::normalize(rayDirection), currentNode->directionToNode));
-			// if (currentNode->span == 0) {
-			// 	currentNode->span = angleBetween * 2;
-			// 	currentNode->directionToNode =
-			// 		glm::normalize((currentNode->directionToNode + rayDirection) / 2.0f);
-			// } else if (angleBetween > currentNode->span) {
-			// 	float ratio = currentNode->span / angleBetween;
-			// 	currentNode->span = (angleBetween + currentNode->span) / 2;
-			// 	currentNode->directionToNode = glm::normalize(
-			// 		(currentNode->directionToNode * (1 + ratio) + rayDirection * (2 - ratio)) /
-			// 		2.0f);
-			// }
+			auto angleBetween =
+				glm::acos(glm::dot(glm::normalize(rayDirection), currentNode->directionToNode));
+			if (currentNode->span == 0) {
+				currentNode->span = angleBetween * 2;
+				currentNode->directionToNode =
+					glm::normalize((currentNode->directionToNode + rayDirection) / 2.0f);
+			} else if (angleBetween > currentNode->span) {
+				float ratio = currentNode->span / angleBetween;
+				currentNode->span = (angleBetween + currentNode->span) / 2;
+				currentNode->directionToNode = glm::normalize(
+					(currentNode->directionToNode * (1 + ratio) + rayDirection * (2 - ratio)) /
+					2.0f);
+			}
 		}
 	}
 }
@@ -147,7 +158,7 @@ bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float lightSpa
 	}
 	// Direction vectors are all normalized so no need to divide by their lengths
 	float angle = glm::acos(glm::dot(direction, node.directionToNode));
-	if (angle <= lightSpan / 2.0f) {
+	if (angle <= (node.span + lightSpan) / 2.0f) {
 		return true;
 	}
 	return false;
