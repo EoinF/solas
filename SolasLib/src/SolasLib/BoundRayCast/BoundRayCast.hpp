@@ -19,9 +19,12 @@ struct BoundRayCastNode {
 		this->location.x = x;
 		this->location.y = y;
 		this->distanceFromSrc = distanceFromSrc;
+		this->span = 2 * glm::pi<float>();
+		this->directionToNode = glm::vec2(1, 0);
 	}
 	float distanceFromSrc;
-	std::vector<glm::vec2> directionsToNode;
+	glm::vec2 directionToNode;
+	float span;
 	glm::ivec2 location;
 	std::map<int, std::unique_ptr<BoundRayCastNode>>
 		children; // Maps each tile index to the next dependent tile

@@ -2,7 +2,7 @@
 
 bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, float range);
 
-const int MAX_RANGE = 100;
+const int MAX_RANGE = 128;
 
 BoundRayCast::BoundRayCast(std::int64_t tileSize) : LightCaster(tileSize) {
 	// Precalculate the ray paths to each perimeter tile
@@ -120,25 +120,37 @@ void BoundRayCast::boundRayCast(std::int64_t i, std::int64_t j, std::int64_t til
 		}
 
 		glm::vec2 rayDirection = glm::vec2(i, j);
-		currentNode->directionsToNode.push_back(glm::normalize(rayDirection));
+		if (glm::length(currentNode->directionToNode) == 0) {
+			currentNode->directionToNode = glm::normalize(rayDirection);
+			currentNode->span = 0;
+		} else {
+			// auto angleBetween =
+			// 	glm::acos(glm::dot(glm::normalize(rayDirection), currentNode->directionToNode));
+			// if (currentNode->span == 0) {
+			// 	currentNode->span = angleBetween * 2;
+			// 	currentNode->directionToNode =
+			// 		glm::normalize((currentNode->directionToNode + rayDirection) / 2.0f);
+			// } else if (angleBetween > currentNode->span) {
+			// 	float ratio = currentNode->span / angleBetween;
+			// 	currentNode->span = (angleBetween + currentNode->span) / 2;
+			// 	currentNode->directionToNode = glm::normalize(
+			// 		(currentNode->directionToNode * (1 + ratio) + rayDirection * (2 - ratio)) /
+			// 		2.0f);
+			// }
+		}
 	}
 }
 
-bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float span, float range) {
+bool isNodeReachable(BoundRayCastNode &node, glm::vec2 direction, float lightSpan, float range) {
 	if (node.distanceFromSrc > range) {
 		return false;
 	}
-	if (node.directionsToNode.size() > 0) {
-		for (auto &directionToNode : node.directionsToNode) {
-			// Direction vectors are all normalized so no need to divide by their lengths
-			float angle = glm::acos(glm::dot(direction, directionToNode));
-			if (angle <= span / 2.0f) {
-				return true;
-			}
-		}
-		return false;
+	// Direction vectors are all normalized so no need to divide by their lengths
+	float angle = glm::acos(glm::dot(direction, node.directionToNode));
+	if (angle <= lightSpan / 2.0f) {
+		return true;
 	}
-	return true;
+	return false;
 }
 
 void BoundRayCast::applyLightDependencyPath(int lightId, Light &light,
@@ -157,8 +169,7 @@ void BoundRayCast::applyLightDependencyPath(int lightId, Light &light,
 
 	int brightness = (light.brightness * (light.range - currentNode.distanceFromSrc) / light.range);
 
-	int newLighting = static_cast<int>(
-		brightness * glm::min(1.0f, 2.0f * ((0.1f + light.span) - angleToTile * 2)));
+	int newLighting = static_cast<int>(brightness * glm::min(1.0f, 2.0f * ((0.1f + light.span))));
 
 	int lightMapArrayIndex =
 		((light.rangeInTiles + currentNode.location.x) +
