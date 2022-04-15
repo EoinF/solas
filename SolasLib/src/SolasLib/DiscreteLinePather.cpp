@@ -36,23 +36,6 @@ glm::ivec2 DiscreteLinePather::nextTile() {
 	if (currentX == destX) {
 		throw std::runtime_error("Pathing is already finished. Check with 'isFinished'");
 	} else {
-		int i;
-		int j;
-		if (isSteep) {
-			i = currentY;
-			j = currentX;
-		} else {
-			i = currentX;
-			j = currentY;
-		}
-
-		int tileX = i;
-		int tileY = j;
-		if (isSteep) {
-			tileX = j;
-			tileY = i;
-		}
-
 		error -= deltaY;
 
 		if (error < 0) {

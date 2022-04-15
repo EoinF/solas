@@ -7,6 +7,11 @@ A cross platform library for dynamic 2d lighting.
    2. [OSX Setup](#osx-setup-steps)
    3. [Scenario Viewer](#scenario-viewer)
 
+## Linting
+
+Use the linter clang-tidy, bundled with the c/c++ extension of vscode
+[https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/](https://devblogs.microsoft.com/cppblog/visual-studio-code-c-december-2021-update-clang-tidy/)
+
 ## Windows setup steps
 
 Use the following to set up a dev environment on Windows 10

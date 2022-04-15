@@ -1,7 +1,7 @@
 ﻿#include "ScenarioViewer.h"
 #include <filesystem>
 
-void init(std::string path);
+void init();
 void update();
 void updateUI();
 float calculateFrameRate(float timeDelta);
@@ -38,7 +38,8 @@ int main() {
 }
 
 void init() {
-	font.loadFromFile(std::filesystem::current_path().append("/assets/Arial.ttf"));
+	std::string path = std::filesystem::current_path();
+	font.loadFromFile(path.append("/assets/Arial.ttf"));
 
 	scenarioLabel.setFont(font);
 	scenarioLabel.setFillColor(sf::Color::White);

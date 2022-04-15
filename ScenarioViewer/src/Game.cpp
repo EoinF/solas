@@ -24,7 +24,7 @@ void Game::update(sf::Vector2i mousePosition, glm::vec2 deltaPosition, float del
 	currentTime += timeDelta * 2.0f;
 	for (auto &idLightPair : this->lightmapManager->getLightsMap()) {
 		int id = idLightPair.first;
-		Light *light = idLightPair.second.get();
+		// Light *light = idLightPair.second.get();
 
 		glm::vec2 direction(sinf(currentTime + id), cosf(currentTime + id));
 		// glm::vec2 direction(mousePosition.x - light->x, mousePosition.y - light->y);
