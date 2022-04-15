@@ -73,7 +73,7 @@ Next add the following to .vscode/settings.json
         "./extern/googletest/googlemock/include",
         "./extern/googlebenchmark/include"
     ],
-    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.cppStandard": "c++20",
     "cmake.buildDirectory": "\${workspaceFolder}/build/vscode"
 
 Finally, make sure to configure the IDE to use the correct compiler.

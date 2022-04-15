@@ -13,7 +13,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/Scenarios/Scenarios.cpp
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Add source to this project's executable.
 if (APPLE)
@@ -30,7 +30,7 @@ endif()
 
 target_compile_features(ScenarioViewer
                     PRIVATE
-                    cxx_std_17) 
+                    cxx_std_20) 
 
 target_compile_options(ScenarioViewer
                        PRIVATE

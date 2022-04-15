@@ -39,11 +39,11 @@ endif()
 # We need this directory, and users of our library will need it too
 target_include_directories(SolasLib PUBLIC "./include")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 target_compile_features(SolasLib
                     PRIVATE
-                    cxx_std_17)
+                    cxx_std_20)
 
 target_compile_options(SolasLib
                        PRIVATE

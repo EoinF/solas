@@ -1,4 +1,5 @@
 ﻿#include "ScenarioViewer.h"
+#include <filesystem>
 
 void init(std::string path);
 void update();
@@ -28,26 +29,16 @@ bool showOverlay = true;
 bool isMouseClicked = false;
 bool wasMouseClicked = false;
 
-// Hacky solution to get the current path
-// but it's fine because this app isn't meant to be distributed anyway
-std::string get_current_path(std::string executablePath) {
-	while (executablePath[executablePath.length() - 1] != '/' &&
-		   executablePath[executablePath.length() - 1] != '\\') {
-		executablePath = executablePath.substr(0, executablePath.length() - 2);
-	}
-	return executablePath;
-}
-
-int main(int argc, char **argv) {
-	init(get_current_path(argv[0]));
+int main() {
+	init();
 	while (window.isOpen()) {
 		update();
 	}
 	return 0;
 }
 
-void init(std::string path) {
-	font.loadFromFile(path.append("/assets/Arial.ttf"));
+void init() {
+	font.loadFromFile(std::filesystem::current_path().append("/assets/Arial.ttf"));
 
 	scenarioLabel.setFont(font);
 	scenarioLabel.setFillColor(sf::Color::White);

@@ -45,11 +45,11 @@ macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
 
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
 
     target_compile_features(${TESTNAME}
                         PRIVATE
-                        cxx_std_17)
+                        cxx_std_20)
 
     # link the Google test infrastructure, mocking library, and a default main fuction to
     # the test executable.  Remove g_test_main if writing your own main function.
@@ -71,10 +71,10 @@ package_add_test(quickTest ${SOURCES_SHARED} BoundRayCast/updateTile.cpp)
 
 add_executable(benchmarktest ${SOURCES_SHARED} ${SOURCES_BENCHMARK})
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 target_compile_features(benchmarktest
                     PRIVATE
-                    cxx_std_17)
+                    cxx_std_20)
 
 target_link_libraries(benchmarktest PRIVATE gtest benchmark::benchmark SolasLib ${GLM_LIB})
